@@ -1,9 +1,7 @@
-// prisma/constants.ts
-
 import { UserRole, EventStatus, ServiceType } from 'generated/prisma/enums';
 import { hashSync } from 'bcrypt';
 
-export const HASHED_PASSWORD = hashSync('123456', 10);
+export const HASHED_PASSWORD = hashSync('12345678', 10);
 
 export const USERS = [
   {

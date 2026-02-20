@@ -88,7 +88,7 @@ enum TeamMemberRole {
 //////////////////////////////
 
 model User {
-  id           String   @id @default(cuid())
+  id           Int      @id @default(autoincrement())
   email        String   @unique
   phone        String?  @unique
   passwordHash String?
@@ -118,14 +118,14 @@ model User {
 }
 
 model Organization {
-  id          String  @id @default(cuid())
+  id          Int     @id @default(autoincrement())
   name        String
   slug        String  @unique
   description String?
   website     String?
 
-  ownerId String
-  owner   User   @relation("OrgOwner", fields: [ownerId], references: [id], onDelete: Restrict)
+  ownerId Int
+  owner   User @relation("OrgOwner", fields: [ownerId], references: [id], onDelete: Restrict)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -136,9 +136,9 @@ model Organization {
 }
 
 model OrganizationMember {
-  id             String   @id @default(cuid())
-  organizationId String
-  userId         String
+  id             Int      @id @default(autoincrement())
+  organizationId Int
+  userId         Int
   role           UserRole @default(MANAGER)
 
   createdAt DateTime @default(now())
@@ -155,8 +155,8 @@ model OrganizationMember {
 //////////////////////////////
 
 model Event {
-  id             String      @id @default(cuid())
-  organizationId String?
+  id             Int         @id @default(autoincrement())
+  organizationId Int?
   title          String
   description    String?
   coverUrl       String?
@@ -169,11 +169,11 @@ model Event {
   capacity  Int?
   isPrivate Boolean @default(false)
 
-  venueId String?
-  venue   Venue?  @relation(fields: [venueId], references: [id], onDelete: SetNull)
+  venueId Int?
+  venue   Venue? @relation(fields: [venueId], references: [id], onDelete: SetNull)
 
-  createdById String
-  createdBy   User   @relation("EventCreator", fields: [createdById], references: [id], onDelete: Restrict)
+  createdById Int
+  createdBy   User @relation("EventCreator", fields: [createdById], references: [id], onDelete: Restrict)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -195,7 +195,7 @@ model Event {
 }
 
 model Venue {
-  id      String   @id @default(cuid())
+  id      Int      @id @default(autoincrement())
   name    String
   address String?
   city    String?
@@ -216,9 +216,9 @@ model Venue {
 }
 
 model VenueBooking {
-  id      String        @id @default(cuid())
-  venueId String
-  eventId String
+  id      Int           @id @default(autoincrement())
+  venueId Int
+  eventId Int
   status  BookingStatus @default(PENDING)
 
   reservedFrom DateTime
@@ -240,8 +240,8 @@ model VenueBooking {
 //////////////////////////////
 
 model TicketType {
-  id       String @id @default(cuid())
-  eventId  String
+  id       Int    @id @default(autoincrement())
+  eventId  Int
   name     String
   price    Int    @default(0) // in minimal currency unit (e.g. so'm)
   currency String @default("UZS")
@@ -262,12 +262,12 @@ model TicketType {
 }
 
 model Ticket {
-  id           String  @id @default(cuid())
-  ticketTypeId String
-  orderId      String?
+  id           Int     @id @default(autoincrement())
+  ticketTypeId Int
+  orderId      Int?
 
-  ownerId String? // attendee user
-  owner   User?   @relation(fields: [ownerId], references: [id], onDelete: SetNull)
+  ownerId Int? // attendee user
+  owner   User? @relation(fields: [ownerId], references: [id], onDelete: SetNull)
 
   code        String    @unique // QR / unique code
   checkedInAt DateTime?
@@ -282,9 +282,9 @@ model Ticket {
 }
 
 model Order {
-  id      String      @id @default(cuid())
-  eventId String
-  buyerId String
+  id      Int         @id @default(autoincrement())
+  eventId Int
+  buyerId Int
   status  OrderStatus @default(PENDING)
 
   amountTotal Int
@@ -305,9 +305,9 @@ model Order {
 }
 
 model OrderItem {
-  id           String @id @default(cuid())
-  orderId      String
-  ticketTypeId String
+  id           Int    @id @default(autoincrement())
+  orderId      Int
+  ticketTypeId Int
   quantity     Int    @default(1)
   unitPrice    Int
 
@@ -318,8 +318,8 @@ model OrderItem {
 }
 
 model Payment {
-  id       String          @id @default(cuid())
-  orderId  String
+  id       Int             @id @default(autoincrement())
+  orderId  Int
   provider PaymentProvider
   status   PaymentStatus   @default(INITIATED)
 
@@ -340,8 +340,8 @@ model Payment {
 }
 
 model Invoice {
-  id             String   @id @default(cuid())
-  organizationId String
+  id             Int      @id @default(autoincrement())
+  organizationId Int
   periodStart    DateTime
   periodEnd      DateTime
   amount         Int
@@ -360,14 +360,14 @@ model Invoice {
 //////////////////////////////
 
 model Task {
-  id          String     @id @default(cuid())
-  eventId     String
+  id          Int        @id @default(autoincrement())
+  eventId     Int
   title       String
   description String?
   status      TaskStatus @default(TODO)
   dueAt       DateTime?
 
-  assigneeId String?
+  assigneeId Int?
   assignee   User?   @relation(fields: [assigneeId], references: [id], onDelete: SetNull)
 
   createdAt DateTime @default(now())
@@ -381,9 +381,9 @@ model Task {
 }
 
 model EventTeamMember {
-  id      String         @id @default(cuid())
-  eventId String
-  userId  String
+  id      Int            @id @default(autoincrement())
+  eventId Int
+  userId  Int
   role    TeamMemberRole @default(ORGANIZER)
 
   createdAt DateTime @default(now())
@@ -400,8 +400,8 @@ model EventTeamMember {
 //////////////////////////////
 
 model VendorProfile {
-  id          String  @id @default(cuid())
-  userId      String  @unique
+  id          Int     @id @default(autoincrement())
+  userId      Int  @unique
   displayName String
   bio         String?
   city        String?
@@ -417,8 +417,8 @@ model VendorProfile {
 }
 
 model VendorService {
-  id        String      @id @default(cuid())
-  vendorId  String
+  id     Int   @id @default(autoincrement())
+  vendorId  Int
   type      ServiceType
   title     String
   priceFrom Int?
@@ -432,8 +432,8 @@ model VendorService {
 }
 
 model ServiceRequest {
-  id       String      @id @default(cuid())
-  eventId  String
+  id     Int   @id @default(autoincrement())
+  eventId  Int
   type     ServiceType
   details  String?
   budget   Int?
@@ -449,9 +449,9 @@ model ServiceRequest {
 }
 
 model ServiceOffer {
-  id         String    @id @default(cuid())
-  requestId  String
-  vendorId   String
+  id     Int   @id @default(autoincrement())
+  requestId  Int
+  vendorId   Int
   price      Int
   currency   String    @default("UZS")
   message    String?
@@ -471,8 +471,8 @@ model ServiceOffer {
 //////////////////////////////
 
 model VolunteerProfile {
-  id     String   @id @default(cuid())
-  userId String   @unique
+  id     Int   @id @default(autoincrement())
+  userId Int   @unique
   city   String?
   skills String[] // PostgreSQL supports text[]; Prisma maps String[]
   bio    String?
@@ -488,9 +488,9 @@ model VolunteerProfile {
 //////////////////////////////
 
 model Review {
-  id       String @id @default(cuid())
-  eventId  String
-  authorId String
+  id       Int @id @default(autoincrement())
+  eventId  Int
+  authorId Int
 
   rating  Int // 1..5
   comment String?

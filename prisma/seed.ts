@@ -45,6 +45,7 @@ async function seedUsers() {
 
     createdIds.users[user.email] = created.id;
   }
+
 }
 
 async function seedOrganization() {
