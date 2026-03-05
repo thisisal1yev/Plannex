@@ -1,68 +1,68 @@
 import {
+  Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
-  Delete,
   Query,
-  Body,
+  UseGuards,
 } from '@nestjs/common';
-
-import { UsersService } from './users.service';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
+import { CurrentUser } from '../common/decorators/current-user.decorator';
+import { Roles } from '../common/decorators/roles.decorator';
+import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
+import { RolesGuard } from '../common/guards/roles.guard';
+import { QueryUsersDto } from './dto/query-users.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { UsersService } from './users.service';
 
-// TODO: real auth guard qo‘shiladi
-// Hozir demo uchun userId va role ni qo‘lda uzatyapmiz
-
+@ApiTags('Users')
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  // Admin — user list
-  @Get()
-  findMany(
-    @Query('page') page?: string,
-    @Query('limit') limit?: string,
-    @Query('search') search?: string,
-  ) {
-    return this.usersService.findMany({
-      page: page ? Number(page) : undefined,
-      limit: limit ? Number(limit) : undefined,
-      search,
-    });
-  }
-
-  // Self profile
   @Get('me')
-  getProfile() {
-    const userId = 'USER_ID_FROM_AUTH';
-    return this.usersService.getProfile(userId);
+  @ApiOperation({ summary: 'Get current user profile' })
+  getProfile(@CurrentUser('id') userId: string) {
+    return this.usersService.findOne(userId);
   }
 
-  // Get by id (admin)
+  @Patch('me')
+  @ApiOperation({ summary: 'Update current user profile' })
+  updateSelf(@CurrentUser('id') userId: string, @Body() dto: UpdateUserDto) {
+    return this.usersService.updateSelf(userId, dto);
+  }
+
+  @Get()
+  @UseGuards(RolesGuard)
+  @Roles('ADMIN')
+  @ApiOperation({ summary: 'List all users (admin only)' })
+  @ApiResponse({ status: 200 })
+  findMany(@Query() query: QueryUsersDto) {
+    return this.usersService.findMany(query);
+  }
+
   @Get(':id')
+  @UseGuards(RolesGuard)
+  @Roles('ADMIN')
+  @ApiOperation({ summary: 'Get user by ID (admin only)' })
   findOne(@Param('id') id: string) {
     return this.usersService.findOne(id);
   }
 
-  // Update own profile
-  @Patch('me')
-  updateSelf(@Body() dto: UpdateUserDto) {
-    const userId = 'USER_ID_FROM_AUTH';
-    return this.usersService.updateSelf(userId, dto);
-  }
-
-  // Admin update user
-  @Patch(':id')
-  updateByAdmin(@Param('id') id: string, @Body() dto: UpdateUserDto) {
-    const adminRole = 'ADMIN' as any;
-    return this.usersService.updateByAdmin(adminRole, id, dto);
-  }
-
-  // Admin delete
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    const adminRole = 'ADMIN' as any;
-    return this.usersService.remove(adminRole, id);
+  @UseGuards(RolesGuard)
+  @Roles('ADMIN')
+  @ApiOperation({ summary: 'Delete user (admin only)' })
+  remove(@CurrentUser('role') role: string, @Param('id') id: string) {
+    return this.usersService.remove(role, id);
   }
 }

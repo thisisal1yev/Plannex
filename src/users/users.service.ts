@@ -1,28 +1,40 @@
 import {
+  ForbiddenException,
   Injectable,
   NotFoundException,
-  ForbiddenException,
 } from '@nestjs/common';
-
-import { PrismaService } from '../prisma.service';
+import { PrismaService } from '../prisma/prisma.service';
+import { QueryUsersDto } from './dto/query-users.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { Prisma } from 'generated/prisma/client';
-import { UserRole } from 'generated/prisma/enums';
 
 @Injectable()
 export class UsersService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async findMany(query: { page?: number; limit?: number; search?: string }) {
+  /**
+   * Returns paginated list of all users (admin only)
+   */
+  async findMany(query: QueryUsersDto) {
     const page = query.page ?? 1;
-    const limit = query.limit ?? 10;
+    const limit = query.limit ?? 20;
     const skip = (page - 1) * limit;
 
-    const where: Prisma.UserWhereInput = query.search
+    const where = query.search
       ? {
           OR: [
-            { email: { contains: query.search, mode: 'insensitive' } },
-            { fullName: { contains: query.search, mode: 'insensitive' } },
+            { email: { contains: query.search, mode: 'insensitive' as const } },
+            {
+              firstName: {
+                contains: query.search,
+                mode: 'insensitive' as const,
+              },
+            },
+            {
+              lastName: {
+                contains: query.search,
+                mode: 'insensitive' as const,
+              },
+            },
           ],
         }
       : {};
@@ -33,24 +45,43 @@ export class UsersService {
         skip,
         take: limit,
         orderBy: { createdAt: 'desc' },
+        select: {
+          id: true,
+          email: true,
+          phone: true,
+          firstName: true,
+          lastName: true,
+          role: true,
+          isVerified: true,
+          createdAt: true,
+        },
       }),
       this.prisma.user.count({ where }),
     ]);
 
     return {
       data: items,
-      meta: {
-        total,
-        page,
-        limit,
-        totalPages: Math.ceil(total / limit),
-      },
+      meta: { total, page, limit, totalPages: Math.ceil(total / limit) },
     };
   }
 
+  /**
+   * Returns a single user by ID
+   */
   async findOne(id: string) {
     const user = await this.prisma.user.findUnique({
       where: { id },
+      select: {
+        id: true,
+        email: true,
+        phone: true,
+        firstName: true,
+        lastName: true,
+        role: true,
+        isVerified: true,
+        createdAt: true,
+        updatedAt: true,
+      },
     });
 
     if (!user) throw new NotFoundException('User not found');
@@ -58,44 +89,36 @@ export class UsersService {
     return user;
   }
 
-  async getProfile(userId: string) {
-    return this.findOne(userId);
-  }
-
+  /**
+   * Updates the current user's own profile (cannot change role)
+   */
   async updateSelf(userId: string, dto: UpdateUserDto) {
-    // user o‘z ro‘lini o‘zgartira olmaydi
-    if (dto.role) delete dto.role;
+    await this.findOne(userId);
 
     return this.prisma.user.update({
       where: { id: userId },
       data: dto,
+      select: {
+        id: true,
+        email: true,
+        phone: true,
+        firstName: true,
+        lastName: true,
+        role: true,
+        updatedAt: true,
+      },
     });
   }
 
-  async updateByAdmin(
-    adminRole: UserRole,
-    targetUserId: string,
-    dto: UpdateUserDto,
-  ) {
-    if (adminRole !== UserRole.ADMIN)
-      throw new ForbiddenException('Only admin can update other users');
-
-    await this.findOne(targetUserId);
-
-    return this.prisma.user.update({
-      where: { id: targetUserId },
-      data: dto,
-    });
-  }
-
-  async remove(adminRole: UserRole, id: string) {
-    if (adminRole !== UserRole.ADMIN)
-      throw new ForbiddenException('Only admin can delete users');
+  /**
+   * Deletes a user — admin only
+   */
+  async remove(adminRole: string, id: string) {
+    if (adminRole !== 'ADMIN')
+      throw new ForbiddenException('Only admins can delete users');
 
     await this.findOne(id);
 
-    return this.prisma.user.delete({
-      where: { id },
-    });
+    return this.prisma.user.delete({ where: { id } });
   }
 }

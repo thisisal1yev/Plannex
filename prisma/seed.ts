@@ -1,31 +1,18 @@
-import { PrismaPg } from '@prisma/adapter-pg';
+import 'dotenv/config';
 import { hashSync } from 'bcrypt';
-import { addDays } from 'date-fns';
+import { PrismaClient } from '../generated/prisma/client';
+import { EventStatus } from '../generated/prisma/enums';
+import { EVENTS, TICKET_TIERS, SERVICES, VENUES, USERS } from './constants';
+import { PrismaPg } from '@prisma/adapter-pg';
 
-import { PrismaClient } from 'generated/prisma/client';
-import { EventStatus } from 'generated/prisma/enums';
-import {
-  EVENT,
-  ORGANIZATION,
-  TASKS,
-  TICKET_TYPES,
-  USERS,
-  VENDOR_SERVICE,
-  VENUE,
-} from './constants';
-
-const adapter = new PrismaPg({
-  connectionString: process.env.DATABASE_URL!,
-});
-
-const prisma = new PrismaClient({ adapter });
+const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! });
+const prisma = new PrismaClient({adapter});
 
 const createdIds = {
   users: {} as Record<string, string>,
-  organizationId: '' as string,
-  venueId: '' as string,
-  eventId: '' as string,
-  vendorProfileId: '' as string,
+  venues: [] as string[],
+  events: [] as string[],
+  services: [] as string[],
 };
 
 const hashPassword = (password: string) => hashSync(password, 10);
@@ -33,161 +20,195 @@ const hashPassword = (password: string) => hashSync(password, 10);
 async function seedUsers() {
   console.log('👤 Creating users...');
 
-  for (const user of USERS) {
+  for (const userData of USERS) {
     const created = await prisma.user.create({
       data: {
-        email: user.email,
-        fullName: user.fullName,
-        role: user.role,
-        passwordHash: hashPassword('123456'),
+        email: userData.email,
+        firstName: userData.firstName,
+        lastName: userData.lastName,
+        role: userData.role as any,
+        passwordHash: hashPassword('12345678'),
+        isVerified: true,
       },
     });
 
-    createdIds.users[user.email] = created.id;
+    createdIds.users[userData.email] = created.id;
+    console.log(`   ✓ Created user: ${userData.email}`);
   }
 
+  console.log(`   Total: ${Object.keys(createdIds.users).length} users\n`);
 }
 
-async function seedOrganization() {
-  console.log('🏢 Creating organization...');
+async function seedVenues() {
+  console.log('🏟 Creating venues...');
+
+  const ownerId = createdIds.users['admin@planner.ai'];
+
+  for (const venueData of VENUES) {
+    const created = await prisma.venue.create({
+      data: {
+        ...venueData,
+        ownerId,
+      },
+    });
+
+    createdIds.venues.push(created.id);
+    console.log(`   ✓ Created venue: ${created.name}`);
+  }
+
+  console.log(`   Total: ${createdIds.venues.length} venues\n`);
+}
+
+async function seedEvents() {
+  console.log('🎉 Creating events...');
 
   const organizerId = createdIds.users['organizer@planner.ai'];
+  const venueId = createdIds.venues[0];
 
-  const org = await prisma.organization.create({
-    data: {
-      ...ORGANIZATION,
-      ownerId: organizerId,
-    },
-  });
-
-  createdIds.organizationId = org.id;
-}
-
-async function seedVenue() {
-  console.log('🏟  Creating venue...');
-
-  const venue = await prisma.venue.create({
-    data: VENUE,
-  });
-
-  createdIds.venueId = venue.id;
-}
-
-async function seedEvent() {
-  console.log('🎉 Creating event...');
-
-  const organizerId = createdIds.users['organizer@planner.ai'];
-
-  const event = await prisma.event.create({
-    data: {
-      ...EVENT,
-      status: EventStatus.PUBLISHED,
-      organizationId: createdIds.organizationId,
-      venueId: createdIds.venueId,
-      createdById: organizerId,
-    },
-  });
-
-  createdIds.eventId = event.id;
-}
-
-async function seedTicketTypes() {
-  console.log('🎟  Creating ticket types...');
-
-  for (const ticket of TICKET_TYPES) {
-    await prisma.ticketType.create({
+  for (const eventData of EVENTS) {
+    const created = await prisma.event.create({
       data: {
-        ...ticket,
-        eventId: createdIds.eventId,
+        ...eventData,
+        organizerId,
+        venueId,
+        status: EventStatus.PUBLISHED,
       },
     });
+
+    createdIds.events.push(created.id);
+    console.log(`   ✓ Created event: ${created.title}`);
   }
+
+  console.log(`   Total: ${createdIds.events.length} events\n`);
 }
 
-async function seedVendor() {
-  console.log('🍽  Creating vendor...');
+async function seedTicketTiers() {
+  console.log('🎫 Creating ticket tiers...');
 
-  const vendorUserId = createdIds.users['vendor@planner.ai'];
+  const eventId = createdIds.events[0];
 
-  const vendorProfile = await prisma.vendorProfile.create({
-    data: {
-      userId: vendorUserId,
-      displayName: 'Premium Catering',
-      city: 'Tashkent',
-    },
-  });
-
-  createdIds.vendorProfileId = vendorProfile.id;
-
-  await prisma.vendorService.create({
-    data: {
-      ...VENDOR_SERVICE,
-      vendorId: vendorProfile.id,
-    },
-  });
-}
-
-async function seedVolunteer() {
-  console.log('🙋 Creating volunteer...');
-
-  const volunteerUserId = createdIds.users['volunteer@planner.ai'];
-
-  await prisma.volunteerProfile.create({
-    data: {
-      userId: volunteerUserId,
-      city: 'Tashkent',
-      skills: ['registration', 'guest support'],
-    },
-  });
-}
-
-async function seedTasks() {
-  console.log('📋 Creating tasks...');
-
-  for (const task of TASKS) {
-    await prisma.task.create({
+  for (const tierData of TICKET_TIERS) {
+    await prisma.ticketTier.create({
       data: {
-        title: task.title,
-        eventId: createdIds.eventId,
-        dueAt: addDays(new Date(), 7),
+        ...tierData,
+        eventId,
       },
     });
+    console.log(`   ✓ Created tier: ${tierData.name}`);
   }
+
+  console.log(`   Total: ${TICKET_TIERS.length} ticket tiers\n`);
+}
+
+async function seedServices() {
+  console.log('🛠 Creating services...');
+
+  const vendorId = createdIds.users['vendor@planner.ai'];
+
+  for (const serviceData of SERVICES) {
+    const created = await prisma.service.create({
+      data: {
+        ...serviceData,
+        vendorId,
+      },
+    });
+
+    createdIds.services.push(created.id);
+    console.log(`   ✓ Created service: ${created.name}`);
+  }
+
+  console.log(`   Total: ${createdIds.services.length} services\n`);
+}
+
+async function seedVolunteerApplications() {
+  console.log('🙋 Creating volunteer applications...');
+
+  const volunteerId = createdIds.users['volunteer@planner.ai'];
+  const eventId = createdIds.events[0];
+
+  await prisma.volunteerApplication.create({
+    data: {
+      userId: volunteerId,
+      eventId,
+      skills: ['registration', 'guest support', 'translation'],
+      status: 'PENDING',
+    },
+  });
+
+  console.log(`   ✓ Created volunteer application\n`);
+}
+
+async function seedReviews() {
+  console.log('⭐ Creating reviews...');
+
+  const adminId = createdIds.users['admin@planner.ai'];
+  const venueId = createdIds.venues[0];
+  const serviceId = createdIds.services[0];
+  const eventId = createdIds.events[0];
+
+  // Review for venue
+  await prisma.review.create({
+    data: {
+      authorId: adminId,
+      venueId,
+      rating: 5,
+      comment: 'Excellent venue with great facilities!',
+    },
+  });
+  console.log('   ✓ Created venue review');
+
+  // Review for service
+  await prisma.review.create({
+    data: {
+      authorId: adminId,
+      serviceId,
+      rating: 4,
+      comment: 'Great service, professional team.',
+    },
+  });
+  console.log('   ✓ Created service review');
+
+  // Review for event
+  await prisma.review.create({
+    data: {
+      authorId: adminId,
+      eventId,
+      rating: 5,
+      comment: 'Amazing event, well organized!',
+    },
+  });
+  console.log('   ✓ Created event review\n');
 }
 
 async function up() {
   console.log('🌱 Starting PLANNEX seed...\n');
 
   await seedUsers();
-  await seedOrganization();
-  await seedVenue();
-  await seedEvent();
-  await seedTicketTypes();
-  await seedVendor();
-  await seedVolunteer();
-  await seedTasks();
+  await seedVenues();
+  await seedEvents();
+  await seedTicketTiers();
+  await seedServices();
+  await seedVolunteerApplications();
+  await seedReviews();
 
-  console.log('\n✅ Seed completed successfully!');
+  console.log('✅ Seed completed successfully!');
 }
 
 async function down() {
   console.log('🧹 Cleaning database...\n');
 
   await prisma.$executeRawUnsafe(`
-    TRUNCATE TABLE 
+    TRUNCATE TABLE
       "Review",
-      "Task",
-      "VendorService",
-      "VendorProfile",
-      "VolunteerProfile",
+      "VolunteerApplication",
+      "EventService",
+      "VenueBooking",
       "Ticket",
-      "TicketType",
-      "OrderItem",
-      "Order",
+      "TicketTier",
+      "Payment",
       "Event",
       "Venue",
-      "OrganizationMember",
-      "Organization",
+      "Service",
       "User"
     RESTART IDENTITY CASCADE
   `);
