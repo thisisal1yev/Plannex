@@ -6,6 +6,7 @@ import { Input } from '@shared/ui/Input'
 import { Button } from '@shared/ui/Button'
 import { Spinner } from '@shared/ui/Spinner'
 import type { UpdateVenueDto } from '@entities/venue'
+import { venueKeys } from '@shared/api/queryKeys'
 
 export function EditVenuePage() {
   const { id } = useParams<{ id: string }>()
@@ -13,7 +14,7 @@ export function EditVenuePage() {
   const queryClient = useQueryClient()
 
   const { data: venue, isLoading } = useQuery({
-    queryKey: ['venue', id],
+    queryKey: venueKeys.detail(id!),
     queryFn: () => venuesApi.get(id!),
     enabled: !!id,
   })
@@ -30,8 +31,8 @@ export function EditVenuePage() {
   const mutation = useMutation({
     mutationFn: (dto: UpdateVenueDto) => venuesApi.update(id!, dto),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['venue', id] })
-      queryClient.invalidateQueries({ queryKey: ['my-venues'] })
+      queryClient.invalidateQueries({ queryKey: venueKeys.detail(id!) })
+      queryClient.invalidateQueries({ queryKey: venueKeys.myList() })
       navigate('/my-venues')
     },
   })

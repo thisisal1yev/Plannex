@@ -52,6 +52,8 @@ Planner AI is a marketplace that connects event organizers with venues, service 
 
 ## ✨ Features
 
+### Core Platform Features
+
 | Category | Features |
 |----------|----------|
 | **Events** | Create, publish, edit, and cancel events • Multiple ticket tiers (VIP, Standard, Free) • Capacity management • Event analytics |
@@ -63,6 +65,19 @@ Planner AI is a marketplace that connects event organizers with venues, service 
 | **Reviews** | Rate events, venues, and services • Verified reviews from participants |
 | **Volunteers** | Apply for volunteer positions • Track application status • Volunteer management dashboard |
 | **Analytics** | Event performance metrics • Ticket sales reports • Revenue tracking • Excel export |
+
+### Advanced Features
+
+- **Multi-role System**: Granular permissions for Admins, Organizers, Participants, Vendors, and Volunteers
+- **QR Code Tickets**: Secure QR code generation for each ticket with mobile validation
+- **Payment Gateway Integration**: Seamless integration with Click and Payme payment providers
+- **Email Notifications**: Automated emails for ticket purchases, event updates, and confirmations
+- **File Upload**: Support for event images, venue photos, and service portfolios
+- **Caching**: Response caching for improved performance on frequently accessed data
+- **Rate Limiting**: Protection against abuse with configurable rate limits
+- **API Documentation**: Interactive Swagger/OpenAPI documentation
+- **Excel Reports**: Export analytics and sales data to Excel format
+- **Database Migrations**: Version-controlled database schema with Prisma migrations
 
 ---
 
@@ -196,7 +211,7 @@ Before you begin, ensure you have the following installed:
 1. **Copy the environment template**
    ```bash
    cd ../backend
-   cp .env.example .env
+   cp .env.axample .env
    ```
 
 2. **Configure your environment variables** (see [Environment Variables](#environment-variables))
@@ -272,27 +287,27 @@ bun run dev
 
 | Command | Description |
 |---------|-------------|
-| `bun run start:dev` | Development server with hot reload |
+| `bun run start:dev` | Development server with hot reload (NestJS watch mode) |
 | `bun run start:debug` | Development server with debug mode |
-| `bun run build` | Build for production |
+| `bun run build` | Build for production (compiles TypeScript) |
 | `bun run start` | Production server |
-| `bun run prisma:generate` | Generate Prisma client |
-| `bun run prisma:migrate` | Run database migrations |
+| `bun run prisma:generate` | Generate Prisma client from schema |
+| `bun run prisma:migrate` | Run database migrations (creates and applies) |
 | `bun run prisma:studio` | Open Prisma Studio (visual DB browser) |
-| `bun run prisma:seed` | Seed database with sample data |
-| `bun run test` | Run unit tests |
+| `bun run prisma:seed` | Seed database with sample data using tsx |
+| `bun run test` | Run unit tests with Jest |
 | `bun run test:watch` | Run tests in watch mode |
 | `bun run test:cov` | Run tests with coverage report |
 | `bun run test:e2e` | Run E2E tests |
-| `bun run lint` | Run ESLint |
+| `bun run lint` | Run ESLint with auto-fix |
 | `bun run format` | Format code with Prettier |
 
 ### Frontend
 
 | Command | Description |
 |---------|-------------|
-| `bun run dev` | Development server with HMR |
-| `bun run build` | Build for production |
+| `bun run dev` | Development server with Hot Module Replacement (HMR) |
+| `bun run build` | Build for production (optimizes and bundles) |
 | `bun run preview` | Preview production build locally |
 | `bun run lint` | Run ESLint |
 

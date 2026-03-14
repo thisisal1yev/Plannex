@@ -3,19 +3,35 @@ import { Link } from 'react-router'
 import { analyticsApi } from '@entities/analytics'
 import { Spinner } from '@shared/ui/Spinner'
 import { Button } from '@shared/ui/Button'
+import { analyticsKeys } from '@shared/api/queryKeys'
 
-function StatCard({ label, value, color = 'indigo' }: { label: string; value: string | number; color?: string }) {
+const statColors = {
+  indigo: 'text-indigo-600',
+  green: 'text-green-600',
+  blue: 'text-blue-600',
+  purple: 'text-purple-600',
+} as const
+
+function StatCard({
+  label,
+  value,
+  color = 'indigo',
+}: {
+  label: string
+  value: string | number
+  color?: keyof typeof statColors
+}) {
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-5">
-      <p className="text-sm text-gray-500">{label}</p>
-      <p className={`text-2xl font-bold mt-1 text-${color}-600`}>{value}</p>
+    <div className="bg-card rounded-xl border border-border p-5">
+      <p className="text-sm text-muted-foreground">{label}</p>
+      <p className={`text-2xl font-bold mt-1 ${statColors[color]}`}>{value}</p>
     </div>
   )
 }
 
 export function OrganizerDashboardPage() {
   const { data: stats, isLoading } = useQuery({
-    queryKey: ['dashboard'],
+    queryKey: analyticsKeys.dashboard(),
     queryFn: analyticsApi.dashboard,
   })
 
@@ -24,7 +40,7 @@ export function OrganizerDashboardPage() {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-900">Дашборд</h1>
+        <h1 className="text-2xl font-bold text-foreground">Дашборд</h1>
         <Link to="/my-events/create">
           <Button>+ Создать событие</Button>
         </Link>
@@ -38,18 +54,18 @@ export function OrganizerDashboardPage() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div className="bg-white rounded-xl border border-gray-200 p-5">
-          <p className="text-sm text-gray-500 mb-1">Общая выручка</p>
-          <p className="text-3xl font-bold text-gray-900">${stats?.totalRevenue?.toFixed(2) ?? '0.00'}</p>
+        <div className="bg-card rounded-xl border border-border p-5">
+          <p className="text-sm text-muted-foreground mb-1">Общая выручка</p>
+          <p className="text-3xl font-bold text-foreground">${stats?.totalRevenue?.toFixed(2) ?? '0.00'}</p>
         </div>
-        <div className="bg-white rounded-xl border border-gray-200 p-5">
-          <p className="text-sm text-gray-500 mb-1">Комиссия платформы</p>
-          <p className="text-3xl font-bold text-gray-900">${stats?.totalCommission?.toFixed(2) ?? '0.00'}</p>
+        <div className="bg-card rounded-xl border border-border p-5">
+          <p className="text-sm text-muted-foreground mb-1">Комиссия платформы</p>
+          <p className="text-3xl font-bold text-foreground">${stats?.totalCommission?.toFixed(2) ?? '0.00'}</p>
         </div>
       </div>
 
-      <div className="bg-indigo-50 rounded-xl p-5">
-        <p className="font-medium text-indigo-900 mb-3">Быстрые действия</p>
+      <div className="bg-primary/5 rounded-xl p-5">
+        <p className="font-medium text-foreground mb-3">Быстрые действия</p>
         <div className="flex gap-3 flex-wrap">
           <Link to="/my-events/create"><Button>Создать событие</Button></Link>
           <Link to="/my-events"><Button variant="secondary">Мои события</Button></Link>

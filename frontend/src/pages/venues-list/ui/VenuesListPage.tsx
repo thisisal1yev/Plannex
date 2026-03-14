@@ -6,6 +6,7 @@ import { Spinner } from '@shared/ui/Spinner'
 import { Pagination } from '@shared/ui/Pagination'
 import { Input } from '@shared/ui/Input'
 import { Button } from '@shared/ui/Button'
+import { venueKeys } from '@shared/api/queryKeys'
 
 const CITIES = ['Ташкент', 'Самарканд', 'Бухара', 'Наманган', 'Андижан', 'Фергана']
 
@@ -20,7 +21,7 @@ export function VenuesListPage() {
   const [hasWifi, setHasWifi] = useState(false)
 
   const { data, isLoading } = useQuery({
-    queryKey: ['venues', { page, city, minCapacity, maxPrice, hasParking, hasWifi }],
+    queryKey: venueKeys.list({ page, city, minCapacity, maxPrice, hasParking, hasWifi }),
     queryFn: () =>
       venuesApi.list({
         page,

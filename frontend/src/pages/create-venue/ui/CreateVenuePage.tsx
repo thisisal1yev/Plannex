@@ -5,6 +5,7 @@ import { venuesApi } from '@entities/venue'
 import { Input } from '@shared/ui/Input'
 import { Button } from '@shared/ui/Button'
 import type { CreateVenueDto } from '@entities/venue'
+import { venueKeys } from '@shared/api/queryKeys'
 
 export function CreateVenuePage() {
   const navigate = useNavigate()
@@ -14,7 +15,7 @@ export function CreateVenuePage() {
   const mutation = useMutation({
     mutationFn: venuesApi.create,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['my-venues'] })
+      queryClient.invalidateQueries({ queryKey: venueKeys.myList() })
       navigate('/my-venues')
     },
   })

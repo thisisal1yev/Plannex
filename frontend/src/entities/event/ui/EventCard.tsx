@@ -1,24 +1,15 @@
 import { Link } from 'react-router'
 import { Badge } from '@shared/ui/Badge'
+import { EVENT_STATUS_COLOR } from '../model/constants'
+import { formatDateShort } from '@shared/lib/dateUtils'
 import type { Event } from '../model/types'
 
 interface EventCardProps {
   event: Event
 }
 
-const statusColor: Record<string, 'indigo' | 'green' | 'red' | 'yellow' | 'gray'> = {
-  DRAFT: 'gray',
-  PUBLISHED: 'green',
-  CANCELLED: 'red',
-  COMPLETED: 'indigo',
-}
-
 export function EventCard({ event }: EventCardProps) {
-  const start = new Date(event.startDate).toLocaleDateString('ru-RU', {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-  })
+  const start = formatDateShort(event.startDate)
 
   return (
     <Link
@@ -39,7 +30,7 @@ export function EventCard({ event }: EventCardProps) {
           <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-2">
             {event.title}
           </h3>
-          <Badge color={statusColor[event.status]}>{event.status}</Badge>
+          <Badge color={EVENT_STATUS_COLOR[event.status]}>{event.status}</Badge>
         </div>
         <p className="text-sm text-muted-foreground">{start}</p>
         {event.venue && (

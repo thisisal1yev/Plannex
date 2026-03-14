@@ -4,6 +4,7 @@ import { servicesApi } from '@entities/service'
 import { Badge } from '@shared/ui/Badge'
 import { Button } from '@shared/ui/Button'
 import { Spinner } from '@shared/ui/Spinner'
+import { serviceKeys } from '@shared/api/queryKeys'
 
 const categoryLabel: Record<string, string> = {
   CATERING: 'Кейтеринг', DECORATION: 'Декор', SOUND: 'Звук', PHOTO: 'Фото', SECURITY: 'Охрана',
@@ -14,7 +15,7 @@ const categoryColor: Record<string, 'green' | 'indigo' | 'blue' | 'yellow' | 'gr
 
 export function MyServicesPage() {
   const { data, isLoading } = useQuery({
-    queryKey: ['my-services'],
+    queryKey: serviceKeys.myList(),
     queryFn: () => servicesApi.list({ limit: 50 }),
   })
 

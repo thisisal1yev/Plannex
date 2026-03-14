@@ -6,6 +6,7 @@ import { Input } from '@shared/ui/Input'
 import { Button } from '@shared/ui/Button'
 import { Spinner } from '@shared/ui/Spinner'
 import type { UpdateUserDto } from '@entities/user'
+import { userKeys } from '@shared/api/queryKeys'
 
 export function ProfilePage() {
   const user = useAuthStore((s) => s.user)
@@ -13,7 +14,7 @@ export function ProfilePage() {
   const queryClient = useQueryClient()
 
   const { data, isLoading } = useQuery({
-    queryKey: ['me'],
+    queryKey: userKeys.me(),
     queryFn: usersApi.me,
   })
 
@@ -28,7 +29,7 @@ export function ProfilePage() {
   const mutation = useMutation({
     mutationFn: usersApi.updateMe,
     onSuccess: (updated) => {
-      queryClient.setQueryData(['me'], updated)
+      queryClient.setQueryData(userKeys.me(), updated)
       if (user) setUser({ ...user, ...updated })
     },
   })

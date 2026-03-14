@@ -7,6 +7,7 @@ import { Select } from '@shared/ui/Select'
 import { Button } from '@shared/ui/Button'
 import { Spinner } from '@shared/ui/Spinner'
 import type { UpdateEventDto } from '@entities/event'
+import { eventKeys } from '@shared/api/queryKeys'
 
 const EVENT_TYPES = ['Концерт', 'Конференция', 'Выставка', 'Спорт', 'Фестиваль', 'Другое']
 
@@ -16,7 +17,7 @@ export function EditEventPage() {
   const queryClient = useQueryClient()
 
   const { data: event, isLoading } = useQuery({
-    queryKey: ['event', id],
+    queryKey: eventKeys.detail(id!),
     queryFn: () => eventsApi.get(id!),
     enabled: !!id,
   })
@@ -36,8 +37,8 @@ export function EditEventPage() {
   const mutation = useMutation({
     mutationFn: (dto: UpdateEventDto) => eventsApi.update(id!, dto),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['event', id] })
-      queryClient.invalidateQueries({ queryKey: ['my-events'] })
+      queryClient.invalidateQueries({ queryKey: eventKeys.detail(id!) })
+      queryClient.invalidateQueries({ queryKey: eventKeys.myList() })
       navigate('/my-events')
     },
   })

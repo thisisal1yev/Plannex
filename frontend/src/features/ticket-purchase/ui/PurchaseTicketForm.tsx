@@ -4,6 +4,7 @@ import { ticketsApi } from '@entities/ticket'
 import { Button } from '@shared/ui/Button'
 import type { TicketTier } from '@entities/event'
 import type { PaymentProvider } from '@shared/types'
+import { ticketKeys } from '@shared/api/queryKeys'
 
 interface PurchaseTicketFormProps {
   eventId: string
@@ -19,7 +20,7 @@ export function PurchaseTicketForm({ eventId, tiers, onSuccess }: PurchaseTicket
   const mutation = useMutation({
     mutationFn: () => ticketsApi.purchase(eventId, { tierId, provider }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['my-tickets'] })
+      queryClient.invalidateQueries({ queryKey: ticketKeys.myList() })
       onSuccess?.()
     },
   })

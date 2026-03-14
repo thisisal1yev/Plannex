@@ -6,6 +6,7 @@ import { Input } from '@shared/ui/Input'
 import { Select } from '@shared/ui/Select'
 import { Button } from '@shared/ui/Button'
 import type { CreateServiceDto } from '@entities/service'
+import { serviceKeys } from '@shared/api/queryKeys'
 
 export function CreateServicePage() {
   const navigate = useNavigate()
@@ -15,7 +16,7 @@ export function CreateServicePage() {
   const mutation = useMutation({
     mutationFn: servicesApi.create,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['my-services'] })
+      queryClient.invalidateQueries({ queryKey: serviceKeys.myList() })
       navigate('/my-services')
     },
   })

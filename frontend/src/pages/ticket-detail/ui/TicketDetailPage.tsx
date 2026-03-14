@@ -3,12 +3,13 @@ import { useQuery } from '@tanstack/react-query'
 import { ticketsApi } from '@entities/ticket'
 import { Badge } from '@shared/ui/Badge'
 import { Spinner } from '@shared/ui/Spinner'
+import { ticketKeys } from '@shared/api/queryKeys'
 
 export function TicketDetailPage() {
   const { id } = useParams<{ id: string }>()
 
   const { data: ticket, isLoading } = useQuery({
-    queryKey: ['ticket', id],
+    queryKey: ticketKeys.detail(id!),
     queryFn: () => ticketsApi.get(id!),
     enabled: !!id,
   })

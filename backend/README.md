@@ -181,7 +181,7 @@ backend/
 bun install
 
 # Copy environment file
-cp .env.example .env
+cp .env.axample .env
 
 # Configure your .env file (see Environment Variables)
 ```
@@ -224,19 +224,19 @@ The API will be available at: **http://localhost:3000**
 
 | Command | Description |
 |---------|-------------|
-| `bun run start:dev` | Development server with hot reload |
+| `bun run start:dev` | Development server with hot reload (NestJS watch mode) |
 | `bun run start:debug` | Development server with debug mode enabled |
-| `bun run build` | Build for production |
+| `bun run build` | Build for production (compiles TypeScript to JavaScript) |
 | `bun run start` | Production server |
-| `bun run prisma:generate` | Generate Prisma client |
-| `bun run prisma:migrate` | Run database migrations |
-| `bun run prisma:studio` | Open Prisma Studio |
-| `bun run prisma:seed` | Seed database with sample data |
-| `bun run test` | Run unit tests |
+| `bun run prisma:generate` | Generate Prisma client from schema |
+| `bun run prisma:migrate` | Run database migrations (creates and applies) |
+| `bun run prisma:studio` | Open Prisma Studio (visual database browser) |
+| `bun run prisma:seed` | Seed database with sample data using tsx |
+| `bun run test` | Run unit tests with Jest |
 | `bun run test:watch` | Run tests in watch mode |
 | `bun run test:cov` | Run tests with coverage report |
 | `bun run test:e2e` | Run E2E tests |
-| `bun run lint` | Run ESLint |
+| `bun run lint` | Run ESLint with auto-fix |
 | `bun run format` | Format code with Prettier |
 
 ---

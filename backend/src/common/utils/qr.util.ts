@@ -1,38 +1,30 @@
-import { createHash, randomUUID } from 'crypto';
+import { createHash } from 'crypto';
+import { nanoid } from 'nanoid';
 
-/**
- * Generates a unique QR code string
- * Combines UUID with a crypto signature for security
- */
 export function generateQRCode(
   secret: string = process.env.JWT_SECRET || 'default-secret',
 ): string {
-  const uuid = randomUUID();
+  const id = nanoid(21);
   const signature = createHash('sha256')
-    .update(uuid + secret)
+    .update(id + secret)
     .digest('hex')
     .substring(0, 8);
 
-  return `${uuid}-${signature}`;
+  return `${id}-${signature}`;
 }
 
-/**
- * Validates a QR code string
- * Verifies the signature matches the UUID
- */
 export function validateQRCode(
   qrCode: string,
   secret: string = process.env.JWT_SECRET || 'default-secret',
 ): boolean {
-  const parts = qrCode.split('-');
+  const lastDash = qrCode.lastIndexOf('-');
+  if (lastDash === -1) return false;
 
-  if (parts.length !== 2) {
-    return false;
-  }
+  const id = qrCode.substring(0, lastDash);
+  const signature = qrCode.substring(lastDash + 1);
 
-  const [uuid, signature] = parts;
   const expectedSignature = createHash('sha256')
-    .update(uuid + secret)
+    .update(id + secret)
     .digest('hex')
     .substring(0, 8);
 

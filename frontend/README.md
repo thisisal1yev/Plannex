@@ -146,24 +146,74 @@ This project follows **Feature-Sliced Design (FSD)** methodology:
 
 ---
 
+## ✨ Features
+
+### User Features
+
+- **Event Discovery**: Browse events with advanced filters (date, location, category, price)
+- **Event Creation**: Create and manage events with multiple ticket tiers
+- **Venue Booking**: Search and book venues with real-time availability
+- **Service Marketplace**: Hire event services (catering, decoration, photography, security)
+- **Ticket Purchasing**: Buy tickets with secure payment processing
+- **Digital Tickets**: QR-coded tickets delivered to your email
+- **Payment Integration**: Pay with Click, Payme, or other payment providers
+- **Profile Management**: Manage your profile, events, and purchase history
+- **Reviews & Ratings**: Leave reviews for events, venues, and services
+- **Volunteer Applications**: Apply for volunteer positions at events
+
+### Technical Features
+
+- **Feature-Sliced Design (FSD)**: Scalable architecture with clear layer separation
+- **Type-Safe Development**: Full TypeScript support with strict typing
+- **Dual State Management**: React Query for server state, Zustand for client state
+- **Hot Module Replacement**: Fast development with Vite HMR
+- **Responsive Design**: Mobile-first UI with TailwindCSS v4
+- **Form Validation**: React Hook Form with built-in validation
+- **API Interceptors**: Automatic JWT token handling and error processing
+- **Code Splitting**: Optimized bundle size with automatic code splitting
+- **SEO Friendly**: Server-side rendering ready architecture
+
+---
+
 ## 🚀 Getting Started
 
 ### Prerequisites
 
-- **Node.js** v18 or higher
-- **Bun** (recommended) or **npm**
+- **Node.js** v18 or higher ([download](https://nodejs.org/))
+- **Bun** (recommended) or **npm** ([install Bun](https://bun.sh/))
 
 ### Installation
 
-```bash
-# Install dependencies
-bun install
+1. **Navigate to the frontend directory**
+   ```bash
+   cd frontend
+   ```
 
-# Start development server
-bun run dev
-```
+2. **Install dependencies**
+   ```bash
+   bun install
+   ```
+
+3. **Create environment file (optional)**
+   ```bash
+   echo "VITE_API_URL=http://localhost:3000" > .env
+   ```
+
+4. **Start development server**
+   ```bash
+   bun run dev
+   ```
 
 The application will be available at: **http://localhost:5173**
+
+### Connecting to Backend
+
+Make sure the backend server is running on `http://localhost:3000` or update the API URL:
+
+```bash
+# Create .env file with your backend URL
+echo "VITE_API_URL=http://localhost:3000" > .env
+```
 
 ---
 
@@ -171,10 +221,23 @@ The application will be available at: **http://localhost:5173**
 
 | Command | Description |
 |---------|-------------|
-| `bun run dev` | Start development server with HMR |
-| `bun run build` | Build for production |
-| `bun run preview` | Preview production build locally |
-| `bun run lint` | Run ESLint |
+| `bun run dev` | Start development server with Hot Module Replacement (HMR) |
+| `bun run build` | Build for production (optimizes and bundles with Vite) |
+| `bun run preview` | Preview production build locally on port 4173 |
+| `bun run lint` | Run ESLint to check code quality |
+
+### Development Tips
+
+```bash
+# Run dev server with forced port
+bun run dev --port 3001
+
+# Open browser automatically
+bun run dev --open
+
+# Build with sourcemaps for debugging
+bun run build --sourcemap
+```
 
 ---
 

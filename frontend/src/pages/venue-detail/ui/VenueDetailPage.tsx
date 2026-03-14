@@ -10,6 +10,7 @@ import { Button } from '@shared/ui/Button'
 import { Modal } from '@shared/ui/Modal'
 import { Spinner } from '@shared/ui/Spinner'
 import { useAuthStore } from '@shared/model/auth.store'
+import { venueKeys } from '@shared/api/queryKeys'
 
 export function VenueDetailPage() {
   const { id } = useParams<{ id: string }>()
@@ -18,13 +19,13 @@ export function VenueDetailPage() {
   const [reviewModal, setReviewModal] = useState(false)
 
   const { data: venue, isLoading } = useQuery({
-    queryKey: ['venue', id],
+    queryKey: venueKeys.detail(id!),
     queryFn: () => venuesApi.get(id!),
     enabled: !!id,
   })
 
   const { data: reviews } = useQuery({
-    queryKey: ['venue-reviews', id],
+    queryKey: venueKeys.reviews(id!),
     queryFn: () => reviewsApi.forVenue(id!),
     enabled: !!id,
   })
@@ -174,7 +175,7 @@ export function VenueDetailPage() {
       <Modal open={reviewModal} onClose={() => setReviewModal(false)} title="Написать отзыв">
         <CreateReviewForm
           venueId={venue.id}
-          queryKey={['venue-reviews', id!]}
+          queryKey={venueKeys.reviews(id!)}
           onSuccess={() => setReviewModal(false)}
         />
       </Modal>

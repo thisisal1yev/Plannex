@@ -11,6 +11,7 @@ import { Button } from '@shared/ui/Button'
 import { Modal } from '@shared/ui/Modal'
 import { Spinner } from '@shared/ui/Spinner'
 import { useAuthStore } from '@shared/model/auth.store'
+import { serviceKeys } from '@shared/api/queryKeys'
 
 const categoryLabel: Record<string, string> = {
   CATERING: 'Кейтеринг',
@@ -35,13 +36,13 @@ export function ServiceDetailPage() {
   const [reviewModal, setReviewModal] = useState(false)
 
   const { data: service, isLoading } = useQuery({
-    queryKey: ['service', id],
+    queryKey: serviceKeys.detail(id!),
     queryFn: () => servicesApi.get(id!),
     enabled: !!id,
   })
 
   const { data: reviews } = useQuery({
-    queryKey: ['service-reviews', id],
+    queryKey: serviceKeys.reviews(id!),
     queryFn: () => reviewsApi.forService(id!),
     enabled: !!id,
   })
@@ -167,7 +168,7 @@ export function ServiceDetailPage() {
       <Modal open={reviewModal} onClose={() => setReviewModal(false)} title="Написать отзыв">
         <CreateReviewForm
           serviceId={service.id}
-          queryKey={['service-reviews', id!]}
+          queryKey={serviceKeys.reviews(id!)}
           onSuccess={() => setReviewModal(false)}
         />
       </Modal>

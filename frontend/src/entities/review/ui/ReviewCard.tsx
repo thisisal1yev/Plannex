@@ -1,4 +1,5 @@
 import { StarRating } from '@shared/ui/StarRating'
+import { formatDateLong } from '@shared/lib/dateUtils'
 import type { Review } from '../model/types'
 
 interface ReviewCardProps {
@@ -6,27 +7,23 @@ interface ReviewCardProps {
 }
 
 export function ReviewCard({ review }: ReviewCardProps) {
-  const date = new Date(review.createdAt).toLocaleDateString('ru-RU', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  })
+  const date = formatDateLong(review.createdAt)
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-4 flex flex-col gap-2">
+    <div className="bg-card rounded-xl border border-border p-4 flex flex-col gap-2">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <div className="h-8 w-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-semibold text-sm">
+          <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold text-sm">
             {review.author ? `${review.author.firstName[0]}${review.author.lastName[0]}` : '?'}
           </div>
-          <span className="text-sm font-medium text-gray-900">
+          <span className="text-sm font-medium text-foreground">
             {review.author ? `${review.author.firstName} ${review.author.lastName}` : 'Аноним'}
           </span>
         </div>
-        <span className="text-xs text-gray-400">{date}</span>
+        <span className="text-xs text-muted-foreground">{date}</span>
       </div>
       <StarRating rating={review.rating} />
-      {review.comment && <p className="text-sm text-gray-600">{review.comment}</p>}
+      {review.comment && <p className="text-sm text-muted-foreground">{review.comment}</p>}
     </div>
   )
 }

@@ -3,10 +3,11 @@ import { Link } from 'react-router'
 import { ticketsApi } from '@entities/ticket'
 import { Badge } from '@shared/ui/Badge'
 import { Spinner } from '@shared/ui/Spinner'
+import { ticketKeys } from '@shared/api/queryKeys'
 
 export function MyTicketsPage() {
   const { data: tickets, isLoading } = useQuery({
-    queryKey: ['my-tickets'],
+    queryKey: ticketKeys.myList(),
     queryFn: ticketsApi.myTickets,
   })
 

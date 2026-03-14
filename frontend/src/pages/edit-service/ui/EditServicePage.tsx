@@ -7,6 +7,7 @@ import { Select } from '@shared/ui/Select'
 import { Button } from '@shared/ui/Button'
 import { Spinner } from '@shared/ui/Spinner'
 import type { UpdateServiceDto } from '@entities/service'
+import { serviceKeys } from '@shared/api/queryKeys'
 
 export function EditServicePage() {
   const { id } = useParams<{ id: string }>()
@@ -14,7 +15,7 @@ export function EditServicePage() {
   const queryClient = useQueryClient()
 
   const { data: service, isLoading } = useQuery({
-    queryKey: ['service', id],
+    queryKey: serviceKeys.detail(id!),
     queryFn: () => servicesApi.get(id!),
     enabled: !!id,
   })
@@ -26,8 +27,8 @@ export function EditServicePage() {
   const mutation = useMutation({
     mutationFn: (dto: UpdateServiceDto) => servicesApi.update(id!, dto),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['service', id] })
-      queryClient.invalidateQueries({ queryKey: ['my-services'] })
+      queryClient.invalidateQueries({ queryKey: serviceKeys.detail(id!) })
+      queryClient.invalidateQueries({ queryKey: serviceKeys.myList() })
       navigate('/my-services')
     },
   })

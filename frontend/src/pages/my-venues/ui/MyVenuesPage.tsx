@@ -4,10 +4,11 @@ import { venuesApi } from '@entities/venue'
 import { Button } from '@shared/ui/Button'
 import { Spinner } from '@shared/ui/Spinner'
 import { StarRating } from '@shared/ui/StarRating'
+import { venueKeys } from '@shared/api/queryKeys'
 
 export function MyVenuesPage() {
   const { data, isLoading } = useQuery({
-    queryKey: ['my-venues'],
+    queryKey: venueKeys.myList(),
     queryFn: () => venuesApi.list({ limit: 50 }),
   })
 

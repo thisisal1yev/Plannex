@@ -38,4 +38,7 @@ export const servicesApi = {
     const { data } = await apiClient.patch(`/services/${id}`, dto)
     return data.data
   },
+  delete: async (id: string): Promise<void> => {
+    await apiClient.delete(`/services/${id}`)
+  },
 }

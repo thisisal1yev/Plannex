@@ -6,6 +6,7 @@ import { Spinner } from '@shared/ui/Spinner'
 import { Pagination } from '@shared/ui/Pagination'
 import { Input } from '@shared/ui/Input'
 import { Button } from '@shared/ui/Button'
+import { eventKeys } from '@shared/api/queryKeys'
 
 const EVENT_TYPES = ['Концерт', 'Конференция', 'Выставка', 'Тренинг', 'Фестиваль', 'Вечеринка']
 
@@ -18,7 +19,7 @@ export function EventsListPage() {
   const [dateTo, setDateTo] = useState('')
 
   const { data, isLoading } = useQuery({
-    queryKey: ['events', { page, eventType, dateFrom, dateTo, status: 'PUBLISHED' }],
+    queryKey: eventKeys.list({ page, eventType, dateFrom, dateTo, status: 'PUBLISHED' }),
     queryFn: () =>
       eventsApi.list({
         page,

@@ -6,6 +6,7 @@ import { Spinner } from '@shared/ui/Spinner'
 import { Pagination } from '@shared/ui/Pagination'
 import { Input } from '@shared/ui/Input'
 import { Button } from '@shared/ui/Button'
+import { serviceKeys } from '@shared/api/queryKeys'
 import type { ServiceCategory } from '@shared/types'
 
 const CATEGORIES: { value: ServiceCategory; label: string }[] = [
@@ -27,7 +28,7 @@ export function ServicesListPage() {
   const [maxPrice, setMaxPrice] = useState('')
 
   const { data, isLoading } = useQuery({
-    queryKey: ['services', { page, category, city, maxPrice }],
+    queryKey: serviceKeys.list({ page, category, city, maxPrice }),
     queryFn: () =>
       servicesApi.list({
         page,

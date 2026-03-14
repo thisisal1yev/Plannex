@@ -7,7 +7,7 @@ interface CreateReviewFormProps {
   eventId?: string
   venueId?: string
   serviceId?: string
-  queryKey: string[]
+  queryKey: readonly string[]
   onSuccess?: () => void
 }
 

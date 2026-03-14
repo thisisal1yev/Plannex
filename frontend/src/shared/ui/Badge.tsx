@@ -1,9 +1,11 @@
 import type { ReactNode } from 'react'
 import { cn } from '@/shared/lib/utils'
 
+export type BadgeColor = 'indigo' | 'green' | 'red' | 'yellow' | 'gray' | 'blue'
+
 interface BadgeProps {
   children: ReactNode
-  color?: 'indigo' | 'green' | 'red' | 'yellow' | 'gray' | 'blue'
+  color?: BadgeColor
 }
 
 const colors = {

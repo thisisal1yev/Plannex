@@ -6,6 +6,7 @@ import { EventCard } from '@entities/event'
 import { VenueCard } from '@entities/venue'
 import { Button } from '@shared/ui/Button'
 import { Spinner } from '@shared/ui/Spinner'
+import { eventKeys, venueKeys } from '@shared/api/queryKeys'
 
 // ─── Icons ───────────────────────────────────────────────────────────────────
 
@@ -96,12 +97,12 @@ const stats = [
 
 export function HomePage() {
   const { data: eventsData, isLoading: eventsLoading } = useQuery({
-    queryKey: ['events', { status: 'PUBLISHED', limit: 3 }],
+    queryKey: eventKeys.list({ status: 'PUBLISHED', limit: 3 }),
     queryFn: () => eventsApi.list({ status: 'PUBLISHED', limit: 3 }),
   })
 
   const { data: venuesData, isLoading: venuesLoading } = useQuery({
-    queryKey: ['venues', { limit: 3 }],
+    queryKey: venueKeys.list({ limit: 3 }),
     queryFn: () => venuesApi.list({ limit: 3 }),
   })
 

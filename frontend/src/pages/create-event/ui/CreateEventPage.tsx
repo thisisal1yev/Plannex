@@ -7,6 +7,7 @@ import { Input } from '@shared/ui/Input'
 import { Select } from '@shared/ui/Select'
 import { Button } from '@shared/ui/Button'
 import type { CreateEventDto } from '@entities/event'
+import { eventKeys } from '@shared/api/queryKeys'
 
 const EVENT_TYPES = ['Концерт', 'Конференция', 'Выставка', 'Спорт', 'Фестиваль', 'Другое']
 
@@ -22,7 +23,7 @@ export function CreateEventPage() {
   const mutation = useMutation({
     mutationFn: (dto: CreateEventDto) => eventsApi.create({ ...dto, ticketTiers: tiers }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['my-events'] })
+      queryClient.invalidateQueries({ queryKey: eventKeys.myList() })
       navigate('/my-events')
     },
   })

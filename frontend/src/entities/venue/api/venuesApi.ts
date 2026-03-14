@@ -49,6 +49,9 @@ export const venuesApi = {
     const { data } = await apiClient.patch(`/venues/${id}`, dto)
     return data.data
   },
+  delete: async (id: string): Promise<void> => {
+    await apiClient.delete(`/venues/${id}`)
+  },
   book: async (id: string, dto: { eventId: string; startDate: string; endDate: string }): Promise<VenueBooking> => {
     const { data } = await apiClient.post(`/venues/${id}/book`, dto)
     return data.data

@@ -1,13 +1,22 @@
 import { Routes, Route, Navigate } from 'react-router'
 import { useAuthStore } from '@shared/model/auth.store'
 
+// Middleware
+import { RequireAuth, RequireRole, GuestOnly } from './middleware'
+
 // Layouts
 import { PublicLayout } from '@widgets/public-layout'
 import { AuthLayout } from '@widgets/auth-layout'
-import { DashboardLayout } from '@widgets/dashboard-layout'
+import { AppLayout } from '@widgets/app-layout'
 
-// Public browsing pages
+// Public pages
 import { HomePage } from '@pages/home'
+
+// Auth pages
+import { LoginPage } from '@pages/login'
+import { RegisterPage } from '@pages/register'
+
+// Browsing (auth required)
 import { EventsListPage } from '@pages/events-list'
 import { EventDetailPage } from '@pages/event-detail'
 import { VenuesListPage } from '@pages/venues-list'
@@ -15,16 +24,12 @@ import { VenueDetailPage } from '@pages/venue-detail'
 import { ServicesListPage } from '@pages/services-list'
 import { ServiceDetailPage } from '@pages/service-detail'
 
-// Auth pages
-import { LoginPage } from '@pages/login'
-import { RegisterPage } from '@pages/register'
-
-// Participant (public layout + auth)
+// Participant
 import { ProfilePage } from '@pages/profile'
 import { MyTicketsPage } from '@pages/my-tickets'
 import { TicketDetailPage } from '@pages/ticket-detail'
 
-// Organizer (dashboard layout)
+// Organizer
 import { OrganizerDashboardPage } from '@pages/organizer-dashboard'
 import { MyEventsPage } from '@pages/my-events'
 import { CreateEventPage } from '@pages/create-event'
@@ -33,7 +38,7 @@ import { EventParticipantsPage } from '@pages/event-participants'
 import { EventVolunteersPage } from '@pages/event-volunteers'
 import { EventServicesPage } from '@pages/event-services'
 
-// Vendor (dashboard layout)
+// Vendor
 import { MyVenuesPage } from '@pages/my-venues'
 import { CreateVenuePage } from '@pages/create-venue'
 import { EditVenuePage } from '@pages/edit-venue'
@@ -41,25 +46,28 @@ import { MyServicesPage } from '@pages/my-services'
 import { CreateServicePage } from '@pages/create-service'
 import { EditServicePage } from '@pages/edit-service'
 
-// Admin (dashboard layout)
+// Admin
 import { AdminUsersPage } from '@pages/admin-users'
 
 export function AppRouter() {
-  const user = useAuthStore((s) => s.user)
   const isAuth = !!useAuthStore((s) => s.accessToken)
 
   return (
     <Routes>
-      {/* ── Auth layout ── */}
-      <Route element={isAuth ? <Navigate to="/" replace /> : <AuthLayout />}>
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
+      {/* ── Landing (public, minimal header) ── */}
+      <Route element={<PublicLayout />}>
+        <Route path="/" element={<HomePage />} />
       </Route>
 
-      {/* ── Public layout (with Header) ── */}
-      <Route element={<PublicLayout />}>
+      {/* ── Auth pages (redirect to /events if already logged in) ── */}
+      <Route element={<AuthLayout />}>
+        <Route path="/login" element={<GuestOnly><LoginPage /></GuestOnly>} />
+        <Route path="/register" element={<GuestOnly><RegisterPage /></GuestOnly>} />
+      </Route>
+
+      {/* ── Authenticated: AppLayout with sidebar ── */}
+      <Route element={<RequireAuth><AppLayout /></RequireAuth>}>
         {/* Browsing */}
-        <Route path="/" element={<HomePage />} />
         <Route path="/events" element={<EventsListPage />} />
         <Route path="/events/:id" element={<EventDetailPage />} />
         <Route path="/venues" element={<VenuesListPage />} />
@@ -67,36 +75,35 @@ export function AppRouter() {
         <Route path="/services" element={<ServicesListPage />} />
         <Route path="/services/:id" element={<ServiceDetailPage />} />
 
-        {/* Participant (requires auth) */}
-        <Route path="/profile" element={isAuth ? <ProfilePage /> : <Navigate to="/login" replace />} />
-        <Route path="/tickets" element={isAuth ? <MyTicketsPage /> : <Navigate to="/login" replace />} />
-        <Route path="/tickets/:id" element={isAuth ? <TicketDetailPage /> : <Navigate to="/login" replace />} />
+        {/* All users */}
+        <Route path="/profile" element={<ProfilePage />} />
+
+        {/* PARTICIPANT */}
+        <Route path="/tickets" element={<RequireRole role="PARTICIPANT"><MyTicketsPage /></RequireRole>} />
+        <Route path="/tickets/:id" element={<RequireRole role="PARTICIPANT"><TicketDetailPage /></RequireRole>} />
+
+        {/* ORGANIZER */}
+        <Route path="/dashboard" element={<RequireRole role="ORGANIZER"><OrganizerDashboardPage /></RequireRole>} />
+        <Route path="/my-events" element={<RequireRole role="ORGANIZER"><MyEventsPage /></RequireRole>} />
+        <Route path="/my-events/create" element={<RequireRole role="ORGANIZER"><CreateEventPage /></RequireRole>} />
+        <Route path="/my-events/:id/edit" element={<RequireRole role="ORGANIZER"><EditEventPage /></RequireRole>} />
+        <Route path="/my-events/:id/participants" element={<RequireRole role="ORGANIZER"><EventParticipantsPage /></RequireRole>} />
+        <Route path="/my-events/:id/volunteers" element={<RequireRole role="ORGANIZER"><EventVolunteersPage /></RequireRole>} />
+        <Route path="/my-events/:id/services" element={<RequireRole role="ORGANIZER"><EventServicesPage /></RequireRole>} />
+
+        {/* VENDOR */}
+        <Route path="/my-venues" element={<RequireRole role="VENDOR"><MyVenuesPage /></RequireRole>} />
+        <Route path="/my-venues/create" element={<RequireRole role="VENDOR"><CreateVenuePage /></RequireRole>} />
+        <Route path="/my-venues/:id/edit" element={<RequireRole role="VENDOR"><EditVenuePage /></RequireRole>} />
+        <Route path="/my-services" element={<RequireRole role="VENDOR"><MyServicesPage /></RequireRole>} />
+        <Route path="/my-services/create" element={<RequireRole role="VENDOR"><CreateServicePage /></RequireRole>} />
+        <Route path="/my-services/:id/edit" element={<RequireRole role="VENDOR"><EditServicePage /></RequireRole>} />
+
+        {/* ADMIN */}
+        <Route path="/admin/users" element={<RequireRole role="ADMIN"><AdminUsersPage /></RequireRole>} />
       </Route>
 
-      {/* ── Dashboard layout ── */}
-      <Route element={isAuth ? <DashboardLayout /> : <Navigate to="/login" replace />}>
-        {/* Organizer */}
-        <Route path="/dashboard" element={user?.role === 'ORGANIZER' ? <OrganizerDashboardPage /> : <Navigate to="/" replace />} />
-        <Route path="/my-events" element={user?.role === 'ORGANIZER' ? <MyEventsPage /> : <Navigate to="/" replace />} />
-        <Route path="/my-events/create" element={user?.role === 'ORGANIZER' ? <CreateEventPage /> : <Navigate to="/" replace />} />
-        <Route path="/my-events/:id/edit" element={user?.role === 'ORGANIZER' ? <EditEventPage /> : <Navigate to="/" replace />} />
-        <Route path="/my-events/:id/participants" element={user?.role === 'ORGANIZER' ? <EventParticipantsPage /> : <Navigate to="/" replace />} />
-        <Route path="/my-events/:id/volunteers" element={user?.role === 'ORGANIZER' ? <EventVolunteersPage /> : <Navigate to="/" replace />} />
-        <Route path="/my-events/:id/services" element={user?.role === 'ORGANIZER' ? <EventServicesPage /> : <Navigate to="/" replace />} />
-
-        {/* Vendor */}
-        <Route path="/my-venues" element={user?.role === 'VENDOR' ? <MyVenuesPage /> : <Navigate to="/" replace />} />
-        <Route path="/my-venues/create" element={user?.role === 'VENDOR' ? <CreateVenuePage /> : <Navigate to="/" replace />} />
-        <Route path="/my-venues/:id/edit" element={user?.role === 'VENDOR' ? <EditVenuePage /> : <Navigate to="/" replace />} />
-        <Route path="/my-services" element={user?.role === 'VENDOR' ? <MyServicesPage /> : <Navigate to="/" replace />} />
-        <Route path="/my-services/create" element={user?.role === 'VENDOR' ? <CreateServicePage /> : <Navigate to="/" replace />} />
-        <Route path="/my-services/:id/edit" element={user?.role === 'VENDOR' ? <EditServicePage /> : <Navigate to="/" replace />} />
-
-        {/* Admin */}
-        <Route path="/admin/users" element={user?.role === 'ADMIN' ? <AdminUsersPage /> : <Navigate to="/" replace />} />
-      </Route>
-
-      <Route path="*" element={<Navigate to="/" replace />} />
+      <Route path="*" element={<Navigate to={isAuth ? '/events' : '/'} replace />} />
     </Routes>
   )
 }
