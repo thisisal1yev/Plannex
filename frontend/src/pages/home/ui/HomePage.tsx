@@ -213,7 +213,7 @@ export function HomePage() {
       </section>
 
       {/* ── How it works ── */}
-      <section className="py-14 border-t border-border bg-muted/20">
+      <section id="how-it-works" className="py-14 border-t border-border bg-muted/20">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-2xl font-bold text-foreground mb-3">Как это работает</h2>
@@ -263,7 +263,7 @@ export function HomePage() {
       </section>
 
       {/* ── Features Grid ── */}
-      <section className="py-14 border-t border-border bg-muted/20">
+      <section id="features" className="py-14 border-t border-border bg-muted/20">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-2xl font-bold text-foreground mb-3">Всё для организатора</h2>
@@ -286,6 +286,139 @@ export function HomePage() {
                 <p className="text-sm text-muted-foreground leading-relaxed">{f.desc}</p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Pricing ── */}
+      <section id="pricing" className="py-14 border-t border-border">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-2xl font-bold text-foreground mb-3">Тарифы</h2>
+            <p className="text-muted-foreground max-w-md mx-auto">
+              Начните бесплатно и масштабируйтесь по мере роста
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+            {[
+              {
+                name: 'Бесплатно',
+                price: '0',
+                desc: 'Для участников и начинающих',
+                features: ['Просмотр событий', 'Покупка билетов', 'Личный кабинет', 'Отзывы и рейтинги'],
+                cta: 'Начать бесплатно',
+                highlight: false,
+              },
+              {
+                name: 'Про',
+                price: '99 000',
+                desc: 'Для организаторов событий',
+                features: ['До 10 событий в месяц', 'Продажа билетов', 'Аналитика и отчёты', 'Поддержка волонтёров', 'Приоритетная поддержка'],
+                cta: 'Попробовать 14 дней',
+                highlight: true,
+              },
+              {
+                name: 'Бизнес',
+                price: '299 000',
+                desc: 'Для агентств и компаний',
+                features: ['Неограниченно событий', 'Мультиаккаунт', 'API доступ', 'Кастомный брендинг', 'Выделенный менеджер'],
+                cta: 'Связаться с нами',
+                highlight: false,
+              },
+            ].map((plan) => (
+              <div
+                key={plan.name}
+                className={`rounded-2xl border p-6 flex flex-col gap-5 ${
+                  plan.highlight
+                    ? 'bg-primary text-primary-foreground border-primary'
+                    : 'bg-card border-border'
+                }`}
+              >
+                <div>
+                  <p className={`text-sm font-medium mb-1 ${plan.highlight ? 'text-primary-foreground/70' : 'text-muted-foreground'}`}>
+                    {plan.name}
+                  </p>
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-3xl font-bold">{plan.price}</span>
+                    <span className={`text-sm ${plan.highlight ? 'text-primary-foreground/70' : 'text-muted-foreground'}`}>
+                      {plan.price === '0' ? '' : ' сум/мес'}
+                    </span>
+                  </div>
+                  <p className={`text-sm mt-1 ${plan.highlight ? 'text-primary-foreground/70' : 'text-muted-foreground'}`}>
+                    {plan.desc}
+                  </p>
+                </div>
+                <ul className="flex flex-col gap-2 flex-1">
+                  {plan.features.map((f) => (
+                    <li key={f} className="flex items-center gap-2 text-sm">
+                      <span className={`text-xs ${plan.highlight ? 'text-primary-foreground/80' : 'text-primary'}`}>✓</span>
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+                <Link to="/register">
+                  <Button
+                    variant={plan.highlight ? 'secondary' : 'primary'}
+                    className="w-full"
+                  >
+                    {plan.cta}
+                  </Button>
+                </Link>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Contact ── */}
+      <section id="contact" className="py-14 border-t border-border bg-muted/20">
+        <div className="max-w-5xl mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-2xl font-bold text-foreground mb-3">Контакты</h2>
+            <p className="text-muted-foreground max-w-md mx-auto">
+              Есть вопросы? Напишите нам — ответим в течение рабочего дня
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* Contact info */}
+            <div className="flex flex-col gap-5">
+              {[
+                { emoji: '📍', title: 'Адрес', text: 'г. Ташкент, ул. Амира Темура, 107Б' },
+                { emoji: '📞', title: 'Телефон', text: '+998 71 200 00 00' },
+                { emoji: '✉️', title: 'Email', text: 'hello@plannerai.uz' },
+                { emoji: '🕐', title: 'Режим работы', text: 'Пн–Пт, 9:00–18:00' },
+              ].map(({ emoji, title, text }) => (
+                <div key={title} className="flex items-start gap-4 bg-card border border-border rounded-xl p-4">
+                  <span className="text-2xl">{emoji}</span>
+                  <div>
+                    <p className="text-sm font-semibold text-foreground">{title}</p>
+                    <p className="text-sm text-muted-foreground">{text}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+            {/* Contact form */}
+            <form className="bg-card border border-border rounded-2xl p-6 flex flex-col gap-4">
+              <div className="grid grid-cols-2 gap-3">
+                <div className="flex flex-col gap-1">
+                  <label className="text-xs font-medium text-muted-foreground">Имя</label>
+                  <input className="px-3 py-2.5 border border-border bg-background text-foreground rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 placeholder:text-muted-foreground" placeholder="Ваше имя" />
+                </div>
+                <div className="flex flex-col gap-1">
+                  <label className="text-xs font-medium text-muted-foreground">Email</label>
+                  <input type="email" className="px-3 py-2.5 border border-border bg-background text-foreground rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 placeholder:text-muted-foreground" placeholder="email@example.com" />
+                </div>
+              </div>
+              <div className="flex flex-col gap-1">
+                <label className="text-xs font-medium text-muted-foreground">Тема</label>
+                <input className="px-3 py-2.5 border border-border bg-background text-foreground rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 placeholder:text-muted-foreground" placeholder="Чем можем помочь?" />
+              </div>
+              <div className="flex flex-col gap-1">
+                <label className="text-xs font-medium text-muted-foreground">Сообщение</label>
+                <textarea rows={4} className="px-3 py-2.5 border border-border bg-background text-foreground rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 placeholder:text-muted-foreground resize-none" placeholder="Опишите ваш вопрос..." />
+              </div>
+              <Button className="w-full">Отправить сообщение</Button>
+            </form>
           </div>
         </div>
       </section>

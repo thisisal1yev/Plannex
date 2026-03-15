@@ -22,6 +22,7 @@ export interface AuthUser {
   firstName: string
   lastName: string
   phone?: string
+  avatarUrl?: string
 }
 
 // ─── Pagination ───────────────────────────────────────────────────────────────

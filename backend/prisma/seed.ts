@@ -29,6 +29,7 @@ async function seedUsers() {
         role: userData.role as any,
         passwordHash: hashPassword('12345678'),
         isVerified: true,
+        avatarUrl: userData.avatarUrl
       },
     });
 

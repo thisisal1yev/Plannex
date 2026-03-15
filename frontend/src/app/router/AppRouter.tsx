@@ -6,15 +6,13 @@ import { RequireAuth, RequireRole, GuestOnly } from './middleware'
 
 // Layouts
 import { PublicLayout } from '@widgets/public-layout'
-import { AuthLayout } from '@widgets/auth-layout'
 import { AppLayout } from '@widgets/app-layout'
 
 // Public pages
 import { HomePage } from '@pages/home'
 
 // Auth pages
-import { LoginPage } from '@pages/login'
-import { RegisterPage } from '@pages/register'
+import { AuthPage } from '@pages/auth'
 
 // Browsing (auth required)
 import { EventsListPage } from '@pages/events-list'
@@ -60,10 +58,8 @@ export function AppRouter() {
       </Route>
 
       {/* ── Auth pages (redirect to /events if already logged in) ── */}
-      <Route element={<AuthLayout />}>
-        <Route path="/login" element={<GuestOnly><LoginPage /></GuestOnly>} />
-        <Route path="/register" element={<GuestOnly><RegisterPage /></GuestOnly>} />
-      </Route>
+      <Route path="/login" element={<GuestOnly><AuthPage /></GuestOnly>} />
+      <Route path="/register" element={<GuestOnly><AuthPage /></GuestOnly>} />
 
       {/* ── Authenticated: AppLayout with sidebar ── */}
       <Route element={<RequireAuth><AppLayout /></RequireAuth>}>

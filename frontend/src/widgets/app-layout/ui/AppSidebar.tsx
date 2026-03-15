@@ -41,7 +41,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/shared/ui/primitives/dropdown-menu'
-import { Avatar, AvatarFallback } from '@/shared/ui/primitives/avatar'
+import { Avatar, AvatarFallback, AvatarImage } from '@/shared/ui/primitives/avatar'
 
 const commonLinks = [
   { to: '/events', label: 'События', icon: CalendarDays },
@@ -154,9 +154,10 @@ export function AppSidebar() {
                   className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
                 >
                   <Avatar className="h-8 w-8 rounded-lg">
+                    <AvatarImage src={user?.avatarUrl} alt={displayName} className="rounded-lg object-cover" />
                     <AvatarFallback className="rounded-lg text-xs bg-transparent">{initials}</AvatarFallback>
                   </Avatar>
-                  
+
                   <div className="grid flex-1 text-left text-sm leading-tight">
                     <span className="truncate font-medium">{displayName}</span>
                     <span className="truncate text-xs text-muted-foreground">{user?.email}</span>
@@ -174,6 +175,7 @@ export function AppSidebar() {
                 <DropdownMenuLabel className="p-0 font-normal">
                   <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                     <Avatar className="h-8 w-8 rounded-lg">
+                      <AvatarImage src={user?.avatarUrl} alt={displayName} className="rounded-lg object-cover" />
                       <AvatarFallback className="rounded-lg text-xs bg-transparent">{initials}</AvatarFallback>
                     </Avatar>
 

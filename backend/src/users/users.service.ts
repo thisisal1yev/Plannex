@@ -52,6 +52,7 @@ export class UsersService {
           firstName: true,
           lastName: true,
           role: true,
+          avatarUrl: true,
           isVerified: true,
           createdAt: true,
         },
@@ -78,6 +79,7 @@ export class UsersService {
         firstName: true,
         lastName: true,
         role: true,
+        avatarUrl: true,
         isVerified: true,
         createdAt: true,
         updatedAt: true,
@@ -105,6 +107,7 @@ export class UsersService {
         firstName: true,
         lastName: true,
         role: true,
+        avatarUrl: true,
         updatedAt: true,
       },
     });

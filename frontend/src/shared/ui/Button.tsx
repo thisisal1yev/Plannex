@@ -7,6 +7,7 @@ const variantMap = {
   secondary: 'secondary',
   danger: 'destructive',
   ghost: 'ghost',
+  outline: 'outline',
 } as const
 
 const sizeMap = {

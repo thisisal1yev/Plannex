@@ -6,13 +6,12 @@ import { VenuesListPage } from '@pages/venues-list'
 import { VenueDetailPage } from '@pages/venue-detail'
 import { ServicesListPage } from '@pages/services-list'
 import { ServiceDetailPage } from '@pages/service-detail'
-import { LoginPage } from '@pages/login'
-import { RegisterPage } from '@pages/register'
+import { AuthPage } from '@pages/auth'
 
 export const publicRoutes: RouteObject[] = [
   { path: '/', element: <HomePage /> },
-  { path: '/login', element: <LoginPage /> },
-  { path: '/register', element: <RegisterPage /> },
+  { path: '/login', element: <AuthPage /> },
+  { path: '/register', element: <AuthPage /> },
   { path: '/events', element: <EventsListPage /> },
   { path: '/events/:id', element: <EventDetailPage /> },
   { path: '/venues', element: <VenuesListPage /> },

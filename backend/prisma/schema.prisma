@@ -44,6 +44,7 @@ model User {
   firstName    String
   lastName     String
   role         Role     @default(PARTICIPANT)
+  avatarUrl    String?
   isVerified   Boolean  @default(false)
   refreshToken String?
   createdAt    DateTime @default(now())

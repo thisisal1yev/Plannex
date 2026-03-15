@@ -7,6 +7,7 @@ export interface User {
   firstName: string
   lastName: string
   role: Role
+  avatarUrl?: string
   isVerified: boolean
   createdAt: string
   updatedAt: string
