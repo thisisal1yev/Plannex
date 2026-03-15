@@ -58,39 +58,39 @@ function IconArrow() {
 const steps = [
   {
     num: '01',
-    title: 'Выберите площадку',
-    desc: 'Найдите идеальное место для вашего мероприятия из сотен проверенных площадок по всему Узбекистану.',
+    title: 'Maydon tanlang',
+    desc: "Butun O'zbekiston bo'ylab yuzlab tekshirilgan maydonlardan tadbiringiz uchun ideal joyni toping.",
   },
   {
     num: '02',
-    title: 'Добавьте услуги',
-    desc: 'Кейтеринг, декор, звук, фото — закажите всё необходимое у проверенных поставщиков в одном месте.',
+    title: 'Xizmatlar qo\'shing',
+    desc: "Katering, bezak, ovoz, foto — tekshirilgan ta'minotchilardan hamma zarur narsalarni bir joyda buyurtma qiling.",
   },
   {
     num: '03',
-    title: 'Продайте билеты',
-    desc: 'Запустите продажу билетов, управляйте участниками и отслеживайте аналитику в реальном времени.',
+    title: 'Chiptalar soting',
+    desc: "Chipta sotuvini ishga tushiring, ishtirokchilarni boshqaring va real vaqtda analitikani kuzating.",
   },
 ]
 
 // ─── Categories ───────────────────────────────────────────────────────────────
 
 const categories = [
-  { label: 'Концерты', emoji: '🎵', to: '/events?type=Концерт', color: 'bg-purple-500/10 text-purple-600 dark:text-purple-400' },
-  { label: 'Конференции', emoji: '🎤', to: '/events?type=Конференция', color: 'bg-blue-500/10 text-blue-600 dark:text-blue-400' },
-  { label: 'Выставки', emoji: '🖼️', to: '/events?type=Выставка', color: 'bg-amber-500/10 text-amber-600 dark:text-amber-400' },
-  { label: 'Тренинги', emoji: '📚', to: '/events?type=Тренинг', color: 'bg-green-500/10 text-green-600 dark:text-green-400' },
-  { label: 'Фестивали', emoji: '🎪', to: '/events?type=Фестиваль', color: 'bg-pink-500/10 text-pink-600 dark:text-pink-400' },
-  { label: 'Вечеринки', emoji: '🎉', to: '/events?type=Вечеринка', color: 'bg-orange-500/10 text-orange-600 dark:text-orange-400' },
+  { label: 'Konsertlar', emoji: '🎵', to: '/events?type=Konsert', color: 'bg-purple-500/10 text-purple-600 dark:text-purple-400' },
+  { label: 'Konferensiyalar', emoji: '🎤', to: '/events?type=Konferensiya', color: 'bg-blue-500/10 text-blue-600 dark:text-blue-400' },
+  { label: "Ko'rgazmalar", emoji: '🖼️', to: "/events?type=Ko'rgazma", color: 'bg-amber-500/10 text-amber-600 dark:text-amber-400' },
+  { label: 'Treninglar', emoji: '📚', to: '/events?type=Trening', color: 'bg-green-500/10 text-green-600 dark:text-green-400' },
+  { label: 'Festivallar', emoji: '🎪', to: '/events?type=Festival', color: 'bg-pink-500/10 text-pink-600 dark:text-pink-400' },
+  { label: 'Ziyofatlar', emoji: '🎉', to: '/events?type=Ziyofat', color: 'bg-orange-500/10 text-orange-600 dark:text-orange-400' },
 ]
 
 // ─── Stats ────────────────────────────────────────────────────────────────────
 
 const stats = [
-  { value: '500+', label: 'Мероприятий' },
-  { value: '120+', label: 'Площадок' },
-  { value: '80+', label: 'Поставщиков' },
-  { value: '10K+', label: 'Участников' },
+  { value: '500+', label: 'Tadbirlar' },
+  { value: '120+', label: 'Maydonlar' },
+  { value: '80+', label: "Ta'minotchilar" },
+  { value: '10K+', label: 'Ishtirokchilar' },
 ]
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
@@ -119,28 +119,29 @@ export function HomePage() {
         <div className="text-center max-w-3xl mx-auto px-4">
           <div className="inline-flex items-center gap-2 bg-primary/10 text-primary text-sm font-medium px-4 py-1.5 rounded-full mb-6">
             <span className="h-1.5 w-1.5 rounded-full bg-primary" />
-            Маркетплейс мероприятий №1 в Узбекистане
+            O'zbekistondagi №1 tadbirlar marketi
           </div>
 
           <h1 className="text-4xl md:text-6xl font-bold text-foreground leading-tight mb-6">
-            Организуйте события{' '}
-            <span className="text-primary">без хлопот</span>
+            Tadbirlarni{' '}
+            <span className="text-primary">muammosiz</span>
+            {' '}tashkil eting
           </h1>
 
           <p className="text-lg text-muted-foreground max-w-xl mx-auto mb-10">
-            Площадки, услуги, билеты — всё в одном месте. Planner AI помогает организаторам запускать мероприятия быстро и эффективно.
+            Maydonlar, xizmatlar, chiptalar — hammasi bir joyda. Planner AI tashkilotchilarga tadbirlarni tez va samarali ishga tushirishga yordam beradi.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-3 justify-center mb-14">
             <Link to="/events">
               <Button size="lg" className="w-full sm:w-auto gap-2">
                 <IconSearch />
-                Смотреть события
+                Tadbirlarni ko'rish
               </Button>
             </Link>
             <Link to="/register">
               <Button variant="secondary" size="lg" className="w-full sm:w-auto">
-                Создать мероприятие
+                Tadbir yaratish
               </Button>
             </Link>
           </div>
@@ -161,9 +162,9 @@ export function HomePage() {
       <section className="py-14 border-t border-border">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex items-center justify-between mb-8">
-            <h2 className="text-2xl font-bold text-foreground">Типы мероприятий</h2>
+            <h2 className="text-2xl font-bold text-foreground">Tadbir turlari</h2>
             <Link to="/events" className="text-sm text-primary hover:underline flex items-center gap-1">
-              Все события <IconArrow />
+              Barcha tadbirlar <IconArrow />
             </Link>
           </div>
           <div className="grid grid-cols-3 sm:grid-cols-6 gap-3">
@@ -186,17 +187,17 @@ export function HomePage() {
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex items-center justify-between mb-8">
             <div>
-              <h2 className="text-2xl font-bold text-foreground">Ближайшие события</h2>
-              <p className="text-muted-foreground text-sm mt-1">Актуальные мероприятия Узбекистана</p>
+              <h2 className="text-2xl font-bold text-foreground">Yaqinlashayotgan tadbirlar</h2>
+              <p className="text-muted-foreground text-sm mt-1">O'zbekistonning dolzarb tadbirlari</p>
             </div>
             <Link to="/events" className="text-sm text-primary hover:underline hidden sm:flex items-center gap-1">
-              Все события <IconArrow />
+              Barcha tadbirlar <IconArrow />
             </Link>
           </div>
           {eventsLoading ? (
             <Spinner />
           ) : eventsData?.data.length === 0 ? (
-            <p className="text-center text-muted-foreground py-12">Нет доступных событий</p>
+            <p className="text-center text-muted-foreground py-12">Mavjud tadbirlar yo'q</p>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {eventsData?.data.map((event) => (
@@ -206,7 +207,7 @@ export function HomePage() {
           )}
           <div className="mt-6 text-center sm:hidden">
             <Link to="/events">
-              <Button variant="secondary">Все события</Button>
+              <Button variant="secondary">Barcha tadbirlar</Button>
             </Link>
           </div>
         </div>
@@ -216,9 +217,9 @@ export function HomePage() {
       <section id="how-it-works" className="py-14 border-t border-border bg-muted/20">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-2xl font-bold text-foreground mb-3">Как это работает</h2>
+            <h2 className="text-2xl font-bold text-foreground mb-3">Bu qanday ishlaydi</h2>
             <p className="text-muted-foreground max-w-md mx-auto">
-              Три простых шага — и ваше мероприятие готово к запуску
+              Uch oddiy qadam — va tadbiringiz ishga tushishga tayyor
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -243,11 +244,11 @@ export function HomePage() {
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex items-center justify-between mb-8">
             <div>
-              <h2 className="text-2xl font-bold text-foreground">Популярные площадки</h2>
-              <p className="text-muted-foreground text-sm mt-1">Лучшие места для ваших мероприятий</p>
+              <h2 className="text-2xl font-bold text-foreground">Mashhur maydonlar</h2>
+              <p className="text-muted-foreground text-sm mt-1">Tadbirlaringiz uchun eng yaxshi joylar</p>
             </div>
             <Link to="/venues" className="text-sm text-primary hover:underline hidden sm:flex items-center gap-1">
-              Все площадки <IconArrow />
+              Barcha maydonlar <IconArrow />
             </Link>
           </div>
           {venuesLoading ? (
@@ -266,17 +267,17 @@ export function HomePage() {
       <section id="features" className="py-14 border-t border-border bg-muted/20">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-2xl font-bold text-foreground mb-3">Всё для организатора</h2>
+            <h2 className="text-2xl font-bold text-foreground mb-3">Tashkilotchi uchun hamma narsa</h2>
             <p className="text-muted-foreground max-w-md mx-auto">
-              Полный набор инструментов для профессионального проведения мероприятий
+              Professional tadbirlarni tashkil etish uchun to'liq vositalar to'plami
             </p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {[
-              { icon: <IconCalendar />, title: 'Управление событиями', desc: 'Создавайте, редактируйте и публикуйте мероприятия в несколько кликов', color: 'text-primary bg-primary/10' },
-              { icon: <IconBuilding />, title: 'База площадок', desc: 'Более 120 проверенных площадок в крупных городах Узбекистана', color: 'text-emerald-600 bg-emerald-500/10' },
-              { icon: <IconTicket />, title: 'Продажа билетов', desc: 'Встроенная система продаж с поддержкой Click и Payme', color: 'text-amber-600 bg-amber-500/10' },
-              { icon: <IconStar />, title: 'Рейтинги и отзывы', desc: 'Реальные отзывы участников помогут выбрать лучших поставщиков', color: 'text-purple-600 bg-purple-500/10' },
+              { icon: <IconCalendar />, title: 'Tadbirlarni boshqarish', desc: 'Bir necha bosish bilan tadbirlarni yarating, tahrirlang va nashr eting', color: 'text-primary bg-primary/10' },
+              { icon: <IconBuilding />, title: 'Maydonlar bazasi', desc: "O'zbekistonning yirik shaharlarida 120 dan ortiq tekshirilgan maydonlar", color: 'text-emerald-600 bg-emerald-500/10' },
+              { icon: <IconTicket />, title: 'Chipta sotish', desc: "Click va Payme qo'llab-quvvatlaydigan o'rnatilgan sotuv tizimi", color: 'text-amber-600 bg-amber-500/10' },
+              { icon: <IconStar />, title: 'Reytinglar va sharhlar', desc: "Ishtirokchilarning haqiqiy sharhlari eng yaxshi ta'minotchilarni tanlashga yordam beradi", color: 'text-purple-600 bg-purple-500/10' },
             ].map((f) => (
               <div key={f.title} className="bg-card border border-border rounded-2xl p-5">
                 <div className={`inline-flex items-center justify-center h-10 w-10 rounded-xl mb-4 ${f.color}`}>
@@ -294,35 +295,35 @@ export function HomePage() {
       <section id="pricing" className="py-14 border-t border-border">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-2xl font-bold text-foreground mb-3">Тарифы</h2>
+            <h2 className="text-2xl font-bold text-foreground mb-3">Tariflar</h2>
             <p className="text-muted-foreground max-w-md mx-auto">
-              Начните бесплатно и масштабируйтесь по мере роста
+              Bepul boshlang va o'sishingiz bilan kengaytiring
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
             {[
               {
-                name: 'Бесплатно',
+                name: 'Bepul',
                 price: '0',
-                desc: 'Для участников и начинающих',
-                features: ['Просмотр событий', 'Покупка билетов', 'Личный кабинет', 'Отзывы и рейтинги'],
-                cta: 'Начать бесплатно',
+                desc: 'Ishtirokchilar va boshlang\'ichlar uchun',
+                features: ['Tadbirlarni ko\'rish', 'Chipta sotib olish', 'Shaxsiy kabinet', 'Sharhlar va reytinglar'],
+                cta: 'Bepul boshlash',
                 highlight: false,
               },
               {
-                name: 'Про',
+                name: 'Pro',
                 price: '99 000',
-                desc: 'Для организаторов событий',
-                features: ['До 10 событий в месяц', 'Продажа билетов', 'Аналитика и отчёты', 'Поддержка волонтёров', 'Приоритетная поддержка'],
-                cta: 'Попробовать 14 дней',
+                desc: 'Tadbir tashkilotchilari uchun',
+                features: ['Oyiga 10 tagacha tadbir', 'Chipta sotish', 'Analitika va hisobotlar', 'Volontyorlarni boshqarish', 'Ustuvor qo\'llab-quvvatlash'],
+                cta: '14 kun sinab ko\'ring',
                 highlight: true,
               },
               {
-                name: 'Бизнес',
+                name: 'Biznes',
                 price: '299 000',
-                desc: 'Для агентств и компаний',
-                features: ['Неограниченно событий', 'Мультиаккаунт', 'API доступ', 'Кастомный брендинг', 'Выделенный менеджер'],
-                cta: 'Связаться с нами',
+                desc: 'Agentliklar va kompaniyalar uchun',
+                features: ['Cheksiz tadbirlar', 'Multi-akkaunt', 'API kirish', 'Maxsus brending', 'Ajratilgan menejer'],
+                cta: 'Biz bilan bog\'laning',
                 highlight: false,
               },
             ].map((plan) => (
@@ -341,7 +342,7 @@ export function HomePage() {
                   <div className="flex items-baseline gap-1">
                     <span className="text-3xl font-bold">{plan.price}</span>
                     <span className={`text-sm ${plan.highlight ? 'text-primary-foreground/70' : 'text-muted-foreground'}`}>
-                      {plan.price === '0' ? '' : ' сум/мес'}
+                      {plan.price === '0' ? '' : " so'm/oy"}
                     </span>
                   </div>
                   <p className={`text-sm mt-1 ${plan.highlight ? 'text-primary-foreground/70' : 'text-muted-foreground'}`}>
@@ -374,19 +375,19 @@ export function HomePage() {
       <section id="contact" className="py-14 border-t border-border bg-muted/20">
         <div className="max-w-5xl mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-2xl font-bold text-foreground mb-3">Контакты</h2>
+            <h2 className="text-2xl font-bold text-foreground mb-3">Aloqa</h2>
             <p className="text-muted-foreground max-w-md mx-auto">
-              Есть вопросы? Напишите нам — ответим в течение рабочего дня
+              Savollaringiz bormi? Bizga yozing — ish kuni davomida javob beramiz
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Contact info */}
             <div className="flex flex-col gap-5">
               {[
-                { emoji: '📍', title: 'Адрес', text: 'г. Ташкент, ул. Амира Темура, 107Б' },
-                { emoji: '📞', title: 'Телефон', text: '+998 71 200 00 00' },
+                { emoji: '📍', title: 'Manzil', text: 'Toshkent sh., Amir Temur ko\'chasi, 107B' },
+                { emoji: '📞', title: 'Telefon', text: '+998 71 200 00 00' },
                 { emoji: '✉️', title: 'Email', text: 'hello@plannerai.uz' },
-                { emoji: '🕐', title: 'Режим работы', text: 'Пн–Пт, 9:00–18:00' },
+                { emoji: '🕐', title: 'Ish vaqti', text: 'Du–Ju, 9:00–18:00' },
               ].map(({ emoji, title, text }) => (
                 <div key={title} className="flex items-start gap-4 bg-card border border-border rounded-xl p-4">
                   <span className="text-2xl">{emoji}</span>
@@ -401,8 +402,8 @@ export function HomePage() {
             <form className="bg-card border border-border rounded-2xl p-6 flex flex-col gap-4">
               <div className="grid grid-cols-2 gap-3">
                 <div className="flex flex-col gap-1">
-                  <label className="text-xs font-medium text-muted-foreground">Имя</label>
-                  <input className="px-3 py-2.5 border border-border bg-background text-foreground rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 placeholder:text-muted-foreground" placeholder="Ваше имя" />
+                  <label className="text-xs font-medium text-muted-foreground">Ism</label>
+                  <input className="px-3 py-2.5 border border-border bg-background text-foreground rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 placeholder:text-muted-foreground" placeholder="Ismingiz" />
                 </div>
                 <div className="flex flex-col gap-1">
                   <label className="text-xs font-medium text-muted-foreground">Email</label>
@@ -410,14 +411,14 @@ export function HomePage() {
                 </div>
               </div>
               <div className="flex flex-col gap-1">
-                <label className="text-xs font-medium text-muted-foreground">Тема</label>
-                <input className="px-3 py-2.5 border border-border bg-background text-foreground rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 placeholder:text-muted-foreground" placeholder="Чем можем помочь?" />
+                <label className="text-xs font-medium text-muted-foreground">Mavzu</label>
+                <input className="px-3 py-2.5 border border-border bg-background text-foreground rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 placeholder:text-muted-foreground" placeholder="Qanday yordam bera olamiz?" />
               </div>
               <div className="flex flex-col gap-1">
-                <label className="text-xs font-medium text-muted-foreground">Сообщение</label>
-                <textarea rows={4} className="px-3 py-2.5 border border-border bg-background text-foreground rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 placeholder:text-muted-foreground resize-none" placeholder="Опишите ваш вопрос..." />
+                <label className="text-xs font-medium text-muted-foreground">Xabar</label>
+                <textarea rows={4} className="px-3 py-2.5 border border-border bg-background text-foreground rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 placeholder:text-muted-foreground resize-none" placeholder="Savolingizni tasvirlab bering..." />
               </div>
-              <Button className="w-full">Отправить сообщение</Button>
+              <Button className="w-full">Xabar yuborish</Button>
             </form>
           </div>
         </div>
@@ -433,20 +434,20 @@ export function HomePage() {
             </div>
             <div className="relative">
               <h2 className="text-3xl md:text-4xl font-bold text-primary-foreground mb-4">
-                Готовы запустить мероприятие?
+                Tadbir boshlashga tayyormisiz?
               </h2>
               <p className="text-primary-foreground/70 text-lg mb-8 max-w-lg mx-auto">
-                Присоединитесь к сотням организаторов, которые уже проводят успешные события через Planner AI
+                Planner AI orqali muvaffaqiyatli tadbirlarni allaqachon o'tkazayotgan yuzlab tashkilotchilarga qo'shiling
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <Link to="/register">
                   <Button variant="secondary" size="lg" className="w-full sm:w-auto">
-                    Начать бесплатно
+                    Bepul boshlash
                   </Button>
                 </Link>
                 <Link to="/events">
                   <Button variant="ghost" size="lg" className="w-full sm:w-auto text-primary-foreground hover:bg-white/10">
-                    Посмотреть события
+                    Tadbirlarni ko'rish
                   </Button>
                 </Link>
               </div>

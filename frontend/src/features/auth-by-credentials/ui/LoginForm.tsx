@@ -33,7 +33,7 @@ export function LoginForm() {
       else navigate('/events')
     },
     onError: () => {
-      setError('password', { message: 'Неверный email или пароль' })
+      setError('password', { message: 'Noto\'g\'ri email yoki parol' })
     },
   })
 
@@ -44,22 +44,22 @@ export function LoginForm() {
         type="email"
         placeholder="you@example.com"
         error={errors.email?.message}
-        {...register('email', { required: 'Обязательное поле' })}
+        {...register('email', { required: 'Majburiy maydon' })}
       />
       <Input
-        label="Пароль"
+        label="Parol"
         type="password"
         placeholder="••••••••"
         error={errors.password?.message}
-        {...register('password', { required: 'Обязательное поле', minLength: { value: 8, message: 'Мин. 8 символов' } })}
+        {...register('password', { required: 'Majburiy maydon', minLength: { value: 8, message: 'Min. 8 belgi' } })}
       />
       <Button type="submit" loading={mutation.isPending} className="w-full">
-        Войти
+        Kirish
       </Button>
       <p className="text-sm text-center text-muted-foreground">
-        Нет аккаунта?{' '}
+        Akkaunt yo'qmi?{' '}
         <Link to="/register" className="text-primary hover:underline">
-          Зарегистрироваться
+          Ro'yxatdan o'tish
         </Link>
       </p>
     </form>

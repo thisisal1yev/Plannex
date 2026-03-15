@@ -30,30 +30,30 @@ function IconYoutube() {
 
 const footerLinks = [
   {
-    title: 'Платформа',
+    title: 'Platforma',
     links: [
-      { label: 'События', to: '/events' },
-      { label: 'Площадки', to: '/venues' },
-      { label: 'Поставщики', to: '/services' },
-      { label: 'Тарифы', to: '/#pricing' },
+      { label: 'Tadbirlar', to: '/events' },
+      { label: 'Maydonlar', to: '/venues' },
+      { label: "Ta'minotchilar", to: '/services' },
+      { label: 'Tariflar', to: '/#pricing' },
     ],
   },
   {
-    title: 'Организаторам',
+    title: 'Tashkilotchilarga',
     links: [
-      { label: 'Как это работает', to: '/#how-it-works' },
-      { label: 'Создать событие', to: '/register' },
-      { label: 'Возможности', to: '/#features' },
-      { label: 'Контакты', to: '/#contact' },
+      { label: 'Bu qanday ishlaydi', to: '/#how-it-works' },
+      { label: 'Tadbir yaratish', to: '/register' },
+      { label: 'Imkoniyatlar', to: '/#features' },
+      { label: 'Aloqa', to: '/#contact' },
     ],
   },
   {
-    title: 'Компания',
+    title: 'Kompaniya',
     links: [
-      { label: 'О нас', to: '/about' },
-      { label: 'Блог', to: '/blog' },
-      { label: 'Политика конфиденциальности', to: '/privacy' },
-      { label: 'Условия использования', to: '/terms' },
+      { label: 'Biz haqimizda', to: '/about' },
+      { label: 'Blog', to: '/blog' },
+      { label: 'Maxfiylik siyosati', to: '/privacy' },
+      { label: 'Foydalanish shartlari', to: '/terms' },
     ],
   },
 ]
@@ -80,7 +80,7 @@ export function Footer() {
               Planner AI
             </Link>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              Маркетплейс мероприятий №&nbsp;1 в Узбекистане. Площадки, услуги и билеты — всё в одном месте.
+              O'zbekistondagi №&nbsp;1 tadbirlar marketi. Maydonlar, xizmatlar va chiptalar — hammasi bir joyda.
             </p>
             {/* Socials */}
             <div className="flex items-center gap-3 mt-1">
@@ -122,14 +122,9 @@ export function Footer() {
         {/* Divider */}
         <div className="border-t border-border pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-xs text-muted-foreground">
-            © {new Date().getFullYear()} Planner AI. Все права защищены.
+            © {new Date().getFullYear()} Planner AI. Barcha huquqlar himoyalangan.
           </p>
-          <div className="flex items-center gap-1.5">
-            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-            <span className="text-xs text-muted-foreground">Работаем в штатном режиме</span>
-          </div>
         </div>
-
       </div>
     </footer>
   )

@@ -44,34 +44,34 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from '@/shared/ui/primitives/avatar'
 
 const commonLinks = [
-  { to: '/events', label: 'События', icon: CalendarDays },
-  { to: '/venues', label: 'Площадки', icon: Building2 },
-  { to: '/services', label: 'Услуги', icon: Wrench },
+  { to: '/events', label: 'Tadbirlar', icon: CalendarDays },
+  { to: '/venues', label: 'Maydonlar', icon: Building2 },
+  { to: '/services', label: 'Xizmatlar', icon: Wrench },
 ]
 
 const roleLinks: Record<string, Array<{ to: string; label: string; icon: ElementType }>> = {
-  PARTICIPANT: [{ to: '/tickets', label: 'Мои билеты', icon: Ticket }],
+  PARTICIPANT: [{ to: '/tickets', label: 'Mening chiptalаrim', icon: Ticket }],
   ORGANIZER: [
-    { to: '/dashboard', label: 'Дашборд', icon: LayoutDashboard },
-    { to: '/my-events', label: 'Мои события', icon: ListChecks },
+    { to: '/dashboard', label: 'Boshqaruv paneli', icon: LayoutDashboard },
+    { to: '/my-events', label: 'Mening tadbirlarim', icon: ListChecks },
   ],
   VENDOR: [
-    { to: '/my-venues', label: 'Мои площадки', icon: MapPin },
-    { to: '/my-services', label: 'Мои услуги', icon: Settings2 },
+    { to: '/my-venues', label: 'Mening maydonlarim', icon: MapPin },
+    { to: '/my-services', label: 'Mening xizmatlarim', icon: Settings2 },
   ],
   ADMIN: [
-    { to: '/admin/dashboard', label: 'Дашборд', icon: LayoutDashboard },
-    { to: '/admin/users', label: 'Пользователи', icon: Users },
+    { to: '/admin/dashboard', label: 'Boshqaruv paneli', icon: LayoutDashboard },
+    { to: '/admin/users', label: 'Foydalanuvchilar', icon: Users },
   ],
   VOLUNTEER: [],
 }
 
 const roleLabels: Record<string, string> = {
-  PARTICIPANT: 'Участник',
-  ORGANIZER: 'Организатор',
-  VENDOR: 'Поставщик',
-  ADMIN: 'Администратор',
-  VOLUNTEER: 'Волонтёр',
+  PARTICIPANT: 'Ishtirokchi',
+  ORGANIZER: 'Tashkilotchi',
+  VENDOR: "Ta'minotchi",
+  ADMIN: 'Administrator',
+  VOLUNTEER: "Ko'ngilli",
 }
 
 function getInitials(firstName?: string, lastName?: string, email?: string): string {
@@ -109,7 +109,7 @@ export function AppSidebar() {
 
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Обзор</SidebarGroupLabel>
+          <SidebarGroupLabel>Umumiy ko'rinish</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {commonLinks.map(({ to, label, icon: Icon }) => (
@@ -156,7 +156,7 @@ export function AppSidebar() {
                   size="lg"
                   className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
                 >
-                  <Avatar className="h-8 w-8 rounded-lg">
+                  <Avatar className="h-8 w-8 rounded-lg after:border-none">
                     <AvatarImage src={user?.avatarUrl} alt={displayName} className="rounded-lg object-cover" />
                     <AvatarFallback className="rounded-lg text-xs bg-transparent">{initials}</AvatarFallback>
                   </Avatar>
@@ -177,7 +177,7 @@ export function AppSidebar() {
               >
                 <DropdownMenuLabel className="p-0 font-normal">
                   <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                    <Avatar className="h-8 w-8 rounded-lg">
+                    <Avatar className="h-8 w-8 rounded-lg after:border-none">
                       <AvatarImage src={user?.avatarUrl} alt={displayName} className="rounded-lg object-cover" />
                       <AvatarFallback className="rounded-lg text-xs bg-transparent">{initials}</AvatarFallback>
                     </Avatar>
@@ -195,12 +195,12 @@ export function AppSidebar() {
                   <DropdownMenuItem asChild>
                     <Link to="/profile">
                       <UserRound />
-                      Профиль
+                      Profil
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={toggle}>
                     {theme === 'dark' ? <Sun /> : <Moon />}
-                    {theme === 'dark' ? 'Светлая тема' : 'Тёмная тема'}
+                    {theme === 'dark' ? 'Yorug\' mavzu' : 'Qorong\'u mavzu'}
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
 
@@ -212,7 +212,7 @@ export function AppSidebar() {
                   className="text-destructive focus:text-destructive"
                 >
                   <LogOut />
-                  Выйти
+                  Chiqish
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

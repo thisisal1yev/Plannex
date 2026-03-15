@@ -34,7 +34,7 @@ export function EventDetailPage() {
   })
 
   if (isLoading) return <div className="flex justify-center py-16"><Spinner /></div>
-  if (!event) return <div className="text-center py-16 text-muted-foreground">Событие не найдено</div>
+  if (!event) return <div className="text-center py-16 text-muted-foreground">Tadbir topilmadi</div>
 
   const start = formatDateTime(event.startDate)
   const end = formatDateTime(event.endDate)
@@ -42,7 +42,7 @@ export function EventDetailPage() {
   return (
     <div className="flex flex-col gap-6">
       <Link to="/events">
-        <Button variant="ghost" size="sm">← Все события</Button>
+        <Button variant="ghost" size="sm">← Barcha tadbirlar</Button>
       </Link>
 
       {event.bannerUrl ? (
@@ -74,7 +74,7 @@ export function EventDetailPage() {
                 <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
-                {event.capacity} мест
+                {event.capacity} o'rin
               </span>
               <span>{event.eventType}</span>
             </div>
@@ -82,14 +82,14 @@ export function EventDetailPage() {
 
           {event.description && (
             <div>
-              <h2 className="text-lg font-semibold text-foreground mb-2">Описание</h2>
+              <h2 className="text-lg font-semibold text-foreground mb-2">Tavsif</h2>
               <p className="text-muted-foreground leading-relaxed whitespace-pre-line">{event.description}</p>
             </div>
           )}
 
           {event.venue && (
             <div className="bg-card rounded-xl border border-border p-4">
-              <h2 className="text-lg font-semibold text-foreground mb-2">Место проведения</h2>
+              <h2 className="text-lg font-semibold text-foreground mb-2">O'tkaziladigan joy</h2>
               <Link to={`/venues/${event.venue.id}`} className="text-primary hover:underline font-medium">
                 {event.venue.name}
               </Link>
@@ -98,14 +98,14 @@ export function EventDetailPage() {
           )}
 
           <div className="bg-card rounded-xl border border-border p-4">
-            <h2 className="text-lg font-semibold text-foreground mb-3">Расписание</h2>
+            <h2 className="text-lg font-semibold text-foreground mb-3">Jadval</h2>
             <div className="flex flex-col gap-2 text-sm">
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Начало</span>
+                <span className="text-muted-foreground">Boshlanish</span>
                 <span className="font-medium text-foreground">{start}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Конец</span>
+                <span className="text-muted-foreground">Tugash</span>
                 <span className="font-medium text-foreground">{end}</span>
               </div>
             </div>
@@ -114,15 +114,15 @@ export function EventDetailPage() {
           {/* Reviews */}
           <div>
             <div className="flex items-center justify-between mb-3">
-              <h2 className="text-lg font-semibold text-foreground">Отзывы</h2>
+              <h2 className="text-lg font-semibold text-foreground">Sharhlar</h2>
               {user && (
                 <Button variant="secondary" size="sm" onClick={() => setReviewModal(true)}>
-                  Написать отзыв
+                  Sharh yozish
                 </Button>
               )}
             </div>
             {reviews?.data.length === 0 ? (
-              <p className="text-muted-foreground text-sm">Пока нет отзывов</p>
+              <p className="text-muted-foreground text-sm">Hozircha sharhlar yo'q</p>
             ) : (
               <div className="flex flex-col gap-3">
                 {reviews?.data.map((review) => (
@@ -137,13 +137,13 @@ export function EventDetailPage() {
         <div className="flex flex-col gap-4">
           {event.status === 'PUBLISHED' && event.ticketTiers && event.ticketTiers.length > 0 && (
             <div className="bg-card rounded-xl border border-border p-5 sticky top-20">
-              <h2 className="text-lg font-semibold text-foreground mb-4">Купить билет</h2>
+              <h2 className="text-lg font-semibold text-foreground mb-4">Chipta sotib olish</h2>
               {user ? (
                 <PurchaseTicketForm eventId={event.id} tiers={event.ticketTiers} />
               ) : (
                 <div className="text-center">
-                  <p className="text-sm text-muted-foreground mb-3">Войдите, чтобы купить билет</p>
-                  <Link to="/login"><Button className="w-full">Войти</Button></Link>
+                  <p className="text-sm text-muted-foreground mb-3">Chipta sotib olish uchun kiring</p>
+                  <Link to="/login"><Button className="w-full">Kirish</Button></Link>
                 </div>
               )}
             </div>
@@ -151,21 +151,21 @@ export function EventDetailPage() {
 
           {event.status === 'PUBLISHED' && user && (
             <div className="bg-card rounded-xl border border-border p-5">
-              <h2 className="text-lg font-semibold text-foreground mb-2">Стать волонтёром</h2>
-              <p className="text-sm text-muted-foreground mb-4">Помогите с организацией мероприятия</p>
+              <h2 className="text-lg font-semibold text-foreground mb-2">Ko'ngilli bo'lish</h2>
+              <p className="text-sm text-muted-foreground mb-4">Tadbirni tashkil etishda yordam bering</p>
               <Button variant="secondary" className="w-full" onClick={() => setVolunteerModal(true)}>
-                Подать заявку
+                Ariza topshirish
               </Button>
             </div>
           )}
         </div>
       </div>
 
-      <Modal open={volunteerModal} onClose={() => setVolunteerModal(false)} title="Заявка волонтёра">
+      <Modal open={volunteerModal} onClose={() => setVolunteerModal(false)} title="Ko'ngilli arizasi">
         <ApplyVolunteerForm eventId={event.id} onSuccess={() => setVolunteerModal(false)} />
       </Modal>
 
-      <Modal open={reviewModal} onClose={() => setReviewModal(false)} title="Написать отзыв">
+      <Modal open={reviewModal} onClose={() => setReviewModal(false)} title="Sharh yozish">
         <CreateReviewForm
           eventId={event.id}
           queryKey={eventKeys.reviews(id!)}

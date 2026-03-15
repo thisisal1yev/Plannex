@@ -5,8 +5,10 @@ import { servicesApi } from '@entities/service'
 import { Input } from '@shared/ui/Input'
 import { Select } from '@shared/ui/Select'
 import { Button } from '@shared/ui/Button'
+import { Textarea } from '@shared/ui/Textarea'
 import type { CreateServiceDto } from '@entities/service'
 import { serviceKeys } from '@shared/api/queryKeys'
+import { Card, CardContent } from '@/shared/ui/primitives/card'
 
 export function CreateServicePage() {
   const navigate = useNavigate()
@@ -23,32 +25,31 @@ export function CreateServicePage() {
 
   return (
     <div className="max-w-xl">
-      <h1 className="text-2xl font-bold text-foreground mb-6">Добавить услугу</h1>
+      <h1 className="text-2xl font-bold text-foreground mb-6">Xizmat qo'shish</h1>
 
       <form onSubmit={handleSubmit((data) => mutation.mutate(data))} className="flex flex-col gap-6">
-        <div className="bg-card rounded-xl border border-border p-6 flex flex-col gap-4">
-          <Input label="Название" error={errors.name?.message} {...register('name', { required: 'Обязательное поле' })} />
-          <Select
-            label="Категория"
-            options={[
-              { value: 'CATERING', label: 'Кейтеринг' }, { value: 'DECORATION', label: 'Декор' },
-              { value: 'SOUND', label: 'Звук' }, { value: 'PHOTO', label: 'Фото' }, { value: 'SECURITY', label: 'Охрана' },
-            ]}
-            {...register('category', { required: true })}
-          />
-          <div>
-            <label className="text-sm font-medium text-foreground">Описание</label>
-            <textarea className="mt-1 w-full rounded-lg border border-border px-3 py-2 text-sm outline-none focus:border-primary resize-none bg-background text-foreground" rows={3} {...register('description')} />
-          </div>
-          <Input label="Город" error={errors.city?.message} {...register('city', { required: 'Обязательное поле' })} />
-          <Input label="Цена от (сум)" type="number" min={0} {...register('priceFrom', { required: true, valueAsNumber: true })} />
-        </div>
+        <Card>
+          <CardContent className="flex flex-col gap-4 pt-6">
+            <Input label="Nomi" error={errors.name?.message} {...register('name', { required: 'Majburiy maydon' })} />
+            <Select
+              label="Turkum"
+              options={[
+                { value: 'CATERING', label: 'Katering' }, { value: 'DECORATION', label: 'Bezak' },
+                { value: 'SOUND', label: 'Ovoz' }, { value: 'PHOTO', label: 'Foto' }, { value: 'SECURITY', label: 'Xavfsizlik' },
+              ]}
+              {...register('category', { required: true })}
+            />
+            <Textarea label="Tavsif" rows={3} {...register('description')} />
+            <Input label="Shahar" error={errors.city?.message} {...register('city', { required: 'Majburiy maydon' })} />
+            <Input label="Narx dan (so'm)" type="number" min={0} {...register('priceFrom', { required: true, valueAsNumber: true })} />
+          </CardContent>
+        </Card>
 
-        {mutation.isError && <p className="text-sm text-destructive">Ошибка при создании услуги</p>}
+        {mutation.isError && <p className="text-sm text-destructive">Xizmat yaratishda xatolik</p>}
 
         <div className="flex gap-3">
-          <Button type="submit" loading={mutation.isPending}>Создать услугу</Button>
-          <Button type="button" variant="secondary" onClick={() => navigate('/my-services')}>Отмена</Button>
+          <Button type="submit" loading={mutation.isPending}>Xizmat yaratish</Button>
+          <Button type="button" variant="secondary" onClick={() => navigate('/my-services')}>Bekor qilish</Button>
         </div>
       </form>
     </div>

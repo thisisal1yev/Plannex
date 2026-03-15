@@ -26,14 +26,14 @@ export function PurchaseTicketForm({ eventId, tiers, onSuccess }: PurchaseTicket
     },
   })
 
-  if (!tiers.length) return <p className="text-muted-foreground text-sm">Нет доступных билетов</p>
+  if (!tiers.length) return <p className="text-muted-foreground text-sm">Mavjud chiptalar yo'q</p>
 
   const selectedTier = tiers.find((t) => t.id === tierId)
 
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-2">
-        <label className="text-sm font-medium text-foreground">Тип билета</label>
+        <label className="text-sm font-medium text-foreground">Chipta turi</label>
         {tiers.map((tier) => (
           <label
             key={tier.id}
@@ -51,7 +51,7 @@ export function PurchaseTicketForm({ eventId, tiers, onSuccess }: PurchaseTicket
               />
               <div>
                 <p className="font-medium text-sm text-foreground">{tier.name}</p>
-                <p className="text-xs text-muted-foreground">Осталось: {tier.quantity - tier.sold}</p>
+                <p className="text-xs text-muted-foreground">Qoldi: {tier.quantity - tier.sold}</p>
               </div>
             </div>
             <span className="font-semibold text-primary">{formatUZS(tier.price)}</span>
@@ -60,7 +60,7 @@ export function PurchaseTicketForm({ eventId, tiers, onSuccess }: PurchaseTicket
       </div>
 
       <div className="flex flex-col gap-2">
-        <label className="text-sm font-medium text-foreground">Способ оплаты</label>
+        <label className="text-sm font-medium text-foreground">To'lov usuli</label>
         <div className="flex gap-2">
           {(['CLICK', 'PAYME'] as PaymentProvider[]).map((p) => (
             <button
@@ -78,14 +78,14 @@ export function PurchaseTicketForm({ eventId, tiers, onSuccess }: PurchaseTicket
       </div>
 
       {mutation.isError && (
-        <p className="text-sm text-destructive">Ошибка при покупке. Попробуйте ещё раз.</p>
+        <p className="text-sm text-destructive">Xatolik. Qaytadan urinib ko'ring.</p>
       )}
       {mutation.isSuccess && (
-        <p className="text-sm text-green-500">Билет успешно куплен!</p>
+        <p className="text-sm text-green-500">Chipta muvaffaqiyatli sotib olindi!</p>
       )}
 
       <Button onClick={() => mutation.mutate()} loading={mutation.isPending} className="w-full">
-        Купить за {formatUZS(selectedTier?.price ?? 0)}
+        Sotib olish {formatUZS(selectedTier?.price ?? 0)}
       </Button>
     </div>
   )

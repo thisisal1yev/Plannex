@@ -32,7 +32,7 @@ export function RegisterForm() {
       else navigate('/')
     },
     onError: () => {
-      setError('email', { message: 'Email уже используется или ошибка сервера' })
+      setError('email', { message: 'Email allaqachon ishlatilmoqda yoki server xatoligi' })
     },
   })
 
@@ -40,16 +40,16 @@ export function RegisterForm() {
     <form onSubmit={handleSubmit((data) => mutation.mutate(data))} className="flex flex-col gap-4">
       <div className="grid grid-cols-2 gap-3">
         <Input
-          label="Имя"
-          placeholder="Иван"
+          label="Ism"
+          placeholder="Ali"
           error={errors.firstName?.message}
-          {...register('firstName', { required: 'Обязательное поле' })}
+          {...register('firstName', { required: 'Majburiy maydon' })}
         />
         <Input
-          label="Фамилия"
-          placeholder="Иванов"
+          label="Familiya"
+          placeholder="Aliyev"
           error={errors.lastName?.message}
-          {...register('lastName', { required: 'Обязательное поле' })}
+          {...register('lastName', { required: 'Majburiy maydon' })}
         />
       </div>
       <Input
@@ -57,36 +57,36 @@ export function RegisterForm() {
         type="email"
         placeholder="you@example.com"
         error={errors.email?.message}
-        {...register('email', { required: 'Обязательное поле' })}
+        {...register('email', { required: 'Majburiy maydon' })}
       />
       <Input
-        label="Телефон (необязательно)"
+        label="Telefon (ixtiyoriy)"
         type="tel"
         placeholder="+998901234567"
         {...register('phone')}
       />
       <Input
-        label="Пароль"
+        label="Parol"
         type="password"
         placeholder="••••••••"
         error={errors.password?.message}
-        {...register('password', { required: 'Обязательное поле', minLength: { value: 8, message: 'Мин. 8 символов' } })}
+        {...register('password', { required: 'Majburiy maydon', minLength: { value: 8, message: 'Min. 8 belgi' } })}
       />
       <Select
-        label="Роль"
+        label="Rol"
         options={[
-          { value: 'PARTICIPANT', label: 'Участник' },
-          { value: 'ORGANIZER', label: 'Организатор' },
+          { value: 'PARTICIPANT', label: 'Ishtirokchi' },
+          { value: 'ORGANIZER', label: 'Tashkilotchi' },
         ]}
         {...register('role')}
       />
       <Button type="submit" loading={mutation.isPending} className="w-full">
-        Создать аккаунт
+        Akkaunt yaratish
       </Button>
       <p className="text-sm text-center text-muted-foreground">
-        Уже есть аккаунт?{' '}
+        Akkaunt bormi?{' '}
         <Link to="/login" className="text-primary hover:underline">
-          Войти
+          Kirish
         </Link>
       </p>
     </form>

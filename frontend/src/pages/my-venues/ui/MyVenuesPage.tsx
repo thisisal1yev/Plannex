@@ -18,14 +18,14 @@ export function MyVenuesPage() {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-900">Мои площадки</h1>
-        <Link to="/my-venues/create"><Button>+ Добавить</Button></Link>
+        <h1 className="text-2xl font-bold text-gray-900">Mening maydonlarim</h1>
+        <Link to="/my-venues/create"><Button>+ Qo'shish</Button></Link>
       </div>
 
       {data?.data.length === 0 && (
         <div className="text-center py-16">
-          <p className="text-gray-400 mb-4">У вас пока нет площадок</p>
-          <Link to="/my-venues/create"><Button>Добавить площадку</Button></Link>
+          <p className="text-gray-400 mb-4">Sizda hozircha maydonlar yo'q</p>
+          <Link to="/my-venues/create"><Button>Maydon qo'shish</Button></Link>
         </div>
       )}
 
@@ -41,9 +41,9 @@ export function MyVenuesPage() {
               </div>
             </div>
             <div className="flex items-center justify-between">
-              <span className="font-semibold text-primary">{formatUZS(venue.pricePerDay)}/день</span>
+              <span className="font-semibold text-primary">{formatUZS(venue.pricePerDay)}/kun</span>
               <Link to={`/my-venues/${venue.id}/edit`}>
-                <Button variant="secondary" size="sm">Редактировать</Button>
+                <Button variant="secondary" size="sm">Tahrirlash</Button>
               </Link>
             </div>
           </div>

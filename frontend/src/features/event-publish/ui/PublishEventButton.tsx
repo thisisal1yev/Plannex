@@ -20,7 +20,7 @@ export function PublishEventButton({ eventId }: PublishEventButtonProps) {
 
   return (
     <Button onClick={() => mutation.mutate()} loading={mutation.isPending} size="sm">
-      Опубликовать
+      Nashr etish
     </Button>
   )
 }

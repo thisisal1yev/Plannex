@@ -29,7 +29,7 @@ export function AdminUsersPage() {
 
   const columns: TableColumn<User>[] = [
     {
-      header: 'Имя',
+      header: 'Ism',
       className: 'px-4 py-3 font-medium text-foreground',
       render: (u) => `${u.firstName} ${u.lastName}`,
     },
@@ -38,11 +38,11 @@ export function AdminUsersPage() {
       render: (u) => u.email,
     },
     {
-      header: 'Роль',
+      header: 'Rol',
       render: (u) => <Badge color={ROLE_COLOR[u.role]}>{u.role}</Badge>,
     },
     {
-      header: 'Дата',
+      header: 'Sana',
       render: (u) => formatDateDefault(u.createdAt),
     },
     {
@@ -52,9 +52,9 @@ export function AdminUsersPage() {
           variant="danger"
           size="sm"
           loading={deleteMutation.isPending}
-          onClick={() => { if (confirm('Удалить пользователя?')) deleteMutation.mutate(u.id) }}
+          onClick={() => { if (confirm("Foydalanuvchini o'chirasizmi?")) deleteMutation.mutate(u.id) }}
         >
-          Удалить
+          O'chirish
         </Button>
       ),
     },
@@ -62,10 +62,10 @@ export function AdminUsersPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <h1 className="text-2xl font-bold text-foreground">Пользователи</h1>
+      <h1 className="text-2xl font-bold text-foreground">Foydalanuvchilar</h1>
 
       <Input
-        placeholder="Поиск по имени или email..."
+        placeholder="Ism yoki email bo'yicha qidirish..."
         value={search}
         onChange={(e) => { setSearch(e.target.value); setPage(1) }}
         className="max-w-sm"
@@ -79,7 +79,7 @@ export function AdminUsersPage() {
             columns={columns}
             data={data?.data ?? []}
             keyExtractor={(u) => u.id}
-            emptyMessage="Пользователи не найдены"
+            emptyMessage="Foydalanuvchilar topilmadi"
           />
           {data?.meta && <Pagination meta={data.meta} onPageChange={setPage} />}
         </>

@@ -16,12 +16,12 @@ export function MyTicketsPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <h1 className="text-2xl font-bold text-foreground">Мои билеты</h1>
+      <h1 className="text-2xl font-bold text-foreground">Mening chiptalаrim</h1>
 
       {tickets?.length === 0 && (
         <div className="text-center py-16">
-          <p className="text-muted-foreground mb-4">У вас пока нет билетов</p>
-          <Link to="/events" className="text-primary hover:underline text-sm">Найти события →</Link>
+          <p className="text-muted-foreground mb-4">Sizda hozircha chiptalar yo'q</p>
+          <Link to="/events" className="text-primary hover:underline text-sm">Tadbirlarni topish →</Link>
         </div>
       )}
 
@@ -33,15 +33,15 @@ export function MyTicketsPage() {
             className="bg-card rounded-xl border border-border p-4 flex items-center justify-between hover:shadow-sm transition-shadow"
           >
             <div>
-              <p className="font-semibold text-foreground">{ticket.event?.title ?? 'Событие'}</p>
+              <p className="font-semibold text-foreground">{ticket.event?.title ?? 'Tadbir'}</p>
               <p className="text-sm text-muted-foreground">{ticket.tier?.name} · {formatUZS(ticket.tier?.price ?? 0)}</p>
               <p className="text-xs text-muted-foreground mt-1">
-                {ticket.event?.startDate && new Date(ticket.event.startDate).toLocaleDateString('ru-RU')}
+                {ticket.event?.startDate && new Date(ticket.event.startDate).toLocaleDateString('uz-UZ')}
               </p>
             </div>
             <div className="flex items-center gap-2">
               <Badge color={ticket.isUsed ? 'gray' : 'green'}>
-                {ticket.isUsed ? 'Использован' : 'Действителен'}
+                {ticket.isUsed ? 'Ishlatilgan' : 'Amal qiladi'}
               </Badge>
               <svg className="h-4 w-4 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />

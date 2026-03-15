@@ -13,7 +13,7 @@ interface TableProps<T> {
   emptyMessage?: string
 }
 
-export function Table<T>({ columns, data, keyExtractor, emptyMessage = 'Нет данных' }: TableProps<T>) {
+export function Table<T>({ columns, data, keyExtractor, emptyMessage = "Ma'lumot yo'q" }: TableProps<T>) {
   return (
     <div className="bg-card rounded-xl border border-border overflow-hidden">
       <table className="w-full text-sm">

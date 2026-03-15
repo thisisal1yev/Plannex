@@ -18,7 +18,7 @@ export function EventParticipantsPage() {
 
   const columns: TableColumn<User>[] = [
     {
-      header: 'Имя',
+      header: 'Ism',
       className: 'px-4 py-3 font-medium text-foreground',
       render: (u) => `${u.firstName} ${u.lastName}`,
     },
@@ -27,7 +27,7 @@ export function EventParticipantsPage() {
       render: (u) => u.email,
     },
     {
-      header: 'Телефон',
+      header: 'Telefon',
       render: (u) => u.phone ?? '—',
     },
   ]
@@ -36,13 +36,13 @@ export function EventParticipantsPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <h1 className="text-2xl font-bold text-foreground">Участники события</h1>
-      <p className="text-sm text-muted-foreground">Всего: {participants?.length ?? 0}</p>
+      <h1 className="text-2xl font-bold text-foreground">Tadbir ishtirokchilari</h1>
+      <p className="text-sm text-muted-foreground">Jami: {participants?.length ?? 0}</p>
       <Table<User>
         columns={columns}
         data={participants ?? []}
         keyExtractor={(u) => u.id}
-        emptyMessage="Нет участников"
+        emptyMessage="Ishtirokchilar yo'q"
       />
     </div>
   )

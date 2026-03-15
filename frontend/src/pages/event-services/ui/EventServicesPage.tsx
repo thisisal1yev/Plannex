@@ -45,8 +45,8 @@ export function EventServicesPage() {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-foreground">Услуги события</h1>
-        <Button onClick={() => setAttachOpen(true)}>+ Добавить услугу</Button>
+        <h1 className="text-2xl font-bold text-foreground">Tadbir xizmatlari</h1>
+        <Button onClick={() => setAttachOpen(true)}>+ Xizmat qo'shish</Button>
       </div>
 
       <div className="flex flex-col gap-3">
@@ -65,26 +65,26 @@ export function EventServicesPage() {
           </div>
         ))}
         {attached?.length === 0 && (
-          <p className="text-center text-muted-foreground py-8">Услуги не прикреплены</p>
+          <p className="text-center text-muted-foreground py-8">Xizmatlar biriktirilmagan</p>
         )}
       </div>
 
-      <Modal open={attachOpen} onClose={() => setAttachOpen(false)} title="Добавить услугу">
+      <Modal open={attachOpen} onClose={() => setAttachOpen(false)} title="Xizmat qo'shish">
         <div className="flex flex-col gap-4">
           <Select
-            label="Услуга"
-            options={[{ value: '', label: 'Выберите услугу' }, ...serviceOptions]}
+            label="Xizmat"
+            options={[{ value: '', label: 'Xizmatni tanlang' }, ...serviceOptions]}
             value={serviceId}
             onChange={(e) => setServiceId(e.target.value)}
           />
-          <Input label="Согласованная цена (сум)" type="number" value={price} onChange={(e) => setPrice(e.target.value)} />
-          {attachMutation.isError && <p className="text-sm text-destructive">Ошибка при добавлении</p>}
+          <Input label="Kelishilgan narx (so'm)" type="number" value={price} onChange={(e) => setPrice(e.target.value)} />
+          {attachMutation.isError && <p className="text-sm text-destructive">Qo'shishda xatolik</p>}
           <Button
             onClick={() => attachMutation.mutate()}
             loading={attachMutation.isPending}
             disabled={!serviceId || !price}
           >
-            Прикрепить
+            Biriktirish
           </Button>
         </div>
       </Modal>

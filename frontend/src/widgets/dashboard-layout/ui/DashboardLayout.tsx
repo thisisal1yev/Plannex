@@ -21,19 +21,19 @@ function NavIcon({ path }: { path: string }) {
 }
 
 const organizerNav: NavItem[] = [
-  { to: '/dashboard', label: 'Дашборд', icon: <NavIcon path="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /> },
-  { to: '/my-events', label: 'Мои события', icon: <NavIcon path="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /> },
-  { to: '/events', label: 'Все события', icon: <NavIcon path="M4 6h16M4 10h16M4 14h16M4 18h16" /> },
+  { to: '/dashboard', label: 'Boshqaruv paneli', icon: <NavIcon path="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /> },
+  { to: '/my-events', label: 'Mening tadbirlarim', icon: <NavIcon path="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /> },
+  { to: '/events', label: 'Barcha tadbirlar', icon: <NavIcon path="M4 6h16M4 10h16M4 14h16M4 18h16" /> },
 ]
 
 const vendorNav: NavItem[] = [
-  { to: '/my-venues', label: 'Мои площадки', icon: <NavIcon path="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5" /> },
-  { to: '/my-services', label: 'Мои услуги', icon: <NavIcon path="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2" /> },
+  { to: '/my-venues', label: 'Mening maydonlarim', icon: <NavIcon path="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5" /> },
+  { to: '/my-services', label: 'Mening xizmatlarim', icon: <NavIcon path="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2" /> },
 ]
 
 const adminNav: NavItem[] = [
-  { to: '/admin/users', label: 'Пользователи', icon: <NavIcon path="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197" /> },
-  { to: '/events', label: 'События', icon: <NavIcon path="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /> },
+  { to: '/admin/users', label: 'Foydalanuvchilar', icon: <NavIcon path="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197" /> },
+  { to: '/events', label: 'Tadbirlar', icon: <NavIcon path="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /> },
 ]
 
 export function DashboardLayout() {
@@ -81,7 +81,7 @@ export function DashboardLayout() {
             <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
             </svg>
-            Профиль
+            Profil
           </NavLink>
           <Button
             variant="ghost"
@@ -93,7 +93,7 @@ export function DashboardLayout() {
             <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
             </svg>
-            Выйти
+            Chiqish
           </Button>
         </div>
       </aside>
@@ -106,7 +106,7 @@ export function DashboardLayout() {
             <button
               onClick={toggle}
               className="h-8 w-8 flex items-center justify-center rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-              aria-label="Переключить тему"
+              aria-label="Mavzuni o'zgartirish"
             >
               {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
             </button>

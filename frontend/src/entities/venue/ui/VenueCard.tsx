@@ -35,15 +35,15 @@ export function VenueCard({ venue }: VenueCardProps) {
           <span className="text-xs text-muted-foreground/70">{venue.rating.toFixed(1)}</span>
         </div>
         <div className="flex items-center justify-between mt-auto">
-          <span className="text-sm text-muted-foreground">{venue.capacity} мест</span>
-          <span className="font-semibold text-primary">{formatUZS(venue.pricePerDay)}/день</span>
+          <span className="text-sm text-muted-foreground">{venue.capacity} o'rin</span>
+          <span className="font-semibold text-primary">{formatUZS(venue.pricePerDay)}/kun</span>
         </div>
         <div className="flex gap-1 flex-wrap">
           {venue.hasWifi && <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded">WiFi</span>}
-          {venue.hasParking && <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded">Паркинг</span>}
-          {venue.hasSound && <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded">Звук</span>}
-          {venue.hasStage && <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded">Сцена</span>}
-          {venue.isIndoor && <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded">Крытый</span>}
+          {venue.hasParking && <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded">Parkovka</span>}
+          {venue.hasSound && <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded">Ovoz</span>}
+          {venue.hasStage && <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded">Sahna</span>}
+          {venue.isIndoor && <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded">Yopiq</span>}
         </div>
       </div>
     </Link>

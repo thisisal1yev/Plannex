@@ -6,8 +6,10 @@ import { Input } from '@shared/ui/Input'
 import { Select } from '@shared/ui/Select'
 import { Button } from '@shared/ui/Button'
 import { Spinner } from '@shared/ui/Spinner'
+import { Textarea } from '@shared/ui/Textarea'
 import type { UpdateServiceDto } from '@entities/service'
 import { serviceKeys } from '@shared/api/queryKeys'
+import { Card, CardContent } from '@/shared/ui/primitives/card'
 
 export function EditServicePage() {
   const { id } = useParams<{ id: string }>()
@@ -37,29 +39,28 @@ export function EditServicePage() {
 
   return (
     <div className="max-w-xl">
-      <h1 className="text-2xl font-bold text-foreground mb-6">Редактировать услугу</h1>
+      <h1 className="text-2xl font-bold text-foreground mb-6">Xizmatni tahrirlash</h1>
       <form onSubmit={handleSubmit((data) => mutation.mutate(data))} className="flex flex-col gap-6">
-        <div className="bg-card rounded-xl border border-border p-6 flex flex-col gap-4">
-          <Input label="Название" {...register('name')} />
-          <Select
-            label="Категория"
-            options={[
-              { value: 'CATERING', label: 'Кейтеринг' }, { value: 'DECORATION', label: 'Декор' },
-              { value: 'SOUND', label: 'Звук' }, { value: 'PHOTO', label: 'Фото' }, { value: 'SECURITY', label: 'Охрана' },
-            ]}
-            {...register('category')}
-          />
-          <div>
-            <label className="text-sm font-medium text-foreground">Описание</label>
-            <textarea className="mt-1 w-full rounded-lg border border-border px-3 py-2 text-sm outline-none focus:border-primary resize-none bg-background text-foreground" rows={3} {...register('description')} />
-          </div>
-          <Input label="Город" {...register('city')} />
-          <Input label="Цена от (сум)" type="number" min={0} {...register('priceFrom', { valueAsNumber: true })} />
-        </div>
-        {mutation.isError && <p className="text-sm text-destructive">Ошибка при сохранении</p>}
+        <Card>
+          <CardContent className="flex flex-col gap-4 pt-6">
+            <Input label="Nomi" {...register('name')} />
+            <Select
+              label="Turkum"
+              options={[
+                { value: 'CATERING', label: 'Katering' }, { value: 'DECORATION', label: 'Bezak' },
+                { value: 'SOUND', label: 'Ovoz' }, { value: 'PHOTO', label: 'Foto' }, { value: 'SECURITY', label: 'Xavfsizlik' },
+              ]}
+              {...register('category')}
+            />
+            <Textarea label="Tavsif" rows={3} {...register('description')} />
+            <Input label="Shahar" {...register('city')} />
+            <Input label="Narx dan (so'm)" type="number" min={0} {...register('priceFrom', { valueAsNumber: true })} />
+          </CardContent>
+        </Card>
+        {mutation.isError && <p className="text-sm text-destructive">Saqlashda xatolik</p>}
         <div className="flex gap-3">
-          <Button type="submit" loading={mutation.isPending}>Сохранить</Button>
-          <Button type="button" variant="secondary" onClick={() => navigate('/my-services')}>Отмена</Button>
+          <Button type="submit" loading={mutation.isPending}>Saqlash</Button>
+          <Button type="button" variant="secondary" onClick={() => navigate('/my-services')}>Bekor qilish</Button>
         </div>
       </form>
     </div>

@@ -33,11 +33,11 @@ function LeftPanel() {
       {/* Headline */}
       <div className="relative z-10">
         <h1 className="text-5xl font-extrabold text-white leading-tight mb-4">
-          Создавайте незабываемые события с помощью AI.
+          AI yordamida unutilmas tadbirlar yarating.
         </h1>
         <p className="text-purple-200 text-sm leading-relaxed">
-          Управляйте мероприятиями от идеи до реализации. Присоединяйтесь к
-          тысячам организаторов Узбекистана, которые строят будущее индустрии.
+          Tadbirlarni g'oyadan amalga oshirishgacha boshqaring. O'zbekistonning
+          minglab tashkilotchilariga qo'shiling va sohaning kelajagini birga quramiz.
         </p>
       </div>
 
@@ -61,7 +61,7 @@ function LeftPanel() {
 
         <div>
           <div className="flex text-yellow-400 text-sm">{"★★★★★"}</div>
-          <p className="text-purple-200 text-sm">Доверяют ведущие агентства</p>
+          <p className="text-purple-200 text-sm">Yetakchi agentliklar ishonadi</p>
         </div>
       </div>
     </div>
@@ -117,7 +117,7 @@ function SignInForm() {
       else navigate("/");
     },
     onError: () =>
-      setError("password", { message: "Неверный email или пароль" }),
+      setError("password", { message: "Noto'g'ri email yoki parol" }),
   });
 
   return (
@@ -132,19 +132,19 @@ function SignInForm() {
             type="email"
             placeholder="name@company.com"
             className={`${inputCls} pl-9 pr-3`}
-            {...register("email", { required: "Обязательное поле" })}
+            {...register("email", { required: "Majburiy maydon" })}
           />
         </div>
       </Field>
 
       <div className="flex flex-col gap-1">
         <div className="flex items-center justify-between">
-          <label className="text-sm font-medium text-foreground">Пароль</label>
+          <label className="text-sm font-medium text-foreground">Parol</label>
           <button
             type="button"
             className="text-xs text-primary hover:underline"
           >
-            Забыли пароль?
+            Parolni unutdingizmi?
           </button>
         </div>
         <div className="relative">
@@ -154,8 +154,8 @@ function SignInForm() {
             placeholder="••••••••"
             className={`${inputCls} pl-9 pr-10`}
             {...register("password", {
-              required: "Обязательное поле",
-              minLength: { value: 8, message: "Мин. 8 символов" },
+              required: "Majburiy maydon",
+              minLength: { value: 8, message: "Min. 8 belgi" },
             })}
           />
           <button
@@ -180,7 +180,7 @@ function SignInForm() {
         disabled={mutation.isPending}
         className="w-full py-2.5 bg-primary hover:bg-primary/90 disabled:opacity-60 text-primary-foreground font-medium rounded-lg text-sm transition-colors"
       >
-        {mutation.isPending ? "Вход…" : "Войти"}
+        {mutation.isPending ? "Kirish…" : "Kirish"}
       </button>
     </form>
   );
@@ -216,7 +216,7 @@ function CreateAccountForm() {
     },
     onError: () =>
       setError("email", {
-        message: "Email уже используется или ошибка сервера",
+        message: "Email allaqachon ishlatilmoqda yoki server xatoligi",
       }),
   });
 
@@ -226,23 +226,23 @@ function CreateAccountForm() {
       className="flex flex-col gap-4"
     >
       <div className="grid grid-cols-2 gap-3">
-        <Field label="Имя" error={errors.firstName?.message}>
+        <Field label="Ism" error={errors.firstName?.message}>
           <div className="relative">
             <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <input
-              placeholder="Иван"
+              placeholder="Ali"
               className={`${inputCls} pl-9 pr-3`}
-              {...register("firstName", { required: "Обязательное поле" })}
+              {...register("firstName", { required: "Majburiy maydon" })}
             />
           </div>
         </Field>
-        <Field label="Фамилия" error={errors.lastName?.message}>
+        <Field label="Familiya" error={errors.lastName?.message}>
           <div className="relative">
             <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <input
-              placeholder="Иванов"
+              placeholder="Aliyev"
               className={`${inputCls} pl-9 pr-3`}
-              {...register("lastName", { required: "Обязательное поле" })}
+              {...register("lastName", { required: "Majburiy maydon" })}
             />
           </div>
         </Field>
@@ -255,12 +255,12 @@ function CreateAccountForm() {
             type="email"
             placeholder="name@company.com"
             className={`${inputCls} pl-9 pr-3`}
-            {...register("email", { required: "Обязательное поле" })}
+            {...register("email", { required: "Majburiy maydon" })}
           />
         </div>
       </Field>
 
-      <Field label="Телефон (необязательно)">
+      <Field label="Telefon (ixtiyoriy)">
         <div className="relative">
           <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <input
@@ -273,7 +273,7 @@ function CreateAccountForm() {
       </Field>
 
       <div className="flex flex-col gap-1">
-        <label className="text-sm font-medium text-foreground">Пароль</label>
+        <label className="text-sm font-medium text-foreground">Parol</label>
         <div className="relative">
           <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <input
@@ -281,8 +281,8 @@ function CreateAccountForm() {
             placeholder="••••••••"
             className={`${inputCls} pl-9 pr-10`}
             {...register("password", {
-              required: "Обязательное поле",
-              minLength: { value: 8, message: "Мин. 8 символов" },
+              required: "Majburiy maydon",
+              minLength: { value: 8, message: "Min. 8 belgi" },
             })}
           />
           <button
@@ -302,10 +302,10 @@ function CreateAccountForm() {
         )}
       </div>
 
-      <Field label="Роль">
+      <Field label="Rol">
         <select className={`${inputCls} px-3`} {...register("role")}>
-          <option value="PARTICIPANT">Участник</option>
-          <option value="ORGANIZER">Организатор</option>
+          <option value="PARTICIPANT">Ishtirokchi</option>
+          <option value="ORGANIZER">Tashkilotchi</option>
         </select>
       </Field>
 
@@ -314,7 +314,7 @@ function CreateAccountForm() {
         disabled={mutation.isPending}
         className="w-full py-2.5 bg-primary hover:bg-primary/90 disabled:opacity-60 text-primary-foreground font-medium rounded-lg text-sm transition-colors"
       >
-        {mutation.isPending ? "Создание…" : "Создать аккаунт"}
+        {mutation.isPending ? "Yaratilmoqda…" : "Akkaunt yaratish"}
       </button>
     </form>
   );
@@ -340,12 +340,12 @@ export function AuthPage() {
           {/* Heading */}
           <div className="mb-6">
             <h2 className="text-2xl font-bold text-foreground">
-              {tab === "signin" ? "С возвращением" : "Создайте аккаунт"}
+              {tab === "signin" ? "Xush kelibsiz" : "Akkaunt yarating"}
             </h2>
             <p className="text-sm text-muted-foreground mt-1">
               {tab === "signin"
-                ? "Введите данные для входа в систему."
-                : "Заполните форму для начала работы."}
+                ? "Tizimga kirish uchun ma'lumotlarni kiriting."
+                : "Ishni boshlash uchun formani to'ldiring."}
             </p>
           </div>
 
@@ -359,7 +359,7 @@ export function AuthPage() {
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
-              Войти
+              Kirish
             </button>
             <button
               onClick={() => setTab("register")}
@@ -369,7 +369,7 @@ export function AuthPage() {
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
-              Регистрация
+              Ro'yxatdan o'tish
             </button>
           </div>
 
@@ -396,14 +396,14 @@ export function AuthPage() {
                 d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
               />
             </svg>
-            Войти через Google
+            Google orqali kirish
           </button>
 
           {/* Divider */}
           <div className="flex items-center gap-3 mb-4">
             <div className="flex-1 h-px bg-border" />
             <span className="text-xs text-muted-foreground font-medium tracking-wide">
-              ИЛИ EMAIL
+              YOKI EMAIL
             </span>
             <div className="flex-1 h-px bg-border" />
           </div>
@@ -413,14 +413,15 @@ export function AuthPage() {
 
           {/* Terms */}
           <p className="text-xs text-center text-muted-foreground mt-4">
-            Продолжая, вы соглашаетесь с{" "}
+            Davom etish orqali siz{" "}
             <a href="#" className="underline hover:text-foreground">
-              Условиями использования
+              Foydalanish shartlari
             </a>{" "}
-            и{" "}
+            va{" "}
             <a href="#" className="underline hover:text-foreground">
-              Политикой конфиденциальности
+              Maxfiylik siyosati
             </a>
+            {" "}bilan rozisiz
           </p>
         </div>
       </div>

@@ -38,7 +38,7 @@ export function ProfilePage() {
 
   return (
     <div className="max-w-lg">
-      <h1 className="text-2xl font-bold text-foreground mb-6">Профиль</h1>
+      <h1 className="text-2xl font-bold text-foreground mb-6">Profil</h1>
 
       <div className="bg-card rounded-xl border border-border p-6 mb-4">
         <p className="text-sm text-muted-foreground mb-1">Email</p>
@@ -46,21 +46,21 @@ export function ProfilePage() {
       </div>
 
       <form onSubmit={handleSubmit((d) => mutation.mutate(d))} className="bg-card rounded-xl border border-border p-6 flex flex-col gap-4">
-        <h2 className="font-semibold text-foreground">Редактировать данные</h2>
+        <h2 className="font-semibold text-foreground">Ma'lumotlarni tahrirlash</h2>
         <Input
-          label="Имя"
+          label="Ism"
           error={errors.firstName?.message}
-          {...register('firstName', { required: 'Обязательное поле' })}
+          {...register('firstName', { required: 'Majburiy maydon' })}
         />
         <Input
-          label="Фамилия"
+          label="Familiya"
           error={errors.lastName?.message}
-          {...register('lastName', { required: 'Обязательное поле' })}
+          {...register('lastName', { required: 'Majburiy maydon' })}
         />
-        <Input label="Телефон" {...register('phone')} />
-        {mutation.isSuccess && <p className="text-sm text-green-600">Данные сохранены</p>}
-        {mutation.isError && <p className="text-sm text-destructive">Ошибка при сохранении</p>}
-        <Button type="submit" loading={mutation.isPending}>Сохранить</Button>
+        <Input label="Telefon" {...register('phone')} />
+        {mutation.isSuccess && <p className="text-sm text-green-600">Ma'lumotlar saqlandi</p>}
+        {mutation.isError && <p className="text-sm text-destructive">Saqlashda xatolik</p>}
+        <Button type="submit" loading={mutation.isPending}>Saqlash</Button>
       </form>
     </div>
   )

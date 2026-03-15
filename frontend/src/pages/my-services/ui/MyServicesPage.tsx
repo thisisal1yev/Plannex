@@ -8,7 +8,7 @@ import { serviceKeys } from '@shared/api/queryKeys'
 import { formatUZS } from '@shared/lib/dateUtils'
 
 const categoryLabel: Record<string, string> = {
-  CATERING: 'Кейтеринг', DECORATION: 'Декор', SOUND: 'Звук', PHOTO: 'Фото', SECURITY: 'Охрана',
+  CATERING: 'Katering', DECORATION: 'Bezak', SOUND: 'Ovoz', PHOTO: 'Foto', SECURITY: 'Xavfsizlik',
 }
 const categoryColor: Record<string, 'green' | 'indigo' | 'blue' | 'yellow' | 'gray'> = {
   CATERING: 'green', DECORATION: 'indigo', SOUND: 'blue', PHOTO: 'yellow', SECURITY: 'gray',
@@ -25,14 +25,14 @@ export function MyServicesPage() {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-900">Мои услуги</h1>
-        <Link to="/my-services/create"><Button>+ Добавить</Button></Link>
+        <h1 className="text-2xl font-bold text-gray-900">Mening xizmatlarim</h1>
+        <Link to="/my-services/create"><Button>+ Qo'shish</Button></Link>
       </div>
 
       {data?.data.length === 0 && (
         <div className="text-center py-16">
-          <p className="text-gray-400 mb-4">У вас пока нет услуг</p>
-          <Link to="/my-services/create"><Button>Добавить услугу</Button></Link>
+          <p className="text-gray-400 mb-4">Sizda hozircha xizmatlar yo'q</p>
+          <Link to="/my-services/create"><Button>Xizmat qo'shish</Button></Link>
         </div>
       )}
 
@@ -47,9 +47,9 @@ export function MyServicesPage() {
               <Badge color={categoryColor[service.category]}>{categoryLabel[service.category]}</Badge>
             </div>
             <div className="flex items-center justify-between">
-              <span className="font-semibold text-primary">от {formatUZS(service.priceFrom)}</span>
+              <span className="font-semibold text-primary">{formatUZS(service.priceFrom)} dan</span>
               <Link to={`/my-services/${service.id}/edit`}>
-                <Button variant="secondary" size="sm">Редактировать</Button>
+                <Button variant="secondary" size="sm">Tahrirlash</Button>
               </Link>
             </div>
           </div>

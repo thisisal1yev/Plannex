@@ -26,16 +26,16 @@ export function MyEventsPage() {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-foreground">Мои события</h1>
+        <h1 className="text-2xl font-bold text-foreground">Mening tadbirlarim</h1>
         <Link to="/my-events/create">
-          <Button>+ Создать</Button>
+          <Button>+ Yaratish</Button>
         </Link>
       </div>
 
       {data?.data.length === 0 && (
         <div className="text-center py-16">
-          <p className="text-muted-foreground mb-4">У вас пока нет событий</p>
-          <Link to="/my-events/create"><Button>Создать первое событие</Button></Link>
+          <p className="text-muted-foreground mb-4">Sizda hozircha tadbirlar yo'q</p>
+          <Link to="/my-events/create"><Button>Birinchi tadbir yaratish</Button></Link>
         </div>
       )}
 
@@ -48,26 +48,26 @@ export function MyEventsPage() {
                 <Badge color={EVENT_STATUS_COLOR[event.status]}>{event.status}</Badge>
               </div>
               <p className="text-sm text-muted-foreground">
-                {formatDateDefault(event.startDate)} · {event.capacity} мест
+                {formatDateDefault(event.startDate)} · {event.capacity} o'rin
               </p>
             </div>
             <div className="flex items-center gap-2 shrink-0">
               {event.status === 'DRAFT' && <PublishEventButton eventId={event.id} />}
               <Link to={`/my-events/${event.id}/edit`}>
-                <Button variant="secondary" size="sm">Ред.</Button>
+                <Button variant="secondary" size="sm">Tahr.</Button>
               </Link>
               <Link to={`/my-events/${event.id}/participants`}>
-                <Button variant="ghost" size="sm">Участники</Button>
+                <Button variant="ghost" size="sm">Ishtirokchilar</Button>
               </Link>
               <Button
                 variant="danger"
                 size="sm"
                 loading={deleteMutation.isPending}
                 onClick={() => {
-                  if (confirm('Отменить событие?')) deleteMutation.mutate(event.id)
+                  if (confirm('Tadbirni bekor qilasizmi?')) deleteMutation.mutate(event.id)
                 }}
               >
-                Отменить
+                Bekor qilish
               </Button>
             </div>
           </div>

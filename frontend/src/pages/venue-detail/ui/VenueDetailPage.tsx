@@ -32,20 +32,20 @@ export function VenueDetailPage() {
   })
 
   if (isLoading) return <div className="flex justify-center py-16"><Spinner /></div>
-  if (!venue) return <div className="text-center py-16 text-gray-400">Площадка не найдена</div>
+  if (!venue) return <div className="text-center py-16 text-muted-foreground">Maydon topilmadi</div>
 
   const amenities = [
     venue.hasWifi && 'WiFi',
-    venue.hasParking && 'Паркинг',
-    venue.hasSound && 'Звуковая система',
-    venue.hasStage && 'Сцена',
-    venue.isIndoor && 'Крытый зал',
+    venue.hasParking && 'Parkovka',
+    venue.hasSound && 'Ovoz tizimi',
+    venue.hasStage && 'Sahna',
+    venue.isIndoor && 'Yopiq zal',
   ].filter(Boolean)
 
   return (
     <div className="flex flex-col gap-6">
       <Link to="/venues">
-        <Button variant="ghost" size="sm">← Все площадки</Button>
+        <Button variant="ghost" size="sm">← Barcha maydonlar</Button>
       </Link>
 
       {/* Image gallery */}
@@ -64,7 +64,7 @@ export function VenueDetailPage() {
                     key={i}
                     onClick={() => setImgIndex(i)}
                     className={`shrink-0 rounded-lg overflow-hidden border-2 transition-colors cursor-pointer ${
-                      i === imgIndex ? 'border-indigo-500' : 'border-transparent'
+                      i === imgIndex ? 'border-primary' : 'border-transparent'
                     }`}
                   >
                     <img src={url} alt="" className="h-16 w-24 object-cover" />
@@ -74,8 +74,8 @@ export function VenueDetailPage() {
             )}
           </>
         ) : (
-          <div className="w-full h-80 bg-gradient-to-br from-emerald-100 to-emerald-200 rounded-2xl flex items-center justify-center">
-            <svg className="h-20 w-20 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div className="w-full h-80 bg-gradient-to-br from-muted to-muted/50 rounded-2xl flex items-center justify-center">
+            <svg className="h-20 w-20 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
             </svg>
           </div>
@@ -86,8 +86,8 @@ export function VenueDetailPage() {
         {/* Left: info */}
         <div className="lg:col-span-2 flex flex-col gap-6">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">{venue.name}</h1>
-            <div className="flex flex-wrap gap-4 text-sm text-gray-500">
+            <h1 className="text-3xl font-bold text-foreground mb-2">{venue.name}</h1>
+            <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
               <span className="flex items-center gap-1">
                 <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
@@ -98,7 +98,7 @@ export function VenueDetailPage() {
                 <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
-                {venue.capacity} мест
+                {venue.capacity} o'rin
               </span>
               <div className="flex items-center gap-1">
                 <StarRating rating={venue.rating} />
@@ -109,17 +109,17 @@ export function VenueDetailPage() {
 
           {venue.description && (
             <div>
-              <h2 className="text-lg font-semibold text-gray-900 mb-2">Описание</h2>
-              <p className="text-gray-600 leading-relaxed">{venue.description}</p>
+              <h2 className="text-lg font-semibold text-foreground mb-2">Tavsif</h2>
+              <p className="text-muted-foreground leading-relaxed">{venue.description}</p>
             </div>
           )}
 
           {amenities.length > 0 && (
             <div>
-              <h2 className="text-lg font-semibold text-gray-900 mb-3">Удобства</h2>
+              <h2 className="text-lg font-semibold text-foreground mb-3">Qulayliklar</h2>
               <div className="flex flex-wrap gap-2">
                 {amenities.map((a) => (
-                  <span key={String(a)} className="px-3 py-1.5 bg-emerald-50 text-emerald-700 text-sm rounded-lg font-medium">
+                  <span key={String(a)} className="px-3 py-1.5 bg-primary/10 text-primary text-sm rounded-lg font-medium">
                     {a}
                   </span>
                 ))}
@@ -130,15 +130,15 @@ export function VenueDetailPage() {
           {/* Reviews */}
           <div>
             <div className="flex items-center justify-between mb-3">
-              <h2 className="text-lg font-semibold text-gray-900">Отзывы</h2>
+              <h2 className="text-lg font-semibold text-foreground">Sharhlar</h2>
               {user && (
                 <Button variant="secondary" size="sm" onClick={() => setReviewModal(true)}>
-                  Написать отзыв
+                  Sharh yozish
                 </Button>
               )}
             </div>
             {reviews?.data.length === 0 ? (
-              <p className="text-muted-foreground text-sm">Пока нет отзывов</p>
+              <p className="text-muted-foreground text-sm">Hozircha sharhlar yo'q</p>
             ) : (
               <div className="flex flex-col gap-3">
                 {reviews?.data.map((review) => (
@@ -152,28 +152,28 @@ export function VenueDetailPage() {
         {/* Right: booking info */}
         <div>
           <div className="bg-card rounded-xl border border-border p-5 sticky top-20">
-            <h2 className="text-2xl font-bold text-primary mb-1">{formatUZS(venue.pricePerDay)}<span className="text-sm font-normal text-muted-foreground">/день</span></h2>
-            <p className="text-sm text-muted-foreground mb-4">Аренда площадки</p>
+            <h2 className="text-2xl font-bold text-primary mb-1">{formatUZS(venue.pricePerDay)}<span className="text-sm font-normal text-muted-foreground">/kun</span></h2>
+            <p className="text-sm text-muted-foreground mb-4">Maydon ijarasi</p>
             <div className="flex flex-col gap-2 text-sm mb-4">
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Вместимость</span>
-                <span className="font-medium text-foreground">{venue.capacity} чел.</span>
+                <span className="text-muted-foreground">Sig'imi</span>
+                <span className="font-medium text-foreground">{venue.capacity} kishi</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Тип</span>
-                <span className="font-medium text-foreground">{venue.isIndoor ? 'Крытый' : 'Открытый'}</span>
+                <span className="text-muted-foreground">Turi</span>
+                <span className="font-medium text-foreground">{venue.isIndoor ? 'Yopiq' : 'Ochiq'}</span>
               </div>
             </div>
             {user ? (
-              <p className="text-xs text-muted-foreground text-center">Бронирование доступно при создании события</p>
+              <p className="text-xs text-muted-foreground text-center">Tadbir yaratishda band qilish mumkin</p>
             ) : (
-              <Link to="/login"><Button className="w-full">Войти для брони</Button></Link>
+              <Link to="/login"><Button className="w-full">Band qilish uchun kiring</Button></Link>
             )}
           </div>
         </div>
       </div>
 
-      <Modal open={reviewModal} onClose={() => setReviewModal(false)} title="Написать отзыв">
+      <Modal open={reviewModal} onClose={() => setReviewModal(false)} title="Sharh yozish">
         <CreateReviewForm
           venueId={venue.id}
           queryKey={venueKeys.reviews(id!)}

@@ -6,7 +6,7 @@ export function AuthLayout() {
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-primary">Planner AI</h1>
-          <p className="text-muted-foreground mt-1 text-sm">Маркетплейс для организации мероприятий</p>
+          <p className="text-muted-foreground mt-1 text-sm">Tadbirlarni tashkil etish marketi</p>
         </div>
         <div className="bg-card rounded-2xl shadow-sm border border-border p-8">
           <Outlet />

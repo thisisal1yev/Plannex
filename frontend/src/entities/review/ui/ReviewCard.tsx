@@ -30,7 +30,7 @@ export function ReviewCard({ review }: ReviewCardProps) {
           <span className="text-sm font-medium text-foreground">
             {review.author
               ? `${review.author.firstName} ${review.author.lastName}`
-              : "Аноним"}
+              : "Anonim"}
           </span>
         </div>
         <span className="text-xs text-muted-foreground">{date}</span>

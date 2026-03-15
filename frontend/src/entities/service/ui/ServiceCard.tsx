@@ -17,11 +17,11 @@ const categoryColor: Record<string, 'indigo' | 'green' | 'yellow' | 'blue' | 'gr
 }
 
 const categoryLabel: Record<string, string> = {
-  CATERING: 'Кейтеринг',
-  DECORATION: 'Декор',
-  SOUND: 'Звук',
-  PHOTO: 'Фото',
-  SECURITY: 'Охрана',
+  CATERING: 'Katering',
+  DECORATION: 'Bezak',
+  SOUND: 'Ovoz',
+  PHOTO: 'Foto',
+  SECURITY: 'Xavfsizlik',
 }
 
 export function ServiceCard({ service }: ServiceCardProps) {
@@ -49,7 +49,7 @@ export function ServiceCard({ service }: ServiceCardProps) {
           <StarRating rating={service.rating} />
           <span className="text-xs text-muted-foreground/70">{service.rating.toFixed(1)}</span>
         </div>
-        <p className="font-semibold text-primary mt-auto">от {formatUZS(service.priceFrom)}</p>
+        <p className="font-semibold text-primary mt-auto">{formatUZS(service.priceFrom)} dan</p>
       </div>
     </Link>
   )

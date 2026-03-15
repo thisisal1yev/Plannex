@@ -30,33 +30,33 @@ export function ApplyVolunteerForm({ eventId, onSuccess }: ApplyVolunteerFormPro
     <div className="flex flex-col gap-4">
       <div className="flex gap-2">
         <Input
-          placeholder="Например: регистрация, перевод"
+          placeholder="Masalan: ro'yxatga olish, tarjima"
           value={skillInput}
           onChange={(e) => setSkillInput(e.target.value)}
           onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addSkill() } }}
           className="flex-1"
         />
-        <Button variant="secondary" onClick={addSkill} type="button">Добавить</Button>
+        <Button variant="secondary" onClick={addSkill} type="button">Qo'shish</Button>
       </div>
       {skills.length > 0 && (
         <div className="flex flex-wrap gap-2">
           {skills.map((s) => (
-            <span key={s} className="inline-flex items-center gap-1 bg-indigo-100 text-indigo-700 text-sm px-2 py-1 rounded-full">
+            <span key={s} className="inline-flex items-center gap-1 bg-primary/10 text-primary text-sm px-2 py-1 rounded-full">
               {s}
-              <button type="button" onClick={() => setSkills(skills.filter((x) => x !== s))} className="hover:text-indigo-900 cursor-pointer">×</button>
+              <button type="button" onClick={() => setSkills(skills.filter((x) => x !== s))} className="hover:text-primary/80 cursor-pointer">×</button>
             </span>
           ))}
         </div>
       )}
-      {mutation.isError && <p className="text-sm text-red-500">Ошибка при подаче заявки</p>}
-      {mutation.isSuccess && <p className="text-sm text-green-600">Заявка подана!</p>}
+      {mutation.isError && <p className="text-sm text-destructive">Ariza topshirishda xatolik</p>}
+      {mutation.isSuccess && <p className="text-sm text-green-500 dark:text-green-400">Ariza topshirildi!</p>}
       <Button
         onClick={() => mutation.mutate()}
         loading={mutation.isPending}
         disabled={skills.length === 0}
         className="w-full"
       >
-        Подать заявку волонтёра
+        Ko'ngilli ariza topshirish
       </Button>
     </div>
   )

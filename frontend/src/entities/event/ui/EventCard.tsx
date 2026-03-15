@@ -41,7 +41,7 @@ export function EventCard({ event }: EventCardProps) {
             {event.venue.city}
           </p>
         )}
-        <p className="text-xs text-muted-foreground/70 mt-auto">{event.eventType} · {event.capacity} мест</p>
+        <p className="text-xs text-muted-foreground/70 mt-auto">{event.eventType} · {event.capacity} o'rin</p>
       </div>
     </Link>
   )

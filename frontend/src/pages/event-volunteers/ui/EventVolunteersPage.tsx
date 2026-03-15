@@ -27,7 +27,7 @@ export function EventVolunteersPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <h1 className="text-2xl font-bold text-foreground">Заявки волонтёров</h1>
+      <h1 className="text-2xl font-bold text-foreground">Ko'ngilli arizalari</h1>
 
       <div className="flex flex-col gap-3">
         {applications?.map((app) => (
@@ -50,7 +50,7 @@ export function EventVolunteersPage() {
                     loading={updateMutation.isPending}
                     onClick={() => updateMutation.mutate({ appId: app.id, status: 'ACCEPTED' })}
                   >
-                    Принять
+                    Qabul qilish
                   </Button>
                   <Button
                     size="sm"
@@ -58,7 +58,7 @@ export function EventVolunteersPage() {
                     loading={updateMutation.isPending}
                     onClick={() => updateMutation.mutate({ appId: app.id, status: 'REJECTED' })}
                   >
-                    Отклонить
+                    Rad etish
                   </Button>
                 </>
               )}
@@ -66,7 +66,7 @@ export function EventVolunteersPage() {
           </div>
         ))}
         {applications?.length === 0 && (
-          <p className="text-center text-muted-foreground py-8">Нет заявок</p>
+          <p className="text-center text-muted-foreground py-8">Arizalar yo'q</p>
         )}
       </div>
     </div>

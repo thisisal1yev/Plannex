@@ -9,12 +9,12 @@ interface BadgeProps {
 }
 
 const colors = {
-  indigo: 'bg-indigo-100 text-indigo-700',
-  green: 'bg-green-100 text-green-700',
-  red: 'bg-red-100 text-red-700',
-  yellow: 'bg-yellow-100 text-yellow-700',
-  gray: 'bg-gray-100 text-gray-600',
-  blue: 'bg-blue-100 text-blue-700',
+  indigo: 'bg-primary/10 text-primary',
+  green: 'bg-green-500/15 text-green-600 dark:text-green-400',
+  red: 'bg-destructive/10 text-destructive',
+  yellow: 'bg-yellow-500/15 text-yellow-600 dark:text-yellow-400',
+  gray: 'bg-muted text-muted-foreground',
+  blue: 'bg-blue-500/15 text-blue-600 dark:text-blue-400',
 }
 
 export function Badge({ children, color = 'gray' }: BadgeProps) {
