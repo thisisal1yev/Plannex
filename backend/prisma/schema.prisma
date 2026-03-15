@@ -36,6 +36,26 @@ enum BookingStatus {
   CANCELLED
 }
 
+enum ServiceCategory {
+  CATERING
+  DECORATION
+  SOUND
+  PHOTO
+  SECURITY
+}
+
+enum PaymentProvider {
+  CLICK
+  PAYME
+  STRIPE
+}
+
+enum VolunteerStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
 model User {
   id           String   @id @default(uuid())
   email        String   @unique
@@ -151,7 +171,7 @@ model Service {
   id          String   @id @default(uuid())
   vendorId    String?
   name        String
-  category    String // CATERING, DECORATION, SOUND, PHOTO, SECURITY
+  category    ServiceCategory
   description String?
   priceFrom   Decimal  @db.Decimal(12, 2)
   rating      Float    @default(0)
@@ -184,7 +204,7 @@ model Payment {
   event        Event?        @relation(fields: [eventId], references: [id])
   amount       Decimal       @db.Decimal(12, 2)
   commission   Decimal       @db.Decimal(12, 2)
-  provider     String // CLICK, PAYME, STRIPE
+  provider     PaymentProvider
   providerTxId String?
   status       PaymentStatus @default(PENDING)
   createdAt    DateTime      @default(now())
@@ -199,7 +219,7 @@ model VolunteerApplication {
   eventId   String
   event     Event    @relation(fields: [eventId], references: [id])
   skills    String[]
-  status    String   @default("PENDING") // PENDING, ACCEPTED, REJECTED
+  status    VolunteerStatus @default(PENDING)
   createdAt DateTime @default(now())
 
   @@unique([userId, eventId])
@@ -215,7 +235,7 @@ model Review {
   venue     Venue?   @relation(fields: [venueId], references: [id])
   serviceId String?
   service   Service? @relation(fields: [serviceId], references: [id])
-  rating    Int // 1-5
+  rating    Int
   comment   String?
   createdAt DateTime @default(now())
 }

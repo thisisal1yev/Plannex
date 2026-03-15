@@ -7,14 +7,7 @@ import {
   IsString,
   Min,
 } from 'class-validator';
-
-enum ServiceCategory {
-  CATERING = 'CATERING',
-  DECORATION = 'DECORATION',
-  SOUND = 'SOUND',
-  PHOTO = 'PHOTO',
-  SECURITY = 'SECURITY',
-}
+import { ServiceCategory } from '../../../generated/prisma/enums';
 
 export class CreateServiceDto {
   @ApiProperty({ example: 'Premium Catering Service' })

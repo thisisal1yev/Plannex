@@ -27,10 +27,10 @@ export function LoginForm() {
       return user
     },
     onSuccess: (user) => {
-      if (user.role === 'ORGANIZER') navigate('/dashboard')
-      else if (user.role === 'ADMIN') navigate('/admin/users')
+      if (user.role === 'ADMIN') navigate('/admin/dashboard')
+      else if (user.role === 'ORGANIZER') navigate('/dashboard')
       else if (user.role === 'VENDOR') navigate('/my-venues')
-      else navigate('/')
+      else navigate('/events')
     },
     onError: () => {
       setError('password', { message: 'Неверный email или пароль' })

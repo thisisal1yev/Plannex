@@ -4,6 +4,8 @@ import { PrismaService } from '../prisma/prisma.service';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { QueryReviewsDto } from './dto/query-reviews.dto';
 
+const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
 @Injectable()
 export class ReviewsService {
   constructor(private readonly prisma: PrismaService) {}
@@ -13,6 +15,7 @@ export class ReviewsService {
    * Automatically recalculates the target's rating.
    */
   async create(authorId: string, dto: CreateReviewDto) {
+    await delay(800);
     if (!dto.venueId && !dto.serviceId && !dto.eventId)
       throw new BadRequestException(
         'Provide at least one of: venueId, serviceId, eventId',
@@ -40,6 +43,7 @@ export class ReviewsService {
    * Returns reviews for a venue with pagination
    */
   async getVenueReviews(venueId: string, query: QueryReviewsDto) {
+    await delay(800);
     const page = query.page ?? 1;
     const limit = query.limit ?? 20;
     const skip = (page - 1) * limit;
@@ -54,7 +58,14 @@ export class ReviewsService {
         take: limit,
         orderBy: { createdAt: 'desc' },
         include: {
-          author: { select: { id: true, firstName: true, lastName: true } },
+          author: {
+            select: {
+              id: true,
+              firstName: true,
+              lastName: true,
+              avatarUrl: true,
+            },
+          },
         },
       }),
       this.prisma.review.count({ where }),
@@ -70,6 +81,7 @@ export class ReviewsService {
    * Returns reviews for a service with pagination
    */
   async getServiceReviews(serviceId: string, query: QueryReviewsDto) {
+    await delay(800);
     const page = query.page ?? 1;
     const limit = query.limit ?? 20;
     const skip = (page - 1) * limit;
@@ -84,7 +96,7 @@ export class ReviewsService {
         take: limit,
         orderBy: { createdAt: 'desc' },
         include: {
-          author: { select: { id: true, firstName: true, lastName: true } },
+          author: { select: { id: true, firstName: true, lastName: true, avatarUrl: true } },
         },
       }),
       this.prisma.review.count({ where }),
@@ -100,6 +112,7 @@ export class ReviewsService {
    * Returns reviews for an event with pagination
    */
   async getEventReviews(eventId: string, query: QueryReviewsDto) {
+    await delay(800);
     const page = query.page ?? 1;
     const limit = query.limit ?? 20;
     const skip = (page - 1) * limit;
@@ -114,7 +127,14 @@ export class ReviewsService {
         take: limit,
         orderBy: { createdAt: 'desc' },
         include: {
-          author: { select: { id: true, firstName: true, lastName: true } },
+          author: {
+            select: {
+              id: true,
+              firstName: true,
+              lastName: true,
+              avatarUrl: true,
+            },
+          },
         },
       }),
       this.prisma.review.count({ where }),

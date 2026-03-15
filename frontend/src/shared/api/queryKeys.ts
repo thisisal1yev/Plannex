@@ -39,4 +39,5 @@ export const ticketKeys = {
 
 export const analyticsKeys = {
   dashboard: () => ['dashboard'] as const,
+  adminDashboard: () => ['admin-dashboard'] as const,
 }

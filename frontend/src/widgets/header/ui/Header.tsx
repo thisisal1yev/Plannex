@@ -28,6 +28,11 @@ function UserMenu() {
   if (!user) return null;
 
   const initials = `${user.firstName[0]}${user.lastName[0]}`.toUpperCase();
+  const dashboardHref =
+    user.role === 'ADMIN' ? '/admin/dashboard' :
+    user.role === 'ORGANIZER' ? '/dashboard' :
+    user.role === 'VENDOR' ? '/my-venues' :
+    '/events';
 
   function handleLogout() {
     logout();
@@ -80,7 +85,7 @@ function UserMenu() {
           {/* Links */}
           <div className="py-1">
             <Link
-              to="/dashboard"
+              to={dashboardHref}
               onClick={() => setOpen(false)}
               className="flex items-center gap-2 px-4 py-2 text-sm text-foreground hover:bg-muted transition-colors"
             >

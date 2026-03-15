@@ -1,6 +1,7 @@
 import { Link } from 'react-router'
 import { Badge } from '@shared/ui/Badge'
 import { StarRating } from '@shared/ui/StarRating'
+import { formatUZS } from '@shared/lib/dateUtils'
 import type { Service } from '../model/types'
 
 interface ServiceCardProps {
@@ -48,7 +49,7 @@ export function ServiceCard({ service }: ServiceCardProps) {
           <StarRating rating={service.rating} />
           <span className="text-xs text-muted-foreground/70">{service.rating.toFixed(1)}</span>
         </div>
-        <p className="font-semibold text-primary mt-auto">от ${service.priceFrom}</p>
+        <p className="font-semibold text-primary mt-auto">от {formatUZS(service.priceFrom)}</p>
       </div>
     </Link>
   )

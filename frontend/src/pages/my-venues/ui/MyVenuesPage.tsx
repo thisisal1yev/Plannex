@@ -5,6 +5,7 @@ import { Button } from '@shared/ui/Button'
 import { Spinner } from '@shared/ui/Spinner'
 import { StarRating } from '@shared/ui/StarRating'
 import { venueKeys } from '@shared/api/queryKeys'
+import { formatUZS } from '@shared/lib/dateUtils'
 
 export function MyVenuesPage() {
   const { data, isLoading } = useQuery({
@@ -40,7 +41,7 @@ export function MyVenuesPage() {
               </div>
             </div>
             <div className="flex items-center justify-between">
-              <span className="font-semibold text-indigo-600">${venue.pricePerDay}/день</span>
+              <span className="font-semibold text-primary">{formatUZS(venue.pricePerDay)}/день</span>
               <Link to={`/my-venues/${venue.id}/edit`}>
                 <Button variant="secondary" size="sm">Редактировать</Button>
               </Link>

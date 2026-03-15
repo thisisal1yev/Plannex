@@ -2,6 +2,8 @@ import { Controller, Get, Param, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
+import { RolesGuard } from '../common/guards/roles.guard';
+import { Roles } from '../common/decorators/roles.decorator';
 import { AnalyticsService } from './analytics.service';
 
 @ApiTags('Analytics')
@@ -10,6 +12,14 @@ import { AnalyticsService } from './analytics.service';
 @Controller('analytics')
 export class AnalyticsController {
   constructor(private readonly analyticsService: AnalyticsService) {}
+
+  @Get('admin')
+  @UseGuards(RolesGuard)
+  @Roles('ADMIN')
+  @ApiOperation({ summary: 'Admin platform-wide dashboard statistics' })
+  getAdminDashboard() {
+    return this.analyticsService.getAdminStats();
+  }
 
   @Get('dashboard')
   @ApiOperation({ summary: 'Organizer dashboard statistics' })

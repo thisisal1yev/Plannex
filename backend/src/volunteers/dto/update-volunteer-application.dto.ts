@@ -1,13 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum } from 'class-validator';
-
-enum ApplicationStatus {
-  ACCEPTED = 'ACCEPTED',
-  REJECTED = 'REJECTED',
-}
+import { VolunteerStatus } from '../../../generated/prisma/enums';
 
 export class UpdateVolunteerApplicationDto {
-  @ApiProperty({ enum: ApplicationStatus })
-  @IsEnum(ApplicationStatus)
-  status: ApplicationStatus;
+  @ApiProperty({ enum: VolunteerStatus, description: 'ACCEPTED or REJECTED' })
+  @IsEnum(VolunteerStatus)
+  status: VolunteerStatus;
 }

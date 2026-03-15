@@ -5,6 +5,7 @@ import { Badge } from '@shared/ui/Badge'
 import { Button } from '@shared/ui/Button'
 import { Spinner } from '@shared/ui/Spinner'
 import { serviceKeys } from '@shared/api/queryKeys'
+import { formatUZS } from '@shared/lib/dateUtils'
 
 const categoryLabel: Record<string, string> = {
   CATERING: 'Кейтеринг', DECORATION: 'Декор', SOUND: 'Звук', PHOTO: 'Фото', SECURITY: 'Охрана',
@@ -46,7 +47,7 @@ export function MyServicesPage() {
               <Badge color={categoryColor[service.category]}>{categoryLabel[service.category]}</Badge>
             </div>
             <div className="flex items-center justify-between">
-              <span className="font-semibold text-indigo-600">от ${service.priceFrom}</span>
+              <span className="font-semibold text-primary">от {formatUZS(service.priceFrom)}</span>
               <Link to={`/my-services/${service.id}/edit`}>
                 <Button variant="secondary" size="sm">Редактировать</Button>
               </Link>

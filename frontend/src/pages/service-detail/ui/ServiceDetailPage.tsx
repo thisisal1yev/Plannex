@@ -12,6 +12,7 @@ import { Modal } from '@shared/ui/Modal'
 import { Spinner } from '@shared/ui/Spinner'
 import { useAuthStore } from '@shared/model/auth.store'
 import { serviceKeys } from '@shared/api/queryKeys'
+import { formatUZS } from '@shared/lib/dateUtils'
 
 const categoryLabel: Record<string, string> = {
   CATERING: 'Кейтеринг',
@@ -143,17 +144,17 @@ export function ServiceDetailPage() {
 
         {/* Right: pricing */}
         <div>
-          <div className="bg-white rounded-xl border border-gray-200 p-5 sticky top-20">
-            <h2 className="text-2xl font-bold text-indigo-600 mb-1">от ${service.priceFrom}</h2>
-            <p className="text-sm text-gray-500 mb-4">Стоимость услуги</p>
+          <div className="bg-card rounded-xl border border-border p-5 sticky top-20">
+            <h2 className="text-2xl font-bold text-primary mb-1">от {formatUZS(service.priceFrom)}</h2>
+            <p className="text-sm text-muted-foreground mb-4">Стоимость услуги</p>
             <div className="flex flex-col gap-2 text-sm mb-4">
               <div className="flex justify-between">
-                <span className="text-gray-500">Категория</span>
-                <span className="font-medium">{categoryLabel[service.category]}</span>
+                <span className="text-muted-foreground">Категория</span>
+                <span className="font-medium text-foreground">{categoryLabel[service.category]}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-500">Город</span>
-                <span className="font-medium">{service.city}</span>
+                <span className="text-muted-foreground">Город</span>
+                <span className="font-medium text-foreground">{service.city}</span>
               </div>
             </div>
             {user ? (

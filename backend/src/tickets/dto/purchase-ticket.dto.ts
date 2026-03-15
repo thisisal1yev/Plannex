@@ -1,10 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum, IsString } from 'class-validator';
-
-enum PaymentProvider {
-  CLICK = 'CLICK',
-  PAYME = 'PAYME',
-}
+import { PaymentProvider } from '../../../generated/prisma/enums';
 
 export class PurchaseTicketDto {
   @ApiProperty({ description: 'Ticket tier ID' })

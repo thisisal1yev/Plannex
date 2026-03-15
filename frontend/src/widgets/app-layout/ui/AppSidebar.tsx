@@ -59,7 +59,10 @@ const roleLinks: Record<string, Array<{ to: string; label: string; icon: Element
     { to: '/my-venues', label: 'Мои площадки', icon: MapPin },
     { to: '/my-services', label: 'Мои услуги', icon: Settings2 },
   ],
-  ADMIN: [{ to: '/admin/users', label: 'Пользователи', icon: Users }],
+  ADMIN: [
+    { to: '/admin/dashboard', label: 'Дашборд', icon: LayoutDashboard },
+    { to: '/admin/users', label: 'Пользователи', icon: Users },
+  ],
   VOLUNTEER: [],
 }
 

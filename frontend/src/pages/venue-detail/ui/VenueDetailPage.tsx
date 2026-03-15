@@ -11,6 +11,7 @@ import { Modal } from '@shared/ui/Modal'
 import { Spinner } from '@shared/ui/Spinner'
 import { useAuthStore } from '@shared/model/auth.store'
 import { venueKeys } from '@shared/api/queryKeys'
+import { formatUZS } from '@shared/lib/dateUtils'
 
 export function VenueDetailPage() {
   const { id } = useParams<{ id: string }>()
@@ -137,7 +138,7 @@ export function VenueDetailPage() {
               )}
             </div>
             {reviews?.data.length === 0 ? (
-              <p className="text-gray-400 text-sm">Пока нет отзывов</p>
+              <p className="text-muted-foreground text-sm">Пока нет отзывов</p>
             ) : (
               <div className="flex flex-col gap-3">
                 {reviews?.data.map((review) => (
@@ -150,21 +151,21 @@ export function VenueDetailPage() {
 
         {/* Right: booking info */}
         <div>
-          <div className="bg-white rounded-xl border border-gray-200 p-5 sticky top-20">
-            <h2 className="text-2xl font-bold text-indigo-600 mb-1">${venue.pricePerDay}<span className="text-sm font-normal text-gray-400">/день</span></h2>
-            <p className="text-sm text-gray-500 mb-4">Аренда площадки</p>
+          <div className="bg-card rounded-xl border border-border p-5 sticky top-20">
+            <h2 className="text-2xl font-bold text-primary mb-1">{formatUZS(venue.pricePerDay)}<span className="text-sm font-normal text-muted-foreground">/день</span></h2>
+            <p className="text-sm text-muted-foreground mb-4">Аренда площадки</p>
             <div className="flex flex-col gap-2 text-sm mb-4">
               <div className="flex justify-between">
-                <span className="text-gray-500">Вместимость</span>
-                <span className="font-medium">{venue.capacity} чел.</span>
+                <span className="text-muted-foreground">Вместимость</span>
+                <span className="font-medium text-foreground">{venue.capacity} чел.</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-500">Тип</span>
-                <span className="font-medium">{venue.isIndoor ? 'Крытый' : 'Открытый'}</span>
+                <span className="text-muted-foreground">Тип</span>
+                <span className="font-medium text-foreground">{venue.isIndoor ? 'Крытый' : 'Открытый'}</span>
               </div>
             </div>
             {user ? (
-              <p className="text-xs text-gray-400 text-center">Бронирование доступно при создании события</p>
+              <p className="text-xs text-muted-foreground text-center">Бронирование доступно при создании события</p>
             ) : (
               <Link to="/login"><Button className="w-full">Войти для брони</Button></Link>
             )}

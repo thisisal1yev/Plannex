@@ -1,10 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsEnum, IsNumber, IsOptional, IsString, Min } from 'class-validator';
-
-enum PaymentProvider {
-  CLICK = 'CLICK',
-  PAYME = 'PAYME',
-}
+import { PaymentProvider } from '../../../generated/prisma/enums';
 
 export class CreatePaymentDto {
   @ApiProperty()

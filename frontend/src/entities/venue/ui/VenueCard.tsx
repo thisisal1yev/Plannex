@@ -1,5 +1,6 @@
 import { Link } from 'react-router'
 import { StarRating } from '@shared/ui/StarRating'
+import { formatUZS } from '@shared/lib/dateUtils'
 import type { Venue } from '../model/types'
 
 interface VenueCardProps {
@@ -35,7 +36,7 @@ export function VenueCard({ venue }: VenueCardProps) {
         </div>
         <div className="flex items-center justify-between mt-auto">
           <span className="text-sm text-muted-foreground">{venue.capacity} мест</span>
-          <span className="font-semibold text-primary">${venue.pricePerDay}/день</span>
+          <span className="font-semibold text-primary">{formatUZS(venue.pricePerDay)}/день</span>
         </div>
         <div className="flex gap-1 flex-wrap">
           {venue.hasWifi && <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded">WiFi</span>}

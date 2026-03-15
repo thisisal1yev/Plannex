@@ -46,6 +46,7 @@ import { EditServicePage } from '@pages/edit-service'
 
 // Admin
 import { AdminUsersPage } from '@pages/admin-users'
+import { AdminDashboardPage } from '@pages/admin-dashboard'
 
 export function AppRouter() {
   const isAuth = !!useAuthStore((s) => s.accessToken)
@@ -96,6 +97,7 @@ export function AppRouter() {
         <Route path="/my-services/:id/edit" element={<RequireRole role="VENDOR"><EditServicePage /></RequireRole>} />
 
         {/* ADMIN */}
+        <Route path="/admin/dashboard" element={<RequireRole role="ADMIN"><AdminDashboardPage /></RequireRole>} />
         <Route path="/admin/users" element={<RequireRole role="ADMIN"><AdminUsersPage /></RequireRole>} />
       </Route>
 

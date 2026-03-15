@@ -22,15 +22,15 @@ export function CreateVenuePage() {
 
   return (
     <div className="max-w-2xl">
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">Добавить площадку</h1>
+      <h1 className="text-2xl font-bold text-foreground mb-6">Добавить площадку</h1>
 
       <form onSubmit={handleSubmit((data) => mutation.mutate(data))} className="flex flex-col gap-6">
-        <div className="bg-white rounded-xl border border-gray-200 p-6 flex flex-col gap-4">
-          <h2 className="font-semibold text-gray-900">Основная информация</h2>
+        <div className="bg-card rounded-xl border border-border p-6 flex flex-col gap-4">
+          <h2 className="font-semibold text-foreground">Основная информация</h2>
           <Input label="Название" error={errors.name?.message} {...register('name', { required: 'Обязательное поле' })} />
           <div>
-            <label className="text-sm font-medium text-gray-700">Описание</label>
-            <textarea className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-indigo-500 resize-none" rows={3} {...register('description')} />
+            <label className="text-sm font-medium text-foreground">Описание</label>
+            <textarea className="mt-1 w-full rounded-lg border border-border px-3 py-2 text-sm outline-none focus:border-primary resize-none bg-background text-foreground" rows={3} {...register('description')} />
           </div>
           <div className="grid grid-cols-2 gap-4">
             <Input label="Город" error={errors.city?.message} {...register('city', { required: 'Обязательное поле' })} />
@@ -38,12 +38,12 @@ export function CreateVenuePage() {
           </div>
           <div className="grid grid-cols-2 gap-4">
             <Input label="Вместимость" type="number" min={1} {...register('capacity', { required: true, valueAsNumber: true })} />
-            <Input label="Цена за день ($)" type="number" min={0} {...register('pricePerDay', { required: true, valueAsNumber: true })} />
+            <Input label="Цена за день (сум)" type="number" min={0} {...register('pricePerDay', { required: true, valueAsNumber: true })} />
           </div>
         </div>
 
-        <div className="bg-white rounded-xl border border-gray-200 p-6">
-          <h2 className="font-semibold text-gray-900 mb-4">Удобства</h2>
+        <div className="bg-card rounded-xl border border-border p-6">
+          <h2 className="font-semibold text-foreground mb-4">Удобства</h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             {[
               { name: 'isIndoor', label: 'Крытый' },
@@ -53,14 +53,14 @@ export function CreateVenuePage() {
               { name: 'hasStage', label: 'Сцена' },
             ].map((item) => (
               <label key={item.name} className="flex items-center gap-2 cursor-pointer">
-                <input type="checkbox" className="accent-indigo-600" {...register(item.name as keyof CreateVenueDto)} />
-                <span className="text-sm text-gray-700">{item.label}</span>
+                <input type="checkbox" className="accent-primary" {...register(item.name as keyof CreateVenueDto)} />
+                <span className="text-sm text-foreground">{item.label}</span>
               </label>
             ))}
           </div>
         </div>
 
-        {mutation.isError && <p className="text-sm text-red-500">Ошибка при создании площадки</p>}
+        {mutation.isError && <p className="text-sm text-destructive">Ошибка при создании площадки</p>}
 
         <div className="flex gap-3">
           <Button type="submit" loading={mutation.isPending}>Создать площадку</Button>

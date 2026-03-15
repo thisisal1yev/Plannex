@@ -10,6 +10,7 @@ import { Spinner } from '@shared/ui/Spinner'
 import { Input } from '@shared/ui/Input'
 import { Select } from '@shared/ui/Select'
 import { eventKeys, serviceKeys } from '@shared/api/queryKeys'
+import { formatUZS } from '@shared/lib/dateUtils'
 
 export function EventServicesPage() {
   const { id } = useParams<{ id: string }>()
@@ -56,7 +57,7 @@ export function EventServicesPage() {
               <p className="text-sm text-muted-foreground">{es.service?.category}</p>
             </div>
             <div className="flex items-center gap-3">
-              <span className="font-semibold text-primary">${es.agreedPrice}</span>
+              <span className="font-semibold text-primary">{formatUZS(es.agreedPrice)}</span>
               <Badge color={BOOKING_STATUS_COLOR[es.status as keyof typeof BOOKING_STATUS_COLOR] ?? 'gray'}>
                 {es.status}
               </Badge>
@@ -76,7 +77,7 @@ export function EventServicesPage() {
             value={serviceId}
             onChange={(e) => setServiceId(e.target.value)}
           />
-          <Input label="Согласованная цена ($)" type="number" value={price} onChange={(e) => setPrice(e.target.value)} />
+          <Input label="Согласованная цена (сум)" type="number" value={price} onChange={(e) => setPrice(e.target.value)} />
           {attachMutation.isError && <p className="text-sm text-destructive">Ошибка при добавлении</p>}
           <Button
             onClick={() => attachMutation.mutate()}

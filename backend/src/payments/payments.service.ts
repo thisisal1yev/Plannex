@@ -1,4 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { PaymentStatus } from '../../generated/prisma/enums';
 import { PrismaService } from '../prisma/prisma.service';
 import { ClickWebhookDto } from './dto/click-webhook.dto';
 import { PaymeWebhookDto } from './dto/payme-webhook.dto';
@@ -52,10 +53,10 @@ export class PaymentsService {
     if (!payment) return { error: -5, error_note: 'Payment not found' };
 
     // action=0: prepare, action=1: complete
-    if (dto.action === 1 && payment.status === 'PENDING') {
+    if (dto.action === 1 && payment.status === PaymentStatus.PENDING) {
       await this.prisma.payment.update({
         where: { id: payment.id },
-        data: { status: 'PAID', providerTxId: dto.click_trans_id },
+        data: { status: PaymentStatus.PAID, providerTxId: dto.click_trans_id },
       });
     }
 
@@ -94,9 +95,9 @@ export class PaymentsService {
       case 'PerformTransaction': {
         const paymentId = dto.params.id as string | undefined;
         await this.prisma.payment.updateMany({
-          where: { id: paymentId, status: 'PENDING' },
+          where: { id: paymentId, status: PaymentStatus.PENDING },
           data: {
-            status: 'PAID',
+            status: PaymentStatus.PAID,
             providerTxId: dto.params.paycom_transaction_id as
               | string
               | undefined,
@@ -115,7 +116,7 @@ export class PaymentsService {
         const paymentId = dto.params.id as string | undefined;
         await this.prisma.payment.updateMany({
           where: { id: paymentId },
-          data: { status: 'REFUNDED' },
+          data: { status: PaymentStatus.REFUNDED },
         });
         return {
           result: {

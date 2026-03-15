@@ -37,9 +37,9 @@ export function EditServicePage() {
 
   return (
     <div className="max-w-xl">
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">Редактировать услугу</h1>
+      <h1 className="text-2xl font-bold text-foreground mb-6">Редактировать услугу</h1>
       <form onSubmit={handleSubmit((data) => mutation.mutate(data))} className="flex flex-col gap-6">
-        <div className="bg-white rounded-xl border border-gray-200 p-6 flex flex-col gap-4">
+        <div className="bg-card rounded-xl border border-border p-6 flex flex-col gap-4">
           <Input label="Название" {...register('name')} />
           <Select
             label="Категория"
@@ -50,13 +50,13 @@ export function EditServicePage() {
             {...register('category')}
           />
           <div>
-            <label className="text-sm font-medium text-gray-700">Описание</label>
-            <textarea className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-indigo-500 resize-none" rows={3} {...register('description')} />
+            <label className="text-sm font-medium text-foreground">Описание</label>
+            <textarea className="mt-1 w-full rounded-lg border border-border px-3 py-2 text-sm outline-none focus:border-primary resize-none bg-background text-foreground" rows={3} {...register('description')} />
           </div>
           <Input label="Город" {...register('city')} />
-          <Input label="Цена от ($)" type="number" min={0} {...register('priceFrom', { valueAsNumber: true })} />
+          <Input label="Цена от (сум)" type="number" min={0} {...register('priceFrom', { valueAsNumber: true })} />
         </div>
-        {mutation.isError && <p className="text-sm text-red-500">Ошибка при сохранении</p>}
+        {mutation.isError && <p className="text-sm text-destructive">Ошибка при сохранении</p>}
         <div className="flex gap-3">
           <Button type="submit" loading={mutation.isPending}>Сохранить</Button>
           <Button type="button" variant="secondary" onClick={() => navigate('/my-services')}>Отмена</Button>

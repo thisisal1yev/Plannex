@@ -4,6 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { Prisma } from '../../generated/prisma/client';
+import { PaymentStatus } from '../../generated/prisma/enums';
 const { Decimal } = Prisma;
 import { generateQRCode } from '../common/utils/qr.util';
 import { PrismaService } from '../prisma/prisma.service';
@@ -44,7 +45,7 @@ export class TicketsService {
           amount,
           commission,
           provider: dto.provider,
-          status: 'PAID', // Stub: mark as paid immediately
+          status: PaymentStatus.PAID, // Stub: mark as paid immediately
         },
       });
 
