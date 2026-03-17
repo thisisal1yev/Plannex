@@ -51,6 +51,8 @@ import { EditServicePage } from '@pages/edit-service'
 // Admin
 import { AdminUsersPage } from '@pages/admin-users'
 import { AdminDashboardPage } from '@pages/admin-dashboard'
+import { AdminEventsPage } from '@pages/admin-events'
+import { AdminVenuesPage } from '@pages/admin-venues'
 
 export function AppRouter() {
   const isAuth = !!useAuthStore((s) => s.accessToken)
@@ -70,16 +72,18 @@ export function AppRouter() {
       <Route path="/login" element={<GuestOnly><AuthPage /></GuestOnly>} />
       <Route path="/register" element={<GuestOnly><AuthPage /></GuestOnly>} />
 
-      {/* ── Authenticated: AppLayout with sidebar ── */}
-      <Route element={<RequireAuth><AppLayout /></RequireAuth>}>
-        {/* Browsing */}
+      {/* ── Public browsing: AppLayout without auth ── */}
+      <Route element={<AppLayout />}>
         <Route path="/events" element={<EventsListPage />} />
         <Route path="/events/:id" element={<EventDetailPage />} />
         <Route path="/venues" element={<VenuesListPage />} />
         <Route path="/venues/:id" element={<VenueDetailPage />} />
         <Route path="/services" element={<ServicesListPage />} />
         <Route path="/services/:id" element={<ServiceDetailPage />} />
+      </Route>
 
+      {/* ── Authenticated: AppLayout with sidebar ── */}
+      <Route element={<RequireAuth><AppLayout /></RequireAuth>}>
         {/* All users */}
         <Route path="/profile" element={<ProfilePage />} />
 
@@ -106,7 +110,9 @@ export function AppRouter() {
 
         {/* ADMIN */}
         <Route path="/admin/dashboard" element={<RequireRole role="ADMIN"><AdminDashboardPage /></RequireRole>} />
-        <Route path="/admin/users" element={<RequireRole role="ADMIN"><AdminUsersPage /></RequireRole>} />
+        <Route path="/admin/users"     element={<RequireRole role="ADMIN"><AdminUsersPage /></RequireRole>} />
+        <Route path="/admin/events"    element={<RequireRole role="ADMIN"><AdminEventsPage /></RequireRole>} />
+        <Route path="/admin/venues"    element={<RequireRole role="ADMIN"><AdminVenuesPage /></RequireRole>} />
       </Route>
 
       <Route path="*" element={<Navigate to={isAuth ? '/events' : '/'} replace />} />

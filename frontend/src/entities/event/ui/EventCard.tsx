@@ -28,7 +28,7 @@ export function EventCard({ event }: EventCardProps) {
   return (
     <Link
       to={`/events/${event.id}`}
-      className="group flex flex-col rounded-[14px] overflow-hidden border border-white/7 bg-white/3 no-underline backdrop-blur-[4px] transition-[transform,box-shadow,border-color] duration-300 ease-[cubic-bezier(0.34,1.4,0.64,1)] hover:-translate-y-[5px] hover:border-gold/28 hover:shadow-[0_20px_48px_rgba(0,0,0,0.4),0_0_0_1px_rgba(201,150,58,0.12)]"
+      className="group flex flex-col rounded-[14px] overflow-hidden border border-white/7 bg-white/3 no-underline backdrop-blur-xs transition-all duration-300 ease-[cubic-bezier(0.34,1.4,0.64,1)] hover:-translate-y-[5px] hover:border-gold/28 hover:shadow-[0_20px_48px_rgba(0,0,0,0.4),0_0_0_1px_rgba(201,150,58,0.12)]"
     >
       {/* Image */}
       <div className="relative overflow-hidden h-44 shrink-0">
@@ -37,7 +37,7 @@ export function EventCard({ event }: EventCardProps) {
             <img
               src={event.bannerUrl}
               alt={event.title}
-              className="w-full h-full object-cover transition-transform duration-[550ms] ease-in-out group-hover:scale-[1.06]"
+              className="w-full h-full object-cover transition-transform duration-500 ease-in-out group-hover:scale-[1.06]"
             />
             <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(8,15,25,0.75)_0%,transparent_55%)] pointer-events-none" />
           </>
