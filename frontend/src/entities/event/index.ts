@@ -1,5 +1,0 @@
-export type { Event, TicketTier } from './model/types'
-export { eventsApi } from './api/eventsApi'
-export type { CreateEventDto, UpdateEventDto, QueryEventsDto } from './api/eventsApi'
-export { EventCard } from './ui/EventCard'
-export { EVENT_STATUS_COLOR } from './model/constants'
