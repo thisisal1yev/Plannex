@@ -1,17 +1,85 @@
 import { useState } from 'react'
 import { useParams, Link } from 'react-router'
 import { useQuery } from '@tanstack/react-query'
+import {
+  ArrowLeft, MapPin, Users, Star,
+  Wifi, Car, Volume2, Music, Home, Sun,
+} from 'lucide-react'
 import { venuesApi } from '@entities/venue'
 import { reviewsApi } from '@entities/review'
 import { ReviewCard } from '@entities/review'
 import { CreateReviewForm } from '@features/review-create'
 import { StarRating } from '@shared/ui/StarRating'
-import { Button } from '@shared/ui/Button'
 import { Modal } from '@shared/ui/Modal'
-import { Spinner } from '@shared/ui/Spinner'
 import { useAuthStore } from '@shared/model/auth.store'
 import { venueKeys } from '@shared/api/queryKeys'
 import { formatUZS } from '@shared/lib/dateUtils'
+import { Skeleton } from '@/shared/ui/primitives/skeleton'
+import { Separator } from '@/shared/ui/primitives/separator'
+import { Badge } from '@/shared/ui/primitives/badge'
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from '@/shared/ui/primitives/card'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/shared/ui/primitives/tooltip'
+
+function DetailSkeleton() {
+  return (
+    <div className="flex flex-col gap-0 pb-16">
+      <Skeleton className="h-4 w-24 mb-8" />
+
+      {/* Editorial title skeleton */}
+      <div className="flex flex-col gap-3 mb-8">
+        <Skeleton className="h-3 w-16" />
+        <Skeleton className="h-14 w-3/4" />
+        <Skeleton className="h-14 w-1/2" />
+        <div className="flex items-center gap-3 mt-1">
+          <Skeleton className="h-4 w-24" />
+          <Skeleton className="h-4 w-px" />
+          <Skeleton className="h-4 w-16" />
+        </div>
+      </div>
+
+      {/* Gallery skeleton */}
+      <div className="grid grid-cols-[1fr_80px] gap-2 h-[460px]">
+        <Skeleton className="rounded-2xl" />
+        <div className="flex flex-col gap-2">
+          <Skeleton className="h-[120px] rounded-lg" />
+          <Skeleton className="h-[120px] rounded-lg" />
+          <Skeleton className="h-[120px] rounded-lg" />
+        </div>
+      </div>
+
+      {/* Content skeleton */}
+      <div className="mt-10 grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <div className="lg:col-span-7 flex flex-col gap-6">
+          <Skeleton className="h-12 rounded-xl" />
+          <div className="pl-5 border-l border-border/20 flex flex-col gap-3">
+            <Skeleton className="h-3.5 w-full" />
+            <Skeleton className="h-3.5 w-full" />
+            <Skeleton className="h-3.5 w-2/3" />
+          </div>
+          <div className="flex gap-2">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <Skeleton key={i} className="h-12 w-12 rounded-xl" />
+            ))}
+          </div>
+        </div>
+        <div className="lg:col-span-5">
+          <Skeleton className="h-72 rounded-xl" />
+        </div>
+      </div>
+    </div>
+  )
+}
 
 export function VenueDetailPage() {
   const { id } = useParams<{ id: string }>()
@@ -31,117 +99,231 @@ export function VenueDetailPage() {
     enabled: !!id,
   })
 
-  if (isLoading) return <div className="flex justify-center py-16"><Spinner /></div>
-  if (!venue) return <div className="text-center py-16 text-muted-foreground">Maydon topilmadi</div>
+  if (isLoading) return <DetailSkeleton />
 
-  const amenities = [
-    venue.hasWifi && 'WiFi',
-    venue.hasParking && 'Parkovka',
-    venue.hasSound && 'Ovoz tizimi',
-    venue.hasStage && 'Sahna',
-    venue.isIndoor && 'Yopiq zal',
-  ].filter(Boolean)
+  if (!venue) {
+    return (
+      <div className="flex flex-col items-center justify-center py-24 gap-5">
+        <div className="w-16 h-16 rounded-2xl bg-card border border-border/60 flex items-center justify-center">
+          <Home className="size-7 text-muted-foreground/20" />
+        </div>
+        <div className="text-center">
+          <p className="text-[15px] font-semibold text-foreground">Maydon topilmadi</p>
+          <p className="text-[13px] text-muted-foreground/50 mt-1">
+            Bu maydon mavjud emas yoki o'chirilgan
+          </p>
+        </div>
+        <Link
+          to="/venues"
+          className="h-8 px-4 rounded-lg border border-border text-[12px] text-muted-foreground hover:text-foreground hover:border-gold/30 transition-colors flex items-center"
+        >
+          Barcha maydonlar
+        </Link>
+      </div>
+    )
+  }
+
+  const avgRating =
+    reviews?.data.length
+      ? reviews.data.reduce((sum, r) => sum + r.rating, 0) / reviews.data.length
+      : venue.rating
+
+  const amenityItems = [
+    venue.hasWifi    && { Icon: Wifi,    label: 'WiFi' },
+    venue.hasParking && { Icon: Car,     label: 'Parkovka' },
+    venue.hasSound   && { Icon: Volume2, label: 'Ovoz tizimi' },
+    venue.hasStage   && { Icon: Music,   label: 'Sahna' },
+    venue.isIndoor   && { Icon: Home,    label: 'Yopiq zal' },
+    !venue.isIndoor  && { Icon: Sun,     label: 'Ochiq maydon' },
+  ].filter(Boolean) as Array<{ Icon: typeof Wifi; label: string }>
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-6 flex flex-col gap-6">
-      <Link to="/venues">
-        <Button variant="ghost" size="sm">← Barcha maydonlar</Button>
+    <div className="flex flex-col gap-0 pb-16">
+
+      {/* ── Back navigation ── */}
+      <Link
+        to="/venues"
+        className="inline-flex items-center gap-1.5 text-[13px] text-muted-foreground/45 hover:text-foreground mb-8 transition-colors w-fit"
+      >
+        <ArrowLeft className="size-3.5" />
+        Barcha maydonlar
       </Link>
 
-      {/* Image gallery */}
-      <div className="flex flex-col gap-2">
-        {venue.imageUrls.length > 0 ? (
-          <>
+      {/* ── Editorial header: title leads, image illustrates ── */}
+      <div className="mb-8">
+        <div className="flex items-center gap-1.5 text-[10px] text-gold/70 font-semibold tracking-[0.18em] uppercase mb-3">
+          <MapPin className="size-2.5" />
+          {venue.city}
+        </div>
+
+        <h1
+          className="text-[48px] sm:text-[60px] font-bold leading-[1.0] text-foreground max-w-4xl mb-5"
+          style={{ fontFamily: "'lp-serif', serif" }}
+        >
+          {venue.name}
+        </h1>
+
+        <div className="flex flex-wrap items-center gap-4">
+          <div className="flex items-center gap-2">
+            <StarRating rating={avgRating} />
+            <span className="text-[14px] font-semibold text-foreground">{avgRating.toFixed(1)}</span>
+            {!!reviews?.data.length && (
+              <span className="text-[12px] text-muted-foreground/45">
+                ({reviews.data.length} sharh)
+              </span>
+            )}
+          </div>
+          <div className="h-4 w-px bg-border/60" />
+          <span className="flex items-center gap-1.5 text-[13px] text-muted-foreground/65">
+            <Users className="size-3.5" />
+            {venue.capacity} o'rin
+          </span>
+          <div className="h-4 w-px bg-border/60" />
+          <Badge variant="outline" className="text-[11px] border-border/50 text-muted-foreground/60">
+            {venue.isIndoor ? 'Yopiq zal' : 'Ochiq maydon'}
+          </Badge>
+        </div>
+      </div>
+
+      {/* ── Gallery: main image + vertical thumbnail strip (desktop) ── */}
+      <div className="grid grid-cols-1 sm:grid-cols-[1fr_80px] gap-2 h-[320px] sm:h-[480px]">
+
+        {/* Main image */}
+        <div className="relative overflow-hidden rounded-2xl h-full">
+          {venue.imageUrls.length > 0 ? (
             <img
               src={venue.imageUrls[imgIndex]}
               alt={venue.name}
-              className="w-full h-80 object-cover rounded-2xl"
+              className="w-full h-full object-cover transition-all duration-500 ease-in-out"
             />
-            {venue.imageUrls.length > 1 && (
-              <div className="flex gap-2 overflow-x-auto pb-1">
-                {venue.imageUrls.map((url, i) => (
-                  <button
-                    key={i}
-                    onClick={() => setImgIndex(i)}
-                    className={`shrink-0 rounded-lg overflow-hidden border-2 transition-colors cursor-pointer ${
-                      i === imgIndex ? 'border-primary' : 'border-transparent'
-                    }`}
-                  >
-                    <img src={url} alt="" className="h-16 w-24 object-cover" />
-                  </button>
-                ))}
-              </div>
-            )}
-          </>
-        ) : (
-          <div className="w-full h-80 bg-gradient-to-br from-muted to-muted/50 rounded-2xl flex items-center justify-center">
-            <svg className="h-20 w-20 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-            </svg>
+          ) : (
+            <div className="w-full h-full bg-gradient-to-br from-gold/8 via-muted/20 to-background flex items-center justify-center">
+              <Home className="size-20 text-gold/12" />
+            </div>
+          )}
+          {/* Subtle depth gradient */}
+          <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(8,15,25,0.25)_0%,transparent_35%)] pointer-events-none rounded-2xl" />
+          {/* Rating pill */}
+          <div className="absolute top-3 right-3 flex items-center gap-1 bg-[rgba(8,15,25,0.72)] backdrop-blur-sm rounded-full px-2.5 py-1.5 border border-white/10">
+            <Star className="size-3 text-gold fill-gold" />
+            <span className="text-[12px] font-semibold text-cream/90">{avgRating.toFixed(1)}</span>
+          </div>
+        </div>
+
+        {/* Vertical thumbnail strip — desktop */}
+        {venue.imageUrls.length > 1 && (
+          <div className="hidden sm:flex flex-col gap-2 overflow-y-auto scrollbar-none">
+            {venue.imageUrls.map((url, i) => (
+              <button
+                key={i}
+                onClick={() => setImgIndex(i)}
+                className={`shrink-0 rounded-lg overflow-hidden border-2 transition-all duration-200 cursor-pointer w-full ${
+                  i === imgIndex
+                    ? 'border-gold/55 shadow-[0_0_10px_rgba(201,150,58,0.22)]'
+                    : 'border-transparent opacity-35 hover:opacity-65'
+                }`}
+              >
+                <img src={url} alt="" className="w-full h-[120px] object-cover" />
+              </button>
+            ))}
           </div>
         )}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left: info */}
-        <div className="lg:col-span-2 flex flex-col gap-6">
-          <div>
-            <h1 className="text-3xl font-bold text-foreground mb-2">{venue.name}</h1>
-            <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
-              <span className="flex items-center gap-1">
-                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                </svg>
-                {venue.city}, {venue.address}
-              </span>
-              <span className="flex items-center gap-1">
-                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
-                {venue.capacity} o'rin
-              </span>
-              <div className="flex items-center gap-1">
-                <StarRating rating={venue.rating} />
-                <span>{venue.rating.toFixed(1)}</span>
-              </div>
-            </div>
+      {/* Horizontal thumbnail strip — mobile */}
+      {venue.imageUrls.length > 1 && (
+        <div className="sm:hidden flex gap-2 overflow-x-auto pb-1 mt-2 scrollbar-none">
+          {venue.imageUrls.map((url, i) => (
+            <button
+              key={i}
+              onClick={() => setImgIndex(i)}
+              className={`shrink-0 rounded-lg overflow-hidden border-2 transition-all duration-200 cursor-pointer ${
+                i === imgIndex
+                  ? 'border-gold/55'
+                  : 'border-transparent opacity-35 hover:opacity-65'
+              }`}
+            >
+              <img src={url} alt="" className="h-14 w-20 object-cover" />
+            </button>
+          ))}
+        </div>
+      )}
+
+      {/* ── Main content: two-column ── */}
+      <div className="mt-10 grid grid-cols-1 lg:grid-cols-12 gap-8">
+
+        {/* ── Left column ── */}
+        <div className="lg:col-span-7 flex flex-col gap-10">
+
+          {/* Address block */}
+          <div className="flex items-center gap-3 py-3 px-4 rounded-xl bg-muted/15 border border-border/35">
+            <MapPin className="size-4 text-muted-foreground/35 shrink-0" />
+            <span className="text-[14px] text-muted-foreground/65">
+              {venue.address}, {venue.city}
+            </span>
           </div>
 
+          {/* Description */}
           {venue.description && (
-            <div>
-              <h2 className="text-lg font-semibold text-foreground mb-2">Tavsif</h2>
-              <p className="text-muted-foreground leading-relaxed">{venue.description}</p>
+            <div className="pl-5 border-l border-gold/18">
+              <p className="text-[15px] text-muted-foreground/72 leading-[1.8]">
+                {venue.description}
+              </p>
             </div>
           )}
 
-          {amenities.length > 0 && (
+          {/* Amenities — icon-only with Tooltips */}
+          {amenityItems.length > 0 && (
             <div>
-              <h2 className="text-lg font-semibold text-foreground mb-3">Qulayliklar</h2>
-              <div className="flex flex-wrap gap-2">
-                {amenities.map((a) => (
-                  <span key={String(a)} className="px-3 py-1.5 bg-primary/10 text-primary text-sm rounded-lg font-medium">
-                    {a}
-                  </span>
-                ))}
-              </div>
+              <p className="text-[10px] font-semibold text-muted-foreground/35 uppercase tracking-[0.15em] mb-4">
+                Qulayliklar
+              </p>
+              <TooltipProvider>
+                <div className="flex flex-wrap gap-2.5">
+                  {amenityItems.map(({ Icon, label }) => (
+                    <Tooltip key={label}>
+                      <TooltipTrigger asChild>
+                        <button
+                          type="button"
+                          className="w-11 h-11 rounded-xl border border-white/7 bg-white/3 flex items-center justify-center backdrop-blur-xs transition-all duration-200 hover:border-gold/30 hover:bg-gold/8 cursor-default"
+                        >
+                          <Icon className="size-[18px] text-gold/60" />
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent side="bottom" sideOffset={6}>
+                        <p>{label}</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  ))}
+                </div>
+              </TooltipProvider>
             </div>
           )}
 
           {/* Reviews */}
           <div>
-            <div className="flex items-center justify-between mb-3">
-              <h2 className="text-lg font-semibold text-foreground">Sharhlar</h2>
+            <div className="flex items-center justify-between mb-4">
+              <p className="text-[10px] font-semibold text-muted-foreground/35 uppercase tracking-[0.15em]">
+                Sharhlar{reviews?.data.length ? ` (${reviews.data.length})` : ''}
+              </p>
               {user && (
-                <Button variant="secondary" size="sm" onClick={() => setReviewModal(true)}>
-                  Sharh yozish
-                </Button>
+                <button
+                  onClick={() => setReviewModal(true)}
+                  className="h-7 px-3 rounded-lg border border-border/55 text-[12px] text-muted-foreground/60 hover:text-foreground hover:border-gold/30 transition-colors"
+                >
+                  + Sharh yozish
+                </button>
               )}
             </div>
-            {reviews?.data.length === 0 ? (
-              <p className="text-muted-foreground text-sm">Hozircha sharhlar yo'q</p>
+
+            {!reviews?.data.length ? (
+              <div className="flex flex-col items-center justify-center py-10 gap-3 rounded-xl border border-border/30 bg-card/25">
+                <Star className="size-6 text-muted-foreground/12" />
+                <p className="text-[13px] text-muted-foreground/40">Hozircha sharhlar yo'q</p>
+              </div>
             ) : (
               <div className="flex flex-col gap-3">
-                {reviews?.data.map((review) => (
+                {reviews.data.map((review) => (
                   <ReviewCard key={review.id} review={review} />
                 ))}
               </div>
@@ -149,27 +331,73 @@ export function VenueDetailPage() {
           </div>
         </div>
 
-        {/* Right: booking info */}
-        <div>
-          <div className="bg-card rounded-xl border border-border p-5 sticky top-20">
-            <h2 className="text-2xl font-bold text-primary mb-1">{formatUZS(venue.pricePerDay)}<span className="text-sm font-normal text-muted-foreground">/kun</span></h2>
-            <p className="text-sm text-muted-foreground mb-4">Maydon ijarasi</p>
-            <div className="flex flex-col gap-2 text-sm mb-4">
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Sig'imi</span>
-                <span className="font-medium text-foreground">{venue.capacity} kishi</span>
+        {/* ── Right column: booking card ── */}
+        <div className="lg:col-span-5">
+          <Card className="sticky top-20 ring-0 border-white/8 bg-white/3 backdrop-blur-md overflow-hidden gap-0">
+
+            {/* Gold accent bar */}
+            <div className="h-0.5 w-full bg-gradient-to-r from-transparent via-gold to-transparent opacity-70" />
+
+            <CardHeader className="pb-5 pt-5">
+              <div className="text-[34px] font-bold text-gold leading-none tracking-tight">
+                {formatUZS(venue.pricePerDay)}
               </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Turi</span>
-                <span className="font-medium text-foreground">{venue.isIndoor ? 'Yopiq' : 'Ochiq'}</span>
+              <CardTitle className="text-[12px] font-normal text-muted-foreground/45 mt-1.5">
+                kuniga ijarasi
+              </CardTitle>
+              <CardDescription className="text-[12px] text-muted-foreground/35 mt-0">
+                {venue.city} · {venue.isIndoor ? 'Yopiq zal' : 'Ochiq maydon'}
+              </CardDescription>
+            </CardHeader>
+
+            <CardContent className="flex flex-col gap-0 pt-0 pb-5">
+              <Separator className="opacity-8 mb-4" />
+
+              <div className="flex flex-col divide-y divide-white/5">
+                <div className="flex items-center justify-between py-3">
+                  <span className="text-[13px] text-muted-foreground/50">Sig'imi</span>
+                  <span className="text-[13px] font-semibold text-cream/82">
+                    {venue.capacity} kishi
+                  </span>
+                </div>
+                <div className="flex items-center justify-between py-3">
+                  <span className="text-[13px] text-muted-foreground/50">Turi</span>
+                  <span className="text-[13px] font-semibold text-cream/82">
+                    {venue.isIndoor ? 'Yopiq zal' : 'Ochiq maydon'}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between py-3">
+                  <span className="text-[13px] text-muted-foreground/50">Reyting</span>
+                  <div className="flex items-center gap-1.5">
+                    <StarRating rating={avgRating} />
+                    <span className="text-[13px] font-semibold text-cream/82">
+                      {avgRating.toFixed(1)}
+                    </span>
+                  </div>
+                </div>
+                <div className="flex items-center justify-between py-3">
+                  <span className="text-[13px] text-muted-foreground/50">Manzil</span>
+                  <span className="text-[13px] font-semibold text-cream/82 text-right max-w-[160px] leading-snug">
+                    {venue.address}
+                  </span>
+                </div>
               </div>
-            </div>
-            {user ? (
-              <p className="text-xs text-muted-foreground text-center">Tadbir yaratishda band qilish mumkin</p>
-            ) : (
-              <Link to="/login"><Button className="w-full">Band qilish uchun kiring</Button></Link>
-            )}
-          </div>
+
+              <Separator className="opacity-8 my-4" />
+
+              {user ? (
+                <div className="rounded-xl bg-gold/5 border border-gold/10 px-4 py-3.5 text-[12px] text-gold/55 text-center leading-relaxed">
+                  Maydonni band qilish uchun tadbir yaratishda foydalaning
+                </div>
+              ) : (
+                <Link to="/login" className="block">
+                  <button className="w-full h-10 rounded-xl bg-gold text-[13px] font-semibold text-background hover:bg-gold/88 transition-colors cursor-pointer">
+                    Band qilish uchun kiring
+                  </button>
+                </Link>
+              )}
+            </CardContent>
+          </Card>
         </div>
       </div>
 

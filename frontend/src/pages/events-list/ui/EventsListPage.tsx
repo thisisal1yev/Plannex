@@ -82,13 +82,13 @@ export function EventsListPage() {
           <h1 className="text-[26px] font-bold text-foreground tracking-tight leading-none">
             Tadbirlar
           </h1>
-          <p className="text-[13px] text-muted-foreground/60 mt-1.5">
+          <span className="block text-[13px] text-muted-foreground/60 mt-1.5">
             {isLoading ? (
               <Skeleton className="h-3.5 w-20 inline-block" />
             ) : (
               `${data?.meta.total ?? 0} ta tadbir topildi`
             )}
-          </p>
+          </span>
         </div>
 
         <button
