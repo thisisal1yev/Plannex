@@ -132,7 +132,7 @@ export function Header() {
     <>
       <style dangerouslySetInnerHTML={{ __html: HEADER_ANIM_CSS }} />
       <header className="sticky top-0 z-40 w-full bg-navy-header/94 backdrop-blur-[14px] border-b border-b-gold/13">
-        <div className="h-px bg-gradient-to-r from-transparent via-gold/40 to-transparent" />
+        <div className="h-px bg-linear-to-r from-transparent via-gold/40 to-transparent" />
 
         <div className="max-w-[1280px] mx-auto px-6 h-[60px] flex items-center justify-between gap-8">
 

@@ -69,7 +69,7 @@ const SOCIALS = [
 export function Footer() {
   return (
     <footer className="bg-navy-dark border-t border-t-gold/13">
-      <div className="h-px bg-gradient-to-r from-transparent via-gold/35 to-transparent" />
+      <div className="h-px bg-linear-to-r from-transparent via-gold/35 to-transparent" />
 
       <div className="max-w-[1280px] mx-auto px-6 pt-14 pb-9">
 

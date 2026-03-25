@@ -157,7 +157,7 @@ export function VenueDetailPage() {
         </div>
 
         <h1
-          className="text-[48px] sm:text-[60px] font-bold leading-[1.0] text-foreground max-w-4xl mb-5"
+          className="text-[48px] sm:text-[60px] font-bold leading-none text-foreground max-w-4xl mb-5"
           style={{ fontFamily: "'lp-serif', serif" }}
         >
           {venue.name}
@@ -197,7 +197,7 @@ export function VenueDetailPage() {
               className="w-full h-full object-cover transition-all duration-500 ease-in-out"
             />
           ) : (
-            <div className="w-full h-full bg-gradient-to-br from-gold/8 via-muted/20 to-background flex items-center justify-center">
+            <div className="w-full h-full bg-linear-to-br from-gold/8 via-muted/20 to-background flex items-center justify-center">
               <Home className="size-20 text-gold/12" />
             </div>
           )}
@@ -336,7 +336,7 @@ export function VenueDetailPage() {
           <Card className="sticky top-20 ring-0 border-white/8 bg-white/3 backdrop-blur-md overflow-hidden gap-0">
 
             {/* Gold accent bar */}
-            <div className="h-0.5 w-full bg-gradient-to-r from-transparent via-gold to-transparent opacity-70" />
+            <div className="h-0.5 w-full bg-linear-to-r from-transparent via-gold to-transparent opacity-70" />
 
             <CardHeader className="pb-5 pt-5">
               <div className="text-[34px] font-bold text-gold leading-none tracking-tight">
