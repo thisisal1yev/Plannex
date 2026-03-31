@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { Search, CalendarDays, CheckCircle, Trash2 } from 'lucide-react'
-import { eventsApi, EVENT_STATUS_COLOR } from '@entities/event'
+import { eventsApi, EVENT_STATUS_COLOR, EVENT_STATUS_LABEL } from '@entities/event'
 import type { Event } from '@entities/event'
 import { Badge } from '@shared/ui/Badge'
 import { Pagination } from '@shared/ui/Pagination'
@@ -17,12 +17,6 @@ const STATUS_TABS = [
   { value: 'CANCELLED', label: 'Bekor' },
 ]
 
-const STATUS_LABELS: Record<string, string> = {
-  DRAFT:     'Kutilmoqda',
-  PUBLISHED: 'Nashr',
-  CANCELLED: 'Bekor',
-  COMPLETED: 'Tugallandi',
-}
 
 export function AdminEventsPage() {
   const [page, setPage]     = useState(1)
@@ -146,7 +140,7 @@ export function AdminEventsPage() {
                       </td>
                       <td className="px-4 py-3">
                         <Badge color={EVENT_STATUS_COLOR[e.status] ?? 'gray'}>
-                          {STATUS_LABELS[e.status] ?? e.status}
+                          {EVENT_STATUS_LABEL[e.status] ?? e.status}
                         </Badge>
                       </td>
                       <td className="px-5 py-3">

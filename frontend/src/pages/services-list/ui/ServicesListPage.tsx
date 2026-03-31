@@ -1,33 +1,26 @@
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { servicesApi } from '@entities/service'
-import { ServiceCard } from '@entities/service'
-import { Spinner } from '@shared/ui/Spinner'
+import { servicesApi, ServiceCard, SERVICE_CATEGORIES } from '@entities/service'
 import { Pagination } from '@shared/ui/Pagination'
-import { Input } from '@shared/ui/Input'
+import { CardSkeleton } from '@shared/ui/CardSkeleton'
+import { EmptyState } from '@shared/ui/EmptyState'
 import { Button } from '@shared/ui/Button'
+import { Input } from '@shared/ui/Input'
 import { serviceKeys } from '@shared/api/queryKeys'
+import { UZBEK_CITIES } from '@shared/lib/constants'
 import type { ServiceCategory } from '@shared/types'
-
-const CATEGORIES: { value: ServiceCategory; label: string; icon: string }[] = [
-  { value: 'CATERING', label: 'Katering', icon: '🍽' },
-  { value: 'DECORATION', label: 'Bezak', icon: '✦' },
-  { value: 'SOUND', label: 'Ovoz', icon: '♪' },
-  { value: 'PHOTO', label: 'Foto', icon: '◉' },
-  { value: 'SECURITY', label: 'Xavfsizlik', icon: '◈' },
-]
-
-const CITIES = ['Toshkent', 'Samarqand', 'Buxoro', 'Namangan', 'Andijon', "Farg'ona"]
 
 const selectCls =
   'h-9 rounded-lg border border-input bg-background px-3 text-sm outline-none transition-colors focus-visible:border-ring text-foreground'
 
 export function ServicesListPage() {
-  const [page, setPage] = useState(1)
-  const [category, setCategory] = useState<ServiceCategory | ''>('')
-  const [city, setCity] = useState('')
-  const [maxPrice, setMaxPrice] = useState('')
+  const [page, setPage]               = useState(1)
+  const [category, setCategory]       = useState<ServiceCategory | ''>('')
+  const [city, setCity]               = useState('')
+  const [maxPrice, setMaxPrice]       = useState('')
   const [filtersOpen, setFiltersOpen] = useState(false)
+
+  const hasFilters = !!category || !!city || !!maxPrice
 
   const { data, isLoading } = useQuery({
     queryKey: serviceKeys.list({ page, category, city, maxPrice }),
@@ -48,21 +41,15 @@ export function ServicesListPage() {
     setPage(1)
   }
 
-  const hasFilters = !!category || !!city || !!maxPrice
-
   return (
     <div className="flex flex-col gap-6">
-      {/* Header */}
+
+      {/* ── Page header ── */}
       <div className="flex flex-col gap-1">
         <div className="flex items-end justify-between gap-4 flex-wrap">
-          <div>
-            <p className="text-xs uppercase tracking-[0.2em] text-gold/70 font-medium mb-1">
-              Planner AI
-            </p>
-            <h1 className="lp-serif text-4xl md:text-5xl font-bold text-foreground leading-none">
-              Xizmatlar katalogi
-            </h1>
-          </div>
+          <h1 className="lp-serif text-4xl md:text-5xl font-bold text-foreground leading-none">
+            Xizmatlar katalogi
+          </h1>
           <div className="text-right shrink-0">
             <p className="lp-serif text-3xl font-semibold text-gold leading-none">
               {data?.meta.total ?? '—'}
@@ -73,7 +60,7 @@ export function ServicesListPage() {
         <div className="h-px bg-linear-to-r from-gold/50 via-gold/15 to-transparent mt-4" />
       </div>
 
-      {/* Category pills + filter toggle */}
+      {/* ── Category pills + filter toggle ── */}
       <div className="flex gap-2 flex-wrap items-center">
         <button
           onClick={() => { setCategory(''); setPage(1) }}
@@ -86,7 +73,7 @@ export function ServicesListPage() {
           Barchasi
         </button>
 
-        {CATEGORIES.map((c) => (
+        {SERVICE_CATEGORIES.map((c) => (
           <button
             key={c.value}
             onClick={() => { setCategory(c.value); setPage(1) }}
@@ -117,7 +104,7 @@ export function ServicesListPage() {
         </button>
       </div>
 
-      {/* Expanded filters */}
+      {/* ── Expanded filters ── */}
       {filtersOpen && (
         <div className="svc-fade svc-d1 bg-card rounded-2xl border border-border p-5 flex flex-wrap gap-4 items-end -mt-4">
           <div className="flex flex-col gap-1.5 min-w-[150px]">
@@ -128,7 +115,7 @@ export function ServicesListPage() {
               className={selectCls}
             >
               <option value="">Barcha shaharlar</option>
-              {CITIES.map((c) => <option key={c} value={c}>{c}</option>)}
+              {UZBEK_CITIES.map((c) => <option key={c} value={c}>{c}</option>)}
             </select>
           </div>
           <div className="flex flex-col gap-1.5">
@@ -149,16 +136,17 @@ export function ServicesListPage() {
         </div>
       )}
 
-      {/* Grid */}
+      {/* ── Grid ── */}
       {isLoading ? (
-        <div className="flex justify-center py-20">
-          <Spinner />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          {Array.from({ length: 8 }).map((_, i) => <CardSkeleton key={i} />)}
         </div>
       ) : data?.data.length === 0 ? (
-        <div className="flex flex-col items-center py-20 gap-2">
-          <p className="lp-serif text-2xl text-muted-foreground/40">Xizmatlar topilmadi</p>
-          <p className="text-sm text-muted-foreground/30">Filtrlarni o'zgartirib ko'ring</p>
-        </div>
+        <EmptyState
+          title="Xizmatlar topilmadi"
+          description="Filtrlarni o'zgartirib ko'ring"
+          action={hasFilters ? { label: 'Filtrlarni tozalash', onClick: resetFilters } : undefined}
+        />
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {data?.data.map((service, i) => (
@@ -167,9 +155,7 @@ export function ServicesListPage() {
         </div>
       )}
 
-      {data?.meta && (
-        <Pagination meta={data.meta} onPageChange={setPage} />
-      )}
+      {data?.meta && <Pagination meta={data.meta} onPageChange={setPage} />}
     </div>
   )
 }

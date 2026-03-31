@@ -7,66 +7,16 @@ import {
 } from 'recharts'
 import {
   Users, CalendarDays, Clock, TrendingUp, DollarSign,
-  ArrowUpRight, ArrowDownRight, Search, CheckCircle, XCircle,
+  Search, CheckCircle, XCircle,
 } from 'lucide-react'
 import { analyticsApi } from '@entities/analytics/api/analyticsApi'
-import { eventsApi } from '@entities/event'
+import { eventsApi, EVENT_STATUS_COLOR, EVENT_STATUS_LABEL } from '@entities/event'
 import type { AdminPendingEvent } from '@entities/analytics/model/types'
-import type { BadgeColor } from '@shared/ui/Badge'
 import { Badge } from '@shared/ui/Badge'
 import { Spinner } from '@shared/ui/Spinner'
+import { StatCard } from '@shared/ui/StatCard'
 import { analyticsKeys, eventKeys } from '@shared/api/queryKeys'
 import { formatDateDefault, formatUZS } from '@shared/lib/dateUtils'
-
-// ─── Stat card ────────────────────────────────────────────────────────────────
-
-interface StatCardProps {
-  title: string
-  value: string | number
-  sub?: string
-  icon: React.ElementType
-  trend?: string
-  trendUp?: boolean
-  accent?: string
-}
-
-function StatCard({ title, value, sub, icon: Icon, trend, trendUp, accent = 'gold' }: StatCardProps) {
-  const accentMap: Record<string, { bg: string; border: string; icon: string; glow: string }> = {
-    gold:    { bg: 'bg-gold/8',      border: 'border-gold/15',    icon: 'text-gold',       glow: 'shadow-[0_0_12px_rgba(201,150,58,0.15)]' },
-    emerald: { bg: 'bg-emerald-500/8', border: 'border-emerald-500/15', icon: 'text-emerald-500', glow: 'shadow-[0_0_12px_rgba(16,185,129,0.12)]' },
-    blue:    { bg: 'bg-blue-500/8',  border: 'border-blue-500/15',  icon: 'text-blue-400',   glow: 'shadow-[0_0_12px_rgba(59,130,246,0.12)]' },
-    amber:   { bg: 'bg-amber-500/8', border: 'border-amber-500/15', icon: 'text-amber-400',  glow: 'shadow-[0_0_12px_rgba(245,158,11,0.12)]' },
-  }
-  const a = accentMap[accent] ?? accentMap.gold
-
-  return (
-    <div className={`relative rounded-xl border border-border bg-card p-5 overflow-hidden group hover:border-gold/20 hover:${a.glow} transition-all duration-200`}>
-      <div className="absolute top-0 left-0 right-0 h-px bg-linear-to-r from-transparent via-gold/25 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-
-      <div className="flex items-start justify-between mb-3">
-        <div className={`w-8 h-8 rounded-lg ${a.bg} border ${a.border} flex items-center justify-center shrink-0`}>
-          <Icon className={`size-3.5 ${a.icon}`} />
-        </div>
-        {trend && (
-          <span className={`text-[11px] font-medium flex items-center gap-0.5 px-1.5 py-0.5 rounded-full ${
-            trendUp
-              ? 'text-emerald-500 bg-emerald-500/8 border border-emerald-500/15'
-              : 'text-red-400 bg-red-500/8 border border-red-500/15'
-          }`}>
-            {trendUp ? <ArrowUpRight className="size-3" /> : <ArrowDownRight className="size-3" />}
-            {trend}
-          </span>
-        )}
-      </div>
-
-      <div className="flex flex-col gap-0.5">
-        <span className="text-[26px] font-bold text-foreground leading-none tracking-tight tabular-nums">{value}</span>
-        <span className="text-[11px] text-muted-foreground/70 mt-1 font-medium uppercase tracking-[0.06em]">{title}</span>
-        {sub && <span className="text-[11px] text-muted-foreground/50 mt-0.5">{sub}</span>}
-      </div>
-    </div>
-  )
-}
 
 // ─── Chart tooltip ────────────────────────────────────────────────────────────
 
@@ -151,15 +101,6 @@ function RevenueChart({ data }: { data: { month: string; revenue: number }[] }) 
   )
 }
 
-// ─── Status config ────────────────────────────────────────────────────────────
-
-const STATUS_BADGE: Record<string, { label: string; color: BadgeColor }> = {
-  DRAFT:     { label: 'Kutilmoqda', color: 'yellow' },
-  PUBLISHED: { label: 'Nashr',      color: 'green'  },
-  CANCELLED: { label: 'Bekor',      color: 'red'    },
-  COMPLETED: { label: 'Tugallandi', color: 'indigo' },
-}
-
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export function AdminDashboardPage() {
@@ -206,21 +147,21 @@ export function AdminDashboardPage() {
       {/* ── Stat cards ── */}
       <div className="grid grid-cols-2 xl:grid-cols-4 gap-3">
         <StatCard
-          title="Jami daromad"
+          label="Jami daromad"
           value={formatUZS(data?.totalRevenue ?? 0)}
           icon={DollarSign}
           sub="Barcha to'lovlar"
           accent="gold"
         />
         <StatCard
-          title="Foydalanuvchilar"
+          label="Foydalanuvchilar"
           value={data?.totalUsers ?? 0}
           icon={Users}
           sub="Ro'yxatdan o'tganlar"
           accent="blue"
         />
         <StatCard
-          title="Kutilayotgan"
+          label="Kutilayotgan"
           value={data?.pendingEvents ?? 0}
           icon={Clock}
           sub="Ko'rib chiqish kerak"
@@ -229,7 +170,7 @@ export function AdminDashboardPage() {
           accent="amber"
         />
         <StatCard
-          title="Jami tadbirlar"
+          label="Jami tadbirlar"
           value={data?.totalEvents ?? 0}
           icon={TrendingUp}
           sub="Barcha vaqt uchun"
@@ -279,7 +220,6 @@ export function AdminDashboardPage() {
             </thead>
             <tbody>
               {filtered.map((e: AdminPendingEvent) => {
-                const s = STATUS_BADGE[e.status] ?? { label: e.status, color: 'gray' as BadgeColor }
                 const isPending = publishMutation.isPending || deleteMutation.isPending
                 return (
                   <tr key={e.id} className="border-b border-border/40 last:border-0 hover:bg-muted/15 transition-colors group">
@@ -305,7 +245,9 @@ export function AdminDashboardPage() {
                       {formatDateDefault(e.startDate)}
                     </td>
                     <td className="px-4 py-3">
-                      <Badge color={s.color}>{s.label}</Badge>
+                      <Badge color={EVENT_STATUS_COLOR[e.status] ?? 'gray'}>
+                        {EVENT_STATUS_LABEL[e.status] ?? e.status}
+                      </Badge>
                     </td>
                     <td className="px-5 py-3">
                       <div className="flex items-center justify-end gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">

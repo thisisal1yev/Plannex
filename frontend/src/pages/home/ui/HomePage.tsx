@@ -148,7 +148,7 @@ export function HomePage() {
             style={{ fontSize: 'clamp(52px, 9vw, 96px)', fontWeight: 700, lineHeight: 1.03, letterSpacing: '-0.02em', marginBottom: '24px' }}
           >
             Tadbirlarni{' '}
-            <em className="lp-serif lp-gold-text">muammosiz</em>
+            <em className="lp-serif lp-gold-text">muommosiz</em>
             <br />
             tashkil eting
           </h1>

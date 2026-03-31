@@ -1,43 +1,17 @@
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { SlidersHorizontal, X, Wifi, Car } from 'lucide-react'
-import { venuesApi } from '@entities/venue'
-import { VenueCard } from '@entities/venue'
+import { X, Wifi, Car } from 'lucide-react'
+import { venuesApi, VenueCard } from '@entities/venue'
 import { Pagination } from '@shared/ui/Pagination'
+import { CardSkeleton } from '@shared/ui/CardSkeleton'
+import { EmptyState } from '@shared/ui/EmptyState'
 import { venueKeys } from '@shared/api/queryKeys'
-import { Skeleton } from '@/shared/ui/primitives/skeleton'
-import { Separator } from '@/shared/ui/primitives/separator'
-
-const CITIES = ['Toshkent', 'Samarqand', 'Buxoro', 'Namangan', 'Andijon', "Farg'ona"]
+import { UZBEK_CITIES } from '@shared/lib/constants'
 
 const CITY_OPTIONS = [
   { value: '', label: 'Barcha shaharlar' },
-  ...CITIES.map((c) => ({ value: c, label: c })),
+  ...UZBEK_CITIES.map((c) => ({ value: c, label: c })),
 ]
-
-function CardSkeleton() {
-  return (
-    <div className="rounded-[14px] border border-white/7 overflow-hidden flex flex-col">
-      <Skeleton className="h-44 w-full rounded-none" />
-      <div className="px-4 py-3.5 flex flex-col gap-2.5">
-        <div className="flex items-start justify-between gap-2">
-          <Skeleton className="h-4 w-3/4" />
-          <Skeleton className="h-4 w-12 rounded-full" />
-        </div>
-        <Skeleton className="h-3 w-1/2" />
-        <div className="flex gap-1.5">
-          <Skeleton className="h-5 w-12 rounded-full" />
-          <Skeleton className="h-5 w-16 rounded-full" />
-        </div>
-        <Separator className="mt-1 opacity-20" />
-        <div className="flex justify-between">
-          <Skeleton className="h-3.5 w-24" />
-          <Skeleton className="h-3.5 w-14" />
-        </div>
-      </div>
-    </div>
-  )
-}
 
 export function VenuesListPage() {
   const [page, setPage]                 = useState(1)
@@ -83,37 +57,22 @@ export function VenuesListPage() {
     <div className="flex flex-col gap-6">
 
       {/* ── Page header ── */}
-      <div className="flex items-end justify-between">
-        <div>
-          <h1 className="text-[26px] font-bold text-foreground tracking-tight leading-none">
+      <div className="flex flex-col gap-1">
+        <div className="flex items-end justify-between gap-4 flex-wrap">
+          <h1 className="lp-serif text-4xl md:text-5xl font-bold text-foreground leading-none">
             Maydonlar
           </h1>
-          <span className="block text-[13px] text-muted-foreground/60 mt-1.5">
-            {isLoading ? (
-              <Skeleton className="h-3.5 w-20 inline-block" />
-            ) : (
-              `${data?.meta.total ?? 0} ta maydon topildi`
-            )}
-          </span>
+          <div className="text-right shrink-0">
+            <p className="lp-serif text-3xl font-semibold text-gold leading-none">
+              {data?.meta.total ?? '—'}
+            </p>
+            <p className="text-xs text-muted-foreground mt-0.5">maydon topildi</p>
+          </div>
         </div>
-
-        <button
-          onClick={() => setShowAdvanced((v) => !v)}
-          className={`flex items-center gap-1.5 h-8 px-3 rounded-lg border text-[12px] font-medium transition-all ${
-            showAdvanced || hasAdvancedFilters
-              ? 'border-gold/30 bg-gold/8 text-gold'
-              : 'border-border text-muted-foreground hover:border-gold/20 hover:text-foreground'
-          }`}
-        >
-          <SlidersHorizontal className="size-3.5" />
-          Filtrlar
-          {hasAdvancedFilters && (
-            <span className="w-1.5 h-1.5 rounded-full bg-gold ml-0.5" />
-          )}
-        </button>
+        <div className="h-px bg-linear-to-r from-gold/50 via-gold/15 to-transparent mt-4" />
       </div>
 
-      {/* ── City pills ── */}
+      {/* ── City pills + advanced filter toggle ── */}
       <div className="flex items-center gap-2 overflow-x-auto pb-1 -mx-0.5 px-0.5 scrollbar-none">
         {CITY_OPTIONS.map((c) => (
           <button
@@ -128,6 +87,20 @@ export function VenuesListPage() {
             {c.label}
           </button>
         ))}
+
+        <div className="w-px h-4 bg-border shrink-0" />
+
+        <button
+          onClick={() => setShowAdvanced((v) => !v)}
+          className={`shrink-0 h-8 px-3 rounded-full text-[12px] font-medium border transition-all duration-150 flex items-center gap-1.5 whitespace-nowrap ${
+            showAdvanced || hasAdvancedFilters
+              ? 'bg-gold/12 border-gold/30 text-gold'
+              : 'bg-transparent border-border text-muted-foreground hover:border-gold/20 hover:text-foreground hover:bg-muted/30'
+          }`}
+        >
+          Filtr
+          {hasAdvancedFilters && <span className="h-1.5 w-1.5 rounded-full bg-gold" />}
+        </button>
 
         {hasFilters && (
           <>
@@ -196,33 +169,17 @@ export function VenuesListPage() {
       {/* ── Content ── */}
       {isLoading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <CardSkeleton key={i} />
-          ))}
+          {Array.from({ length: 8 }).map((_, i) => <CardSkeleton key={i} />)}
         </div>
       ) : data?.data.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-20 gap-4">
-          <div className="w-14 h-14 rounded-2xl bg-gold/8 border border-gold/15 flex items-center justify-center">
-            <SlidersHorizontal className="size-5 text-gold/50" />
-          </div>
-          <div className="text-center">
-            <p className="text-[14px] font-medium text-foreground">Maydonlar topilmadi</p>
-            <p className="text-[12px] text-muted-foreground/50 mt-1">Filtrlarni o'zgartirib ko'ring</p>
-          </div>
-          {hasFilters && (
-            <button
-              onClick={resetFilters}
-              className="h-8 px-4 rounded-lg border border-border text-[12px] text-muted-foreground hover:text-foreground hover:border-gold/30 transition-colors"
-            >
-              Filtrlarni tozalash
-            </button>
-          )}
-        </div>
+        <EmptyState
+          title="Maydonlar topilmadi"
+          description="Filtrlarni o'zgartirib ko'ring"
+          action={hasFilters ? { label: 'Filtrlarni tozalash', onClick: resetFilters } : undefined}
+        />
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {data?.data.map((venue) => (
-            <VenueCard key={venue.id} venue={venue} />
-          ))}
+          {data?.data.map((venue) => <VenueCard key={venue.id} venue={venue} />)}
         </div>
       )}
 

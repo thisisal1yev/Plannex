@@ -22,10 +22,11 @@ import {
   Percent,
 } from 'lucide-react'
 import { analyticsApi } from '@entities/analytics'
-import { eventsApi, EVENT_STATUS_COLOR } from '@entities/event'
+import { eventsApi, EVENT_STATUS_COLOR, EVENT_STATUS_LABEL } from '@entities/event'
 import type { Event } from '@entities/event'
 import { Badge } from '@shared/ui/Badge'
 import { Spinner } from '@shared/ui/Spinner'
+import { StatCard } from '@shared/ui/StatCard'
 import { analyticsKeys, eventKeys } from '@shared/api/queryKeys'
 import { formatUZS, formatDateShort } from '@shared/lib/dateUtils'
 import { cn } from '@shared/lib/utils'
@@ -46,55 +47,6 @@ const STRINGS = {
   myEvents: 'Mening tadbirlarim',
 }
 
-const STATUS_LABELS: Record<string, string> = {
-  DRAFT:     'Qoralama',
-  PUBLISHED: 'Nashr',
-  CANCELLED: 'Bekor',
-  COMPLETED: 'Tugallandi',
-}
-
-interface StatCardProps {
-  label: string
-  value: string | number
-  icon: React.ElementType
-  accent?: string
-  sub?: string
-}
-
-function StatCard({ label, value, icon: Icon, accent = 'gold', sub }: StatCardProps) {
-  const accentMap: Record<string, string> = {
-    gold:    'border-l-gold/60 bg-gold/4',
-    emerald: 'border-l-emerald-500/60 bg-emerald-500/4',
-    blue:    'border-l-blue-400/60 bg-blue-400/4',
-    amber:   'border-l-amber-400/60 bg-amber-400/4',
-    violet:  'border-l-violet-400/60 bg-violet-400/4',
-    rose:    'border-l-rose-400/60 bg-rose-400/4',
-  }
-  const iconMap: Record<string, string> = {
-    gold:    'text-gold',
-    emerald: 'text-emerald-400',
-    blue:    'text-blue-400',
-    amber:   'text-amber-400',
-    violet:  'text-violet-400',
-    rose:    'text-rose-400',
-  }
-
-  return (
-    <div className={cn(
-      'relative rounded-xl border border-border border-l-2 p-5 flex flex-col gap-2 overflow-hidden transition-all duration-200 hover:border-l-[3px]',
-      accentMap[accent] ?? accentMap.gold,
-    )}>
-      <div className="flex items-start justify-between gap-2">
-        <p className="text-[12px] text-muted-foreground/70 font-medium leading-tight">{label}</p>
-        <span className={cn('shrink-0 p-1.5 rounded-lg bg-muted/30', iconMap[accent] ?? iconMap.gold)}>
-          <Icon className="size-3.5" />
-        </span>
-      </div>
-      <p className="text-2xl font-bold text-foreground tracking-tight">{value}</p>
-      {sub && <p className="text-[11px] text-muted-foreground/50">{sub}</p>}
-    </div>
-  )
-}
 
 function RecentEventRow({ event }: { event: Event }) {
   const sold = event.ticketTiers?.reduce((s, t) => s + t.sold, 0) ?? 0
@@ -128,7 +80,7 @@ function RecentEventRow({ event }: { event: Event }) {
         )}
       </div>
       <Badge color={EVENT_STATUS_COLOR[event.status] ?? 'gray'}>
-        {STATUS_LABELS[event.status] ?? event.status}
+        {EVENT_STATUS_LABEL[event.status] ?? event.status}
       </Badge>
       <Link
         to={`/my-events/${event.id}/participants`}

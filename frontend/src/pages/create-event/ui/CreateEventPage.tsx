@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from 'react-router'
-import { eventsApi } from '@entities/event'
+import { eventsApi, EVENT_TYPES } from '@entities/event'
 import { Input } from '@shared/ui/Input'
 import { Select } from '@shared/ui/Select'
 import { Button } from '@shared/ui/Button'
@@ -11,7 +11,6 @@ import type { CreateEventDto } from '@entities/event'
 import { eventKeys } from '@shared/api/queryKeys'
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/primitives/card'
 
-const EVENT_TYPES = ['Konsert', 'Konferensiya', 'Ko\'rgazma', 'Sport', 'Festival', 'Boshqa']
 
 interface TierInput { name: string; price: number; quantity: number }
 

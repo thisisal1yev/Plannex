@@ -1,5 +1,13 @@
 import type { BadgeColor } from '@shared/ui/Badge'
-import type { BookingStatus } from '@shared/types'
+import type { BookingStatus, ServiceCategory } from '@shared/types'
+
+export const SERVICE_CATEGORIES: { value: ServiceCategory; label: string; icon: string }[] = [
+  { value: 'CATERING',   label: 'Katering',   icon: '🍽' },
+  { value: 'DECORATION', label: 'Bezak',       icon: '✦'  },
+  { value: 'SOUND',      label: 'Ovoz',        icon: '♪'  },
+  { value: 'PHOTO',      label: 'Foto',        icon: '◉'  },
+  { value: 'SECURITY',   label: 'Xavfsizlik',  icon: '◈'  },
+]
 
 export const SERVICE_CATEGORY_COLOR: Record<string, BadgeColor> = {
   CATERING: 'green',

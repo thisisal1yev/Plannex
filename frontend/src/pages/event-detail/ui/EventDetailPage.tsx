@@ -5,7 +5,7 @@ import {
   ArrowLeft, CalendarDays, Users, MapPin,
   Clock, Star, ChevronRight, Heart,
 } from 'lucide-react'
-import { eventsApi, EVENT_STATUS_COLOR } from '@entities/event'
+import { eventsApi, EVENT_STATUS_COLOR, EVENT_STATUS_LABEL } from '@entities/event'
 import { reviewsApi } from '@entities/review'
 import { ReviewCard } from '@entities/review'
 import { PurchaseTicketForm } from '@features/ticket-purchase'
@@ -18,12 +18,6 @@ import { formatDateTime, formatDateShort } from '@shared/lib/dateUtils'
 import { eventKeys } from '@shared/api/queryKeys'
 import { Skeleton } from '@/shared/ui/primitives/skeleton'
 
-const STATUS_LABELS: Record<string, string> = {
-  DRAFT:     'Qoralama',
-  PUBLISHED: "E'lonlangan",
-  CANCELLED: 'Bekor qilingan',
-  COMPLETED: 'Yakunlangan',
-}
 
 function DetailSkeleton() {
   return (
@@ -146,7 +140,7 @@ export function EventDetailPage() {
               </span>
             )}
             <Badge color={EVENT_STATUS_COLOR[event.status]}>
-              {STATUS_LABELS[event.status] ?? event.status}
+              {EVENT_STATUS_LABEL[event.status] ?? event.status}
             </Badge>
           </div>
 
@@ -408,7 +402,7 @@ export function EventDetailPage() {
                   <Clock className="size-4 text-muted-foreground/30" />
                 </div>
                 <Badge color={EVENT_STATUS_COLOR[event.status]}>
-                  {STATUS_LABELS[event.status] ?? event.status}
+                  {EVENT_STATUS_LABEL[event.status] ?? event.status}
                 </Badge>
                 <p className="text-[11px] text-muted-foreground/35 mt-2.5 tracking-wide">
                   Bu tadbir hozirda faol emas

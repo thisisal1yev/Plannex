@@ -1,119 +1,226 @@
-import { useState, useRef, useEffect } from "react";
-import { Link, useNavigate } from "react-router";
+import { useState, useRef, useEffect, type ElementType } from "react";
+import { Link, useLocation, useNavigate } from "react-router";
+import { useMutation } from "@tanstack/react-query";
+import {
+  CalendarDays,
+  Building2,
+  Wrench,
+  Ticket,
+  LayoutDashboard,
+  ListChecks,
+  MapPin,
+  Settings2,
+  UserRound,
+  LogOut,
+  Sun,
+  Moon,
+  Menu,
+  X,
+  ChevronDown,
+} from "lucide-react";
 import { useAuthStore } from "@shared/model/auth.store";
+import { useThemeStore } from "@shared/model/theme.store";
+import { authApi } from "@entities/user";
+import { cn } from "@shared/lib/utils";
 
-const NAV = [
-  { label: "Imkoniyatlar",       href: "/#features" },
-  { label: "Bu qanday ishlaydi", href: "/#how-it-works" },
-  { label: "Tariflar",           href: "/#pricing" },
-  { label: "Aloqa",              href: "/#contact" },
+interface NavItem {
+  to: string;
+  label: string;
+  icon: ElementType;
+  exact?: boolean;
+}
+
+const BROWSE_LINKS: NavItem[] = [
+  { to: "/events",   label: "Tadbirlar", icon: CalendarDays },
+  { to: "/venues",   label: "Maydonlar", icon: Building2 },
+  { to: "/services", label: "Xizmatlar", icon: Wrench },
 ];
 
-// Only the keyframe animation stays as custom CSS
-const HEADER_ANIM_CSS = `
-@keyframes hdr-menu-in {
-  from { opacity:0; transform:translateY(-6px) scale(0.97) }
-  to   { opacity:1; transform:translateY(0)   scale(1)    }
-}
-.hdr-menu { animation: hdr-menu-in 0.18s ease-out forwards; }
-`
+const ROLE_LINKS: Record<string, NavItem[]> = {
+  PARTICIPANT: [{ to: "/tickets",   label: "Chiptalarim", icon: Ticket }],
+  ORGANIZER: [
+    { to: "/dashboard", label: "Boshqaruv", icon: LayoutDashboard, exact: true },
+    { to: "/my-events", label: "Tadbirlarim", icon: ListChecks },
+  ],
+  VENDOR: [
+    { to: "/my-venues",   label: "Maydonlarim",  icon: MapPin },
+    { to: "/my-services", label: "Xizmatlarim",  icon: Settings2 },
+  ],
+  VOLUNTEER: [],
+};
 
-// ─── User Menu ─────────────────────────────────────────────────────────────────
+const ANIM_CSS = `
+@keyframes nav-dd-in {
+  from { opacity:0; transform:translateY(-6px) scale(0.97) }
+  to   { opacity:1; transform:translateY(0)    scale(1)    }
+}
+@keyframes mob-menu-in {
+  from { opacity:0; transform:translateY(-4px) }
+  to   { opacity:1; transform:translateY(0)    }
+}
+.nav-dd   { animation: nav-dd-in   0.16s ease-out forwards }
+.mob-menu { animation: mob-menu-in 0.18s ease-out forwards }
+`;
+
+function DesktopNavLink({ to, label, exact }: NavItem) {
+  const { pathname } = useLocation();
+  const active = exact
+    ? pathname === to
+    : pathname === to || pathname.startsWith(to + "/");
+
+  return (
+    <Link
+      to={to}
+      className={cn(
+        "relative flex items-center h-full px-1 text-[13.5px] font-medium transition-colors duration-150 whitespace-nowrap group",
+        active ? "text-gold" : "text-foreground/60 hover:text-foreground/90",
+      )}
+    >
+      {label}
+      <span
+        className={cn(
+          "absolute bottom-0 left-0 right-0 h-[2px] rounded-t-full transition-all duration-200",
+          active ? "bg-gold" : "bg-transparent group-hover:bg-gold/25",
+        )}
+      />
+    </Link>
+  );
+}
+
+function MobileNavLink({
+  to,
+  label,
+  icon: Icon,
+  exact,
+  onClick,
+}: NavItem & { onClick: () => void }) {
+  const { pathname } = useLocation();
+  const active = exact
+    ? pathname === to
+    : pathname === to || pathname.startsWith(to + "/");
+
+  return (
+    <Link
+      to={to}
+      onClick={onClick}
+      className={cn(
+        "flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-[14px] font-medium transition-all",
+        active
+          ? "text-gold bg-gold/10"
+          : "text-foreground/70 hover:text-foreground hover:bg-muted/40",
+      )}
+    >
+      <Icon
+        className={cn(
+          "size-[15px]",
+          active ? "text-gold" : "text-muted-foreground/60",
+        )}
+      />
+      {label}
+    </Link>
+  );
+}
 
 function UserMenu() {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const { user, logout } = useAuthStore();
+  const { theme, toggle } = useThemeStore();
   const navigate = useNavigate();
 
+  const logoutMutation = useMutation({
+    mutationFn: authApi.logout,
+    onSettled: () => {
+      logout();
+      navigate("/login");
+    },
+  });
+
   useEffect(() => {
-    function onOutside(e: MouseEvent) {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    function handler(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node))
+        setOpen(false);
     }
-    document.addEventListener("mousedown", onOutside);
-    return () => document.removeEventListener("mousedown", onOutside);
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
   }, []);
 
   if (!user) return null;
 
-  const initials = `${user.firstName[0]}${user.lastName[0]}`.toUpperCase();
-  const dashboardHref =
-    user.role === "ADMIN"      ? "/admin/dashboard" :
-    user.role === "ORGANIZER"  ? "/dashboard" :
-    user.role === "VENDOR"     ? "/my-venues" : "/events";
-
-  function handleLogout() {
-    logout();
-    setOpen(false);
-    navigate("/");
-  }
+  const initials =
+    `${user.firstName[0] ?? ""}${user.lastName[0] ?? ""}`.toUpperCase();
 
   return (
     <div ref={ref} className="relative">
       <button
-        className="rounded-full outline-none transition-shadow focus:shadow-[0_0_0_2px_rgba(201,150,58,0.4)]"
         onClick={() => setOpen((v) => !v)}
+        className={cn(
+          "flex items-center gap-1.5 h-8 pl-1 pr-2 rounded-full border transition-all duration-150",
+          open
+            ? "border-gold/40 bg-gold/8 shadow-[0_0_0_3px_rgba(201,150,58,0.08)]"
+            : "border-border hover:border-gold/30 hover:bg-muted/20",
+        )}
       >
         {user.avatarUrl ? (
           <img
-            src={user.avatarUrl} alt={user.firstName}
-            className="w-8 h-8 rounded-full object-cover border-2 border-gold/35"
+            src={user.avatarUrl}
+            alt=""
+            className="w-6 h-6 rounded-full object-cover shrink-0"
           />
         ) : (
-          <div className="w-8 h-8 rounded-full bg-linear-to-br from-gold to-gold-dark flex items-center justify-center text-xs font-bold text-navy">
+          <div className="w-6 h-6 rounded-full bg-linear-to-br from-gold to-gold-dark flex items-center justify-center text-[9px] font-bold text-navy shrink-0">
             {initials}
           </div>
         )}
+        <span className="text-[12.5px] font-medium text-foreground/80 max-w-[88px] truncate hidden sm:block">
+          {user.firstName}
+        </span>
+        <ChevronDown
+          className={cn(
+            "size-3 text-muted-foreground/40 transition-transform",
+            open && "rotate-180",
+          )}
+        />
       </button>
 
       {open && (
-        <div className="hdr-menu absolute right-0 z-50 mt-2.5 w-[228px] bg-[rgba(15,25,37,0.97)] border border-gold/18 rounded-xl shadow-[0_16px_48px_rgba(0,0,0,0.5)] overflow-hidden">
-          {/* User info */}
-          <div className="flex items-center gap-3 px-4 py-3.5 border-b border-b-gold/12">
-            {user.avatarUrl ? (
-              <img src={user.avatarUrl} alt={user.firstName} className="w-9 h-9 rounded-full object-cover" />
-            ) : (
-              <div className="w-9 h-9 rounded-full bg-linear-to-br from-gold to-gold-dark flex items-center justify-center text-xs font-bold text-navy shrink-0">
-                {initials}
-              </div>
-            )}
-            <div className="min-w-0">
-              <p className="text-sm font-semibold text-cream whitespace-nowrap overflow-hidden text-ellipsis">
-                {user.firstName} {user.lastName}
-              </p>
-              <p className="text-xs text-cream/45 whitespace-nowrap overflow-hidden text-ellipsis">
-                {user.email}
-              </p>
-            </div>
+        <div className="nav-dd absolute right-0 top-[calc(100%+8px)] z-50 w-[220px] bg-card border border-border rounded-xl shadow-[0_16px_48px_rgba(0,0,0,0.3)] overflow-hidden">
+          <div className="px-4 py-3 border-b border-border/60">
+            <p className="text-[13px] font-semibold text-foreground truncate">
+              {user.firstName} {user.lastName}
+            </p>
+            <p className="text-[11px] text-muted-foreground/50 truncate">
+              {user.email}
+            </p>
           </div>
-
-          {/* Links */}
-          <div className="py-1.5">
-            {[
-              { to: dashboardHref, label: "Boshqaruv paneli", icon: "M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" },
-              { to: "/profile",    label: "Profil",           icon: "M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" },
-            ].map(({ to, label, icon }) => (
-              <Link
-                key={to} to={to} onClick={() => setOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-[9px] text-sm text-cream/70 no-underline transition-[color,background] duration-150 hover:text-gold-light hover:bg-gold/7"
-              >
-                <svg className="w-[15px] h-[15px] opacity-50 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d={icon} />
-                </svg>
-                {label}
-              </Link>
-            ))}
-          </div>
-
-          {/* Logout */}
-          <div className="border-t border-t-gold/12 py-1.5">
-            <button
-              onClick={handleLogout}
-              className="flex items-center gap-2.5 w-full px-4 py-[9px] text-sm text-red-400/80 bg-transparent border-none cursor-pointer transition-[color,background] duration-150 hover:text-red-500 hover:bg-red-500/7"
+          <div className="py-1">
+            <Link
+              to="/profile"
+              onClick={() => setOpen(false)}
+              className="flex items-center gap-2.5 px-4 py-2 text-[13px] text-foreground/70 hover:text-foreground hover:bg-muted/30 transition-colors"
             >
-              <svg className="w-[15px] h-[15px] opacity-70 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-              </svg>
+              <UserRound className="size-3.5 text-muted-foreground/50" />
+              Profil
+            </Link>
+            <button
+              onClick={toggle}
+              className="flex items-center gap-2.5 w-full px-4 py-2 text-[13px] text-foreground/70 hover:text-foreground hover:bg-muted/30 transition-colors text-left"
+            >
+              {theme === "dark" ? (
+                <Sun className="size-3.5 text-muted-foreground/50" />
+              ) : (
+                <Moon className="size-3.5 text-muted-foreground/50" />
+              )}
+              {theme === "dark" ? "Yorug' mavzu" : "Qorong'u mavzu"}
+            </button>
+          </div>
+          <div className="border-t border-border/60 py-1">
+            <button
+              onClick={() => logoutMutation.mutate()}
+              disabled={logoutMutation.isPending}
+              className="flex items-center gap-2.5 w-full px-4 py-2 text-[13px] text-red-400/80 hover:text-red-400 hover:bg-red-500/8 transition-colors disabled:opacity-50"
+            >
+              <LogOut className="size-3.5" />
               Chiqish
             </button>
           </div>
@@ -123,63 +230,115 @@ function UserMenu() {
   );
 }
 
-// ─── Header ────────────────────────────────────────────────────────────────────
-
 export function Header() {
-  const user = useAuthStore((s) => s.user);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const { user } = useAuthStore();
+  const roleLinks = user ? (ROLE_LINKS[user.role] ?? []) : [];
+
+  const closeMobile = () => setMobileOpen(false);
 
   return (
     <>
-      <style dangerouslySetInnerHTML={{ __html: HEADER_ANIM_CSS }} />
-      <header className="sticky top-0 z-40 w-full bg-navy-header/94 backdrop-blur-[14px] border-b border-b-gold/13">
-        <div className="h-px bg-linear-to-r from-transparent via-gold/40 to-transparent" />
+      <style dangerouslySetInnerHTML={{ __html: ANIM_CSS }} />
+      <header className="sticky top-0 z-40 w-full border-b border-border/60 bg-background/95 backdrop-blur-md">
+        <div className="h-[1.5px] bg-linear-to-r from-transparent via-gold/50 to-transparent" />
 
-        <div className="max-w-[1280px] mx-auto px-6 h-[60px] flex items-center justify-between gap-8">
-
-          {/* Logo */}
+        <div className="max-w-[1280px] mx-auto px-4 sm:px-6 h-15 flex gap-4">
           <Link to="/" className="no-underline shrink-0 flex items-center">
-            <span className="font-bold text-[18px] text-cream tracking-[-0.01em]">Planner</span>
-            <span className="font-bold text-[18px] text-gold tracking-[-0.01em]"> AI</span>
+            <span className="font-bold text-[18px] text-cream tracking-[-0.01em]">
+              Planner
+            </span>
+            <span className="font-bold text-[18px] text-gold tracking-[-0.01em]">
+              {" "}AI
+            </span>
           </Link>
 
-          <div className="flex items-center gap-5">
-            {/* Nav */}
-            <nav className="hidden md:flex gap-8">
-              {NAV.map(({ label, href }) => (
-                <a
-                  key={href}
-                  href={href}
-                  className="group relative text-[14px] text-cream/55 no-underline transition-colors duration-200 pb-0.5 hover:text-gold-light"
-                >
-                  {label}
-                  <span className="absolute bottom-[-2px] left-0 h-px w-0 bg-gold transition-[width] duration-[250ms] ease-in-out group-hover:w-full" />
-                </a>
-              ))}
-            </nav>
+          <nav className="hidden md:flex items-stretch h-full gap-5">
+            {BROWSE_LINKS.map((link) => (
+              <DesktopNavLink key={link.to} {...link} />
+            ))}
 
-            {/* Auth */}
-            <div className="flex items-center gap-2.5 shrink-0">
-              {user ? (
-                <UserMenu />
+            {roleLinks.length > 0 && (
+              <div className="w-px bg-border/50 my-4 mx-1" />
+            )}
+
+            {roleLinks.map((link) => (
+              <DesktopNavLink key={link.to} {...link} />
+            ))}
+          </nav>
+
+          <div className="flex items-center gap-2 ml-auto">
+            {user ? (
+              <UserMenu />
+            ) : (
+              <>
+                <Link
+                  to="/login"
+                  className="hidden sm:inline-flex h-8 px-4 items-center text-[13px] font-medium text-foreground/70 hover:text-foreground border border-border hover:border-gold/30 rounded-lg transition-colors"
+                >
+                  Kirish
+                </Link>
+                <Link
+                  to="/register"
+                  className="inline-flex h-8 px-4 items-center text-[13px] font-semibold text-navy bg-gold hover:bg-gold-light rounded-lg shadow-[0_2px_10px_rgba(201,150,58,0.2)] hover:shadow-[0_2px_14px_rgba(201,150,58,0.3)] transition-all"
+                >
+                  Boshlash
+                </Link>
+              </>
+            )}
+            <button
+              onClick={() => setMobileOpen((v) => !v)}
+              className="md:hidden flex items-center justify-center w-8 h-8 rounded-lg border border-border hover:border-gold/30 text-muted-foreground hover:text-foreground transition-colors"
+            >
+              {mobileOpen ? (
+                <X className="size-4" />
               ) : (
-                <>
-                  <Link
-                    to="/login"
-                    className="text-[14px] font-medium text-cream/80 no-underline py-[7px] px-4 border border-gold/22 rounded-[6px] transition-[border-color,color] duration-200 hover:border-gold/55 hover:text-gold-light"
-                  >
-                    Kirish
-                  </Link>
-                  <Link
-                    to="/register"
-                    className="text-[14px] font-semibold text-navy no-underline py-[7px] px-[18px] bg-linear-to-br from-gold to-gold-dark rounded-[6px] tracking-[0.01em] transition-[opacity,transform] duration-150 shadow-[0_2px_12px_rgba(201,150,58,0.25)] hover:opacity-90 hover:-translate-y-px"
-                  >
-                    Boshlash
-                  </Link>
-                </>
+                <Menu className="size-4" />
               )}
-            </div>
+            </button>
           </div>
         </div>
+
+        {mobileOpen && (
+          <div className="mob-menu md:hidden border-t border-border/60 bg-background px-4 py-3 flex flex-col gap-0.5">
+            {BROWSE_LINKS.map((link) => (
+              <MobileNavLink key={link.to} {...link} onClick={closeMobile} />
+            ))}
+
+            {roleLinks.length > 0 && (
+              <>
+                <div className="h-px bg-border/40 my-1.5" />
+                {roleLinks.map((link) => (
+                  <MobileNavLink
+                    key={link.to}
+                    {...link}
+                    onClick={closeMobile}
+                  />
+                ))}
+              </>
+            )}
+
+            {!user && (
+              <>
+                <div className="h-px bg-border/40 my-1.5" />
+                <Link
+                  to="/login"
+                  onClick={closeMobile}
+                  className="flex items-center px-3 py-2.5 rounded-lg text-[14px] font-medium text-foreground/70 hover:text-foreground hover:bg-muted/40 transition-colors"
+                >
+                  Kirish
+                </Link>
+                <Link
+                  to="/register"
+                  onClick={closeMobile}
+                  className="flex items-center justify-center h-10 rounded-lg text-[14px] font-semibold text-navy bg-gold hover:bg-gold-light transition-colors mt-1"
+                >
+                  Boshlash
+                </Link>
+              </>
+            )}
+          </div>
+        )}
       </header>
     </>
   );
