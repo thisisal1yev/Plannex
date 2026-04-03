@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { Check, AlertCircle, CheckCircle2, Ticket, ExternalLink } from 'lucide-react'
+import { Check, AlertCircle, CheckCircle2, Ticket, ExternalLink, LoaderCircle } from 'lucide-react'
 import { ticketsApi } from '@entities/ticket'
 import type { TicketTier } from '@entities/event'
 import type { PaymentProvider } from '@shared/types'
@@ -85,7 +85,7 @@ export function PurchaseTicketForm({ eventId, tiers, onSuccess }: PurchaseTicket
                         : 'border-border/50 bg-transparent',
                     )}
                   >
-                    {isSelected && <Check className="size-2.5 stroke-[3]" />}
+                    {isSelected && <Check className="size-2.5 stroke-3" />}
                   </span>
                   <div className="min-w-0">
                     <p className={cn(
@@ -205,10 +205,7 @@ export function PurchaseTicketForm({ eventId, tiers, onSuccess }: PurchaseTicket
           )}
         >
           {mutation.isPending ? (
-            <svg className="size-4 animate-spin" viewBox="0 0 24 24" fill="none">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
-            </svg>
+            <LoaderCircle className="size-4 animate-spin" />
           ) : (
             <Ticket className="size-4" />
           )}

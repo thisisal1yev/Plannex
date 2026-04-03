@@ -405,7 +405,7 @@ function CreateAccountForm() {
       {/* Role selector — card style */}
       <input type="hidden" {...register("role")} />
       <div className="flex flex-col gap-1.5">
-        <label className="text-[11px] font-semibold text-cream/45 tracking-[0.1em] uppercase">
+        <label className="text-[11px] font-semibold text-cream/45 tracking-widest uppercase">
           Ro'l
         </label>
         <div className="grid grid-cols-2 gap-2.5">

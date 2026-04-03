@@ -17,7 +17,7 @@ import { serviceKeys } from "@shared/api/queryKeys";
 import { formatUZS } from "@shared/lib/dateUtils";
 
 import "swiper/swiper.css";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, MapPin } from "lucide-react";
 
 const CATEGORY_LABEL: Record<string, string> = {
   CATERING: "Katering",
@@ -122,19 +122,7 @@ export function ServiceDetailPage() {
             </div>
             <span className="text-white/25">·</span>
             <div className="flex items-center gap-1">
-              <svg
-                className="h-3.5 w-3.5 text-gold/60"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                />
-              </svg>
+              <MapPin className="h-3.5 w-3.5 text-gold/60" />
               {service.city}
             </div>
           </div>

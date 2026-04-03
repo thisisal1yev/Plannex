@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { Link } from 'react-router'
+import { ChevronRight } from 'lucide-react'
 import { ticketsApi } from '@entities/ticket'
 import { Badge } from '@shared/ui/Badge'
 import { Spinner } from '@shared/ui/Spinner'
@@ -43,9 +44,7 @@ export function MyTicketsPage() {
               <Badge color={ticket.isUsed ? 'gray' : 'green'}>
                 {ticket.isUsed ? 'Ishlatilgan' : 'Amal qiladi'}
               </Badge>
-              <svg className="h-4 w-4 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
+              <ChevronRight className="h-4 w-4 text-muted-foreground" />
             </div>
           </Link>
         ))}

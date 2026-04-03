@@ -78,10 +78,12 @@ export function EventDetailPage() {
         <div className="w-16 h-16 rounded-2xl bg-card border border-border/60 flex items-center justify-center">
           <CalendarDays className="size-7 text-muted-foreground/20" />
         </div>
+
         <div className="text-center">
           <p className="lp-serif text-[18px] text-foreground/60">Tadbir topilmadi</p>
           <p className="text-[12px] text-muted-foreground/40 mt-1">Bunday tadbir mavjud emas yoki o'chirilgan</p>
         </div>
+        
         <Link to="/events" className="text-[11px] tracking-[0.12em] uppercase text-gold/60 hover:text-gold transition-colors">
           ← Barcha tadbirlar
         </Link>
@@ -154,19 +156,7 @@ export function EventDetailPage() {
             </div>
             <span className="text-white/25">·</span>
             <div className="flex items-center gap-1">
-              <svg
-                className="h-3.5 w-3.5 text-gold/60"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                />
-              </svg>
+              <MapPin className="h-3.5 w-3.5 text-gold/60" />
               {event.venue?.city}
             </div>
           </div>

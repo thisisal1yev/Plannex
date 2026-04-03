@@ -1,10 +1,11 @@
 import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router";
+import { Home, LogOut, User } from "lucide-react";
 import { useAuthStore } from "@shared/model/auth.store";
 
 const NAV = [
-  { label: "Imkoniyatlar",       href: "/#features" },
   { label: "Bu qanday ishlaydi", href: "/#how-it-works" },
+  { label: "Imkoniyatlar",       href: "/#features" },
   { label: "Tariflar",           href: "/#pricing" },
   { label: "Aloqa",              href: "/#contact" },
 ];
@@ -85,16 +86,14 @@ function UserMenu() {
 
           <div className="py-1.5">
             {[
-              { to: dashboardHref, label: "Boshqaruv paneli", icon: "M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" },
-              { to: "/profile",    label: "Profil",           icon: "M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" },
-            ].map(({ to, label, icon }) => (
+              { to: dashboardHref, label: "Boshqaruv paneli", Icon: Home },
+              { to: "/profile", label: "Profil", Icon: User },
+            ].map(({ to, label, Icon }) => (
               <Link
                 key={to} to={to} onClick={() => setOpen(false)}
                 className="flex items-center gap-2.5 px-4 py-[9px] text-sm text-cream/70 no-underline transition-[color,background] duration-150 hover:text-gold-light hover:bg-gold/7"
               >
-                <svg className="w-[15px] h-[15px] opacity-50 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d={icon} />
-                </svg>
+                <Icon className="w-[15px] h-[15px] opacity-50 shrink-0" strokeWidth={1.5} />
                 {label}
               </Link>
             ))}
@@ -105,9 +104,7 @@ function UserMenu() {
               onClick={handleLogout}
               className="flex items-center gap-2.5 w-full px-4 py-[9px] text-sm text-red-400/80 bg-transparent border-none cursor-pointer transition-[color,background] duration-150 hover:text-red-500 hover:bg-red-500/7"
             >
-              <svg className="w-[15px] h-[15px] opacity-70 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-              </svg>
+              <LogOut className="w-[15px] h-[15px] opacity-70 shrink-0" strokeWidth={1.5} />
               Chiqish
             </button>
           </div>

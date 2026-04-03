@@ -1,4 +1,5 @@
 import { Link } from "react-router";
+import { ArrowRight, Calendar, MapPin } from "lucide-react";
 import { formatDateShort } from "@shared/lib/dateUtils";
 import type { Event } from "../model/types";
 
@@ -32,10 +33,8 @@ export function EventCard({ event, index }: EventCardProps) {
   return (
     <Link
       to={`/events/${event.id}`}
-      className={`svc-card svc-fade ${fadeDelay} group relative flex flex-col rounded-2xl overflow-hidden border border-white/8 bg-navy-3 no-underline
-        transition-all duration-300 ease-[cubic-bezier(0.34,1.4,0.64,1)]
-         hover:border-gold/30
-        hover:shadow-[0_28px_60px_rgba(0,0,0,0.55),0_0_0_1px_rgba(201,150,58,0.14)]`}
+      className={`svc-card svc-fade ${fadeDelay} group relative flex flex-col rounded-2xl overflow-hidden border border-white/8 bg-card no-underline
+        transition-all duration-300 ease-[cubic-bezier(0.34,1.4,0.64,1)] hover:border-gold/30 hover:shadow-[0_28px_60px_rgba(0,0,0,0.55),0_0_0_1px_rgba(201,150,58,0.14)]`}
     >
       {/* Animated gold shimmer rule at card bottom */}
       <div
@@ -73,38 +72,56 @@ export function EventCard({ event, index }: EventCardProps) {
           }}
         />
 
-        {/* Status badge — top right */}
-        <div
-          className="absolute top-3 right-3 inline-flex items-center gap-[5px] text-[10px] font-medium
+        <div className="absolute top-3 px-4 flex items-center justify-between w-full">
+          {/* Capacity — top left stat */}
+          <div
+            className=" flex items-baseline gap-1 backdrop-blur-sm
+          bg-[rgba(8,15,25,0.55)] border border-white/10 rounded-lg px-2.5 py-1.5"
+          >
+            <span
+              className="text-[18px] font-bold text-cream/90 leading-none"
+              style={{ fontVariantNumeric: "tabular-nums" }}
+            >
+              {event.capacity.toLocaleString()}
+            </span>
+            <span className="text-[10px] text-cream/45">o'rin</span>
+          </div>
+
+          {/* Status badge — top right */}
+          <div
+            className="inline-flex items-center gap-[5px] text-[10px] font-medium
             py-[3px] px-[9px] rounded-full border backdrop-blur-sm"
-          style={{
-            color: dot,
-            borderColor: `${dot}33`,
-            background: "rgba(8,15,25,0.55)",
-          }}
-        >
-          <span
-            className="w-[5px] h-[5px] rounded-full shrink-0 inline-block"
-            style={{ background: dot }}
-          />
-          {label}
+            style={{
+              color: dot,
+              borderColor: `${dot}33`,
+              background: "rgba(8,15,25,0.55)",
+            }}
+          >
+            <span
+              className="w-[5px] h-[5px] rounded-full shrink-0 inline-block"
+              style={{ background: dot }}
+            />
+            {label}
+          </div>
         </div>
 
-        {/* Event type — small eyebrow above title */}
-        {event.eventType && (
-          <div className="absolute bottom-[52px] left-4 text-[10px] uppercase tracking-[0.12em] text-gold/60 font-medium">
-            {event.eventType}
-          </div>
-        )}
+        <div className="absolute bottom-0 px-4">
+          {/* Event type — small eyebrow above title */}
+          {event.eventType && (
+            <div className="text-xs uppercase tracking-widest text-gold/60 font-medium">
+              {event.eventType}
+            </div>
+          )}
 
-        {/* Title bleeds over image bottom */}
-        <div className="absolute bottom-0 left-0 right-0 px-4 pb-3.5">
-          <h3
-            className="lp-serif text-[20px] font-bold leading-[1.22] line-clamp-2 text-cream/95
+          {/* Title bleeds over image bottom */}
+          <div className="pb-3.5">
+            <h3
+              className="lp-serif text-[20px] font-bold leading- line-clamp-2 text-cream/95
               transition-colors duration-200 group-hover:text-gold-light"
-          >
-            {event.title}
-          </h3>
+            >
+              {event.title}
+            </h3>
+          </div>
         </div>
       </div>
 
@@ -112,62 +129,32 @@ export function EventCard({ event, index }: EventCardProps) {
       <div className="px-4 py-3 flex flex-col gap-2">
         <div className="flex items-center gap-1.5 text-[12px] text-cream/40">
           {/* Date */}
-          <svg
-            className="w-3 h-3 shrink-0 text-gold/40"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-            />
-          </svg>
-          <span>{start}</span>
+          <Calendar className="w-3 h-3 shrink-0 text-gold/40" />
+
+          <span className="group-hover:text-gold transition-colors duration-200">
+            {start}
+          </span>
 
           {event.venue && (
             <>
-              <span className="text-cream/15 mx-0.5">·</span>
-              <svg
-                className="w-3 h-3 shrink-0 text-gold/40"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                />
-              </svg>
-              <span className="truncate">{event.venue.city}</span>
+              <span className="text-cream/15 mx-0.5 group-hover:text-gold transition-colors duration-200">
+                •
+              </span>
+
+              <MapPin className="w-3 h-3 shrink-0 text-gold/40 group-hover:text-gold transition-colors duration-200" />
+
+              <span className="truncate group-hover:text-gold transition-colors duration-200">
+                {event.venue.city}
+              </span>
             </>
           )}
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-between pt-2 border-t border-white/5">
-          <span className="text-[11px] text-cream/22 tracking-wide">
-            {event.capacity.toLocaleString()} o'rin
-          </span>
-          <span className="text-[12px] text-gold/70 font-medium flex items-center gap-1 group-hover:text-gold transition-colors duration-200">
+        <div className="flex items-center justify-between pt-2 border-t border-white/5 group-hover:border-t-gold-dark/30 transition-colors duration-200">
+          <span className="text-[12px] text-gold/70 font-medium flex items-center gap-1 group-hover:text-gold transition-colors duration-200 ml-auto">
             Batafsil
-            <svg
-              className="w-3 h-3 transition-transform duration-200 group-hover:translate-x-0.5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M17 8l4 4m0 0l-4 4m4-4H3"
-              />
-            </svg>
+            <ArrowRight className="w-3 h-3 transition-transform duration-200 group-hover:translate-x-0.5" />
           </span>
         </div>
       </div>

@@ -1,4 +1,5 @@
 import { Link } from "react-router";
+import { ArrowRight, Building2, MapPin, Star } from "lucide-react";
 import { formatUZS } from "@shared/lib/dateUtils";
 import type { Venue } from "../model/types";
 
@@ -29,10 +30,8 @@ export function VenueCard({ venue, index = 0 }: VenueCardProps) {
   return (
     <Link
       to={`/venues/${venue.id}`}
-      className={`group svc-card svc-fade ${fadeDelay} relative flex flex-col rounded-2xl overflow-hidden border border-white/8 bg-navy-3 no-underline
-        transition-all duration-300 ease-[cubic-bezier(0.34,1.4,0.64,1)]
-         hover:border-gold/30
-        hover:shadow-[0_28px_60px_rgba(0,0,0,0.55),0_0_0_1px_rgba(201,150,58,0.14)]`}
+      className={`group svc-card svc-fade ${fadeDelay} relative flex flex-col rounded-2xl overflow-hidden border border-white/8 bg-card no-underline
+        transition-all duration-300 ease-[cubic-bezier(0.34,1.4,0.64,1)] hover:border-gold/30 hover:shadow-[0_28px_60px_rgba(0,0,0,0.55),0_0_0_1px_rgba(201,150,58,0.14)]`}
     >
       {/* Animated gold shimmer rule */}
       <div
@@ -55,19 +54,7 @@ export function VenueCard({ venue, index = 0 }: VenueCardProps) {
           />
         ) : (
           <div className="w-full h-full bg-linear-to-br from-navy-2 to-navy-dark flex items-center justify-center">
-            <svg
-              className="w-16 h-16 text-gold/8"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={0.8}
-                d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
-              />
-            </svg>
+            <Building2 className="w-16 h-16 text-gold/8" strokeWidth={1} />
           </div>
         )}
 
@@ -80,35 +67,31 @@ export function VenueCard({ venue, index = 0 }: VenueCardProps) {
           }}
         />
 
-        {/* Capacity — top left stat */}
-        <div
-          className="absolute top-3 left-3 flex items-baseline gap-1 backdrop-blur-sm
+        <div className="absolute top-3 px-4 flex items-center justify-between w-full">
+          {/* Capacity — top left stat */}
+          <div
+            className="flex items-baseline gap-1 backdrop-blur-sm
           bg-[rgba(8,15,25,0.55)] border border-white/10 rounded-lg px-2.5 py-1.5"
-        >
-          <span
-            className="text-[18px] font-bold text-cream/90 leading-none"
-            style={{ fontVariantNumeric: "tabular-nums" }}
           >
-            {venue.capacity.toLocaleString()}
-          </span>
-          <span className="text-[10px] text-cream/45">o'rin</span>
-        </div>
+            <span
+              className="text-lg font-bold text-cream/90 leading-none"
+              style={{ fontVariantNumeric: "tabular-nums" }}
+            >
+              {venue.capacity.toLocaleString()}
+            </span>
+            <span className="text-[10px] text-cream/45">o'rin</span>
+          </div>
 
-        {/* Rating — top right */}
-        <div
-          className="absolute top-3 right-3 flex items-center gap-1 backdrop-blur-sm
+          {/* Rating — top right */}
+          <div
+            className="flex items-center gap-1 backdrop-blur-sm
           bg-[rgba(8,15,25,0.55)] border border-white/10 rounded-lg px-2 py-1.5"
-        >
-          <svg
-            className="w-3 h-3 text-gold"
-            viewBox="0 0 20 20"
-            fill="currentColor"
           >
-            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-          </svg>
-          <span className="text-[12px] font-medium text-cream/80">
-            {venue.rating.toFixed(1)}
-          </span>
+            <Star className="w-3 h-3 text-gold fill-current" />
+            <span className="text-xs font-medium text-cream/80">
+              {venue.rating.toFixed(1)}
+            </span>
+          </div>
         </div>
 
         {/* Name bleeds over image bottom */}
@@ -125,21 +108,10 @@ export function VenueCard({ venue, index = 0 }: VenueCardProps) {
       {/* ── Metadata strip ── */}
       <div className="px-4 py-3 flex flex-col gap-2.5">
         {/* Location */}
-        <div className="flex items-center gap-1.5 text-[12px] text-cream/40">
-          <svg
-            className="w-3 h-3 shrink-0 text-gold/40"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-            />
-          </svg>
-          <span className="truncate">
+        <div className="flex items-center gap-1.5 text-xs text-cream/40">
+          <MapPin className="w-3 h-3 shrink-0 text-gold/40 group-hover:text-gold duration-200 transition-colors" />
+
+          <span className="truncate group-hover:text-gold duration-200 transition-colors">
             {venue.city}, {venue.address}
           </span>
         </div>
@@ -175,19 +147,7 @@ export function VenueCard({ venue, index = 0 }: VenueCardProps) {
           </div>
           <span className="text-[12px] text-gold/70 font-medium flex items-center gap-1 group-hover:text-gold transition-colors duration-200">
             Batafsil
-            <svg
-              className="w-3 h-3 transition-transform duration-200 group-hover:translate-x-0.5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M17 8l4 4m0 0l-4 4m4-4H3"
-              />
-            </svg>
+            <ArrowRight className="w-3 h-3 transition-all duration-200 group-hover:translate-x-0.5" />
           </span>
         </div>
       </div>
