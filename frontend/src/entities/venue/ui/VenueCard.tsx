@@ -1,11 +1,13 @@
 import { Link } from "react-router";
 import { ArrowRight, Building2, MapPin, Star } from "lucide-react";
 import { formatUZS } from "@shared/lib/dateUtils";
+import { cn } from "@/shared/lib/utils";
 import type { Venue } from "../model/types";
 
 interface VenueCardProps {
   venue: Venue;
   index: number;
+  className?: string;
 }
 
 const AMENITY_ICON: Record<string, string> = {
@@ -16,7 +18,7 @@ const AMENITY_ICON: Record<string, string> = {
   indoor: "⬡",
 };
 
-export function VenueCard({ venue, index = 0 }: VenueCardProps) {
+export function VenueCard({ venue, className, index = 0 }: VenueCardProps) {
   const amenities = [
     venue.hasWifi && { key: "wifi", label: "WiFi" },
     venue.hasParking && { key: "parking", label: "Parkovka" },
@@ -30,8 +32,8 @@ export function VenueCard({ venue, index = 0 }: VenueCardProps) {
   return (
     <Link
       to={`/venues/${venue.id}`}
-      className={`group svc-card svc-fade ${fadeDelay} relative flex flex-col rounded-2xl overflow-hidden border border-white/8 bg-card no-underline
-        transition-all duration-300 ease-[cubic-bezier(0.34,1.4,0.64,1)] hover:border-gold/30 hover:shadow-[0_28px_60px_rgba(0,0,0,0.55),0_0_0_1px_rgba(201,150,58,0.14)]`}
+      className={cn(`svc-card svc-fade ${fadeDelay} group relative flex flex-col rounded-2xl overflow-hidden
+        border border-white/8 bg-card ${className}`)}
     >
       {/* Animated gold shimmer rule */}
       <div

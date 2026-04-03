@@ -1,11 +1,13 @@
 import { Link } from "react-router";
 import { ArrowRight, Calendar, MapPin } from "lucide-react";
 import { formatDateShort } from "@shared/lib/dateUtils";
+import { cn } from "@/shared/lib/utils";
 import type { Event } from "../model/types";
 
 interface EventCardProps {
   event: Event;
   index: number;
+  className?: string;
 }
 
 const STATUS_LABEL: Record<string, string> = {
@@ -22,7 +24,7 @@ const STATUS_DOT: Record<string, string> = {
   COMPLETED: "#818CF8",
 };
 
-export function EventCard({ event, index }: EventCardProps) {
+export function EventCard({ event, className, index = 0 }: EventCardProps) {
   const start = formatDateShort(event.startDate);
   const dot = STATUS_DOT[event.status] ?? "#9CA3AF";
   const label = STATUS_LABEL[event.status] ?? event.status;
@@ -33,8 +35,8 @@ export function EventCard({ event, index }: EventCardProps) {
   return (
     <Link
       to={`/events/${event.id}`}
-      className={`svc-card svc-fade ${fadeDelay} group relative flex flex-col rounded-2xl overflow-hidden border border-white/8 bg-card no-underline
-        transition-all duration-300 ease-[cubic-bezier(0.34,1.4,0.64,1)] hover:border-gold/30 hover:shadow-[0_28px_60px_rgba(0,0,0,0.55),0_0_0_1px_rgba(201,150,58,0.14)]`}
+      className={cn(`svc-card svc-fade ${fadeDelay} group relative flex flex-col rounded-2xl overflow-hidden
+        border border-white/8 bg-card ${className}`)}
     >
       {/* Animated gold shimmer rule at card bottom */}
       <div
