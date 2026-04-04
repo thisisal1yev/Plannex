@@ -17,6 +17,9 @@ import {
   CANCELLED_EVENTS,
   TICKET_TIERS_BY_EVENT,
   SERVICES,
+  VENUE_REVIEWS,
+  SERVICE_REVIEWS,
+  EVENT_REVIEWS,
 } from './constants';
 import { PrismaPg } from '@prisma/adapter-pg';
 
@@ -423,35 +426,7 @@ async function seedVolunteerApplications() {
 
 // ─── Reviews ──────────────────────────────────────────────────────────────────
 async function seedReviews() {
-
-  const venueReviews = [
-    { userKey: 'participant@planner.ai',  venueIdx: 0, rating: 5, comment: 'Отличная площадка в самом центре города, всё оборудование работает идеально.' },
-    { userKey: 'participant2@planner.ai', venueIdx: 0, rating: 4, comment: 'Хорошее место, персонал профессиональный. Небольшие проблемы с парковкой.' },
-    { userKey: 'participant3@planner.ai', venueIdx: 1, rating: 5, comment: 'Незабываемая атмосфера Самарканда. Лучшая открытая площадка для мероприятий.' },
-    { userKey: 'participant4@planner.ai', venueIdx: 2, rating: 4, comment: 'Уютный конференц-зал, хорошая акустика и стабильный Wi-Fi.' },
-    { userKey: 'participant5@planner.ai', venueIdx: 3, rating: 5, comment: 'Дворец — это что-то невероятное. Гости в восторге, рекомендую для гала-вечеров.' },
-    { userKey: 'participant@planner.ai',  venueIdx: 4, rating: 4, comment: 'Просторный выставочный центр, удобная логистика и большая парковка.' },
-  ];
-
-  const serviceReviews = [
-    { userKey: 'participant@planner.ai',  serviceIdx: 0, rating: 5, comment: 'Кейтеринг на высшем уровне! Еда была восхитительной, команда очень профессиональна.' },
-    { userKey: 'participant2@planner.ai', serviceIdx: 1, rating: 4, comment: 'Отличное звуковое оборудование, техник был всегда рядом и всё оперативно настраивал.' },
-    { userKey: 'participant3@planner.ai', serviceIdx: 2, rating: 5, comment: 'Фотографы работали незаметно, а результат превзошёл все ожидания. Очень рекомендую!' },
-    { userKey: 'participant4@planner.ai', serviceIdx: 3, rating: 5, comment: 'Декор был стильным и элегантным, точно в рамках нашей концепции.' },
-    { userKey: 'participant5@planner.ai', serviceIdx: 4, rating: 3, comment: 'Охрана выглядела профессионально, но реагировала медленно на некоторые ситуации.' },
-    { userKey: 'participant@planner.ai',  serviceIdx: 5, rating: 5, comment: 'Самсибой и плов были просто великолепны. Гости из Европы были в шоке от качества!' },
-  ];
-
-  const eventReviews = [
-    { userKey: 'participant@planner.ai',  eventIdx: 0, rating: 5, comment: 'Лучшая маркетинговая конференция, на которой я был. Спикеры — топ-уровня.' },
-    { userKey: 'participant2@planner.ai', eventIdx: 0, rating: 4, comment: 'Очень информативно, полезные контакты. Буду участвовать снова.' },
-    { userKey: 'participant3@planner.ai', eventIdx: 1, rating: 5, comment: 'Митап организован на отлично: питч-сессии живые, нетворкинг насыщенный.' },
-    { userKey: 'participant4@planner.ai', eventIdx: 2, rating: 5, comment: 'Незабываемый фестиваль! Три дня джаза, food-зона и арт. Приду снова.' },
-    { userKey: 'participant5@planner.ai', eventIdx: 3, rating: 4, comment: 'Воркшоп дал реальные навыки. Кейсы актуальные, преподаватели отзывчивые.' },
-    { userKey: 'participant3@planner.ai', eventIdx: 4, rating: 5, comment: 'Выставка впечатляет — работы художников из разных стран создают уникальный диалог.' },
-  ];
-
-  for (const r of venueReviews) {
+  for (const r of VENUE_REVIEWS) {
     await prisma.review.create({
       data: {
         authorId: createdIds.users[r.userKey],
@@ -462,7 +437,7 @@ async function seedReviews() {
     });
   }
 
-  for (const r of serviceReviews) {
+  for (const r of SERVICE_REVIEWS) {
     await prisma.review.create({
       data: {
         authorId: createdIds.users[r.userKey],
@@ -473,7 +448,7 @@ async function seedReviews() {
     });
   }
 
-  for (const r of eventReviews) {
+  for (const r of EVENT_REVIEWS) {
     await prisma.review.create({
       data: {
         authorId: createdIds.users[r.userKey],
@@ -484,7 +459,7 @@ async function seedReviews() {
     });
   }
 
-  const total = venueReviews.length + serviceReviews.length + eventReviews.length;
+  const total = VENUE_REVIEWS.length + SERVICE_REVIEWS.length + EVENT_REVIEWS.length;
   console.log(`✓ ${total} reviews`);
 }
 

@@ -209,7 +209,7 @@ export function PurchaseTicketForm({ eventId, tiers, onSuccess }: PurchaseTicket
           ) : (
             <Ticket className="size-4" />
           )}
-          {mutation.isPending ? 'Jarayonda...' : `Sotib olish · ${formatUZS(selectedTier?.price ?? 0)}`}
+          {mutation.isPending ? 'Jarayonda...' : `Sotib olish • ${formatUZS(selectedTier?.price ?? 0)}`}
         </Button>
       </div>
     </div>

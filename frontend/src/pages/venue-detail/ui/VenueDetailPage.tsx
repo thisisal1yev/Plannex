@@ -1,38 +1,48 @@
-import { useState } from 'react'
-import { useParams, Link } from 'react-router'
-import { useQuery } from '@tanstack/react-query'
+import { useState } from "react";
+import { useParams, Link } from "react-router";
+import { useQuery } from "@tanstack/react-query";
 import {
-  ArrowLeft, MapPin, Star,
-  Wifi, Car, Volume2, Music, Home, Sun,
-} from 'lucide-react'
-import { venuesApi } from '@entities/venue'
-import { reviewsApi } from '@entities/review'
-import { ReviewCard } from '@entities/review'
-import { CreateReviewForm } from '@features/review-create'
-import { StarRating } from '@shared/ui/StarRating'
-import { Modal } from '@shared/ui/Modal'
-import { useAuthStore } from '@shared/model/auth.store'
-import { venueKeys } from '@shared/api/queryKeys'
-import { formatUZS } from '@shared/lib/dateUtils'
-import { Skeleton } from '@/shared/ui/primitives/skeleton'
-import { Separator } from '@/shared/ui/primitives/separator'
+  ArrowLeft,
+  MapPin,
+  Star,
+  Wifi,
+  Car,
+  Volume2,
+  Music,
+  Home,
+  Sun,
+  ChevronRight,
+  ChevronLeft,
+} from "lucide-react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay, Navigation } from "swiper/modules";
+import type { Swiper as SwiperInstance } from "swiper";
+
+import { venuesApi } from "@entities/venue";
+import { reviewsApi } from "@entities/review";
+import { ReviewCard } from "@entities/review";
+import { CreateReviewForm } from "@features/review-create";
+import { StarRating } from "@shared/ui/StarRating";
+import { Modal } from "@shared/ui/Modal";
+import { useAuthStore } from "@shared/model/auth.store";
+import { venueKeys } from "@shared/api/queryKeys";
+import { formatUZS } from "@shared/lib/dateUtils";
+import { Skeleton } from "@/shared/ui/primitives/skeleton";
+import { Separator } from "@/shared/ui/primitives/separator";
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
   CardDescription,
-} from '@/shared/ui/primitives/card'
+} from "@/shared/ui/primitives/card";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from '@/shared/ui/primitives/tooltip'
-import type { Swiper as SwiperInstance } from 'swiper'
-import { Swiper, SwiperSlide } from 'swiper/react'
-import { Button } from '@/shared/ui/primitives/button'
-import { Autoplay } from 'swiper/modules'
+} from "@/shared/ui/primitives/tooltip";
+import { Button } from "@/shared/ui/primitives/button";
 
 function DetailSkeleton() {
   return (
@@ -81,29 +91,29 @@ function DetailSkeleton() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 export function VenueDetailPage() {
-  const { id } = useParams<{ id: string }>()
-  const user = useAuthStore((s) => s.user)
-  const [imgIndex, setImgIndex] = useState(0)
+  const { id } = useParams<{ id: string }>();
+  const user = useAuthStore((s) => s.user);
+  const [imgIndex, setImgIndex] = useState(0);
   const [swiper, setSwiper] = useState<SwiperInstance | null>(null);
-  const [reviewModal, setReviewModal] = useState(false)
+  const [reviewModal, setReviewModal] = useState(false);
 
   const { data: venue, isLoading } = useQuery({
     queryKey: venueKeys.detail(id!),
     queryFn: () => venuesApi.get(id!),
     enabled: !!id,
-  })
+  });
 
   const { data: reviews } = useQuery({
     queryKey: venueKeys.reviews(id!),
     queryFn: () => reviewsApi.forVenue(id!),
     enabled: !!id,
-  })
+  });
 
-  if (isLoading) return <DetailSkeleton />
+  if (isLoading) return <DetailSkeleton />;
 
   if (!venue) {
     return (
@@ -112,7 +122,9 @@ export function VenueDetailPage() {
           <Home className="size-7 text-muted-foreground/20" />
         </div>
         <div className="text-center">
-          <p className="text-[15px] font-semibold text-foreground">Maydon topilmadi</p>
+          <p className="text-[15px] font-semibold text-foreground">
+            Maydon topilmadi
+          </p>
           <p className="text-[13px] text-muted-foreground/50 mt-1">
             Bu maydon mavjud emas yoki o'chirilgan
           </p>
@@ -124,22 +136,21 @@ export function VenueDetailPage() {
           Barcha maydonlar
         </Link>
       </div>
-    )
+    );
   }
 
-  const avgRating =
-    reviews?.data.length
-      ? reviews.data.reduce((sum, r) => sum + r.rating, 0) / reviews.data.length
-      : venue.rating
+  const avgRating = reviews?.data.length
+    ? reviews.data.reduce((sum, r) => sum + r.rating, 0) / reviews.data.length
+    : venue.rating;
 
   const amenityItems = [
-    venue.hasWifi    && { Icon: Wifi,    label: 'WiFi' },
-    venue.hasParking && { Icon: Car,     label: 'Parkovka' },
-    venue.hasSound   && { Icon: Volume2, label: 'Ovoz tizimi' },
-    venue.hasStage   && { Icon: Music,   label: 'Sahna' },
-    venue.isIndoor   && { Icon: Home,    label: 'Yopiq zal' },
-    !venue.isIndoor  && { Icon: Sun,     label: 'Ochiq maydon' },
-  ].filter(Boolean) as Array<{ Icon: typeof Wifi; label: string }>
+    venue.hasWifi && { Icon: Wifi, label: "WiFi" },
+    venue.hasParking && { Icon: Car, label: "Parkovka" },
+    venue.hasSound && { Icon: Volume2, label: "Ovoz tizimi" },
+    venue.hasStage && { Icon: Music, label: "Sahna" },
+    venue.isIndoor && { Icon: Home, label: "Yopiq zal" },
+    !venue.isIndoor && { Icon: Sun, label: "Ochiq maydon" },
+  ].filter(Boolean) as Array<{ Icon: typeof Wifi; label: string }>;
 
   return (
     <div className="flex flex-col gap-0 pb-16">
@@ -151,7 +162,9 @@ export function VenueDetailPage() {
             autoplay={{ delay: 2500, disableOnInteraction: false }}
             loop
             className="w-full h-full"
-            onSwiper={(s) => { setSwiper(s) }}
+            onSwiper={(s) => {
+              setSwiper(s);
+            }}
             onSlideChange={(s) => setImgIndex(s.realIndex)}
           >
             {venue.imageUrls.map((img, i) => (
@@ -179,8 +192,13 @@ export function VenueDetailPage() {
               size="sm"
               className="text-white/80 hover:text-white hover:bg-white/10 border border-white/20 backdrop-blur-sm flex items-center gap-2 group"
             >
-              <ArrowLeft size={24} className="transition-transform group-hover:-translate-x-0.5" />
-              <span className="text-[10px] tracking-[0.15em] uppercase text-white/80 hover:text-white">Barcha maydonlar</span>
+              <ArrowLeft
+                size={24}
+                className="transition-transform group-hover:-translate-x-0.5"
+              />
+              <span className="text-[10px] tracking-[0.15em] uppercase text-white/80 hover:text-white">
+                Barcha maydonlar
+              </span>
             </Button>
           </Link>
         </div>
@@ -188,7 +206,7 @@ export function VenueDetailPage() {
         {/* Title overlay */}
         <div className="absolute inset-x-0 bottom-0 px-6 pb-8 mx-auto z-10">
           <span className="inline-flex items-center text-xs font-medium uppercase tracking-[0.18em] text-gold-light/90 mb-3 bg-black/45 backdrop-blur-sm px-3 py-1.5 rounded-full border border-gold/20">
-            {venue.isIndoor ? 'Yopiq zal' : 'Ochiq maydon'}
+            {venue.isIndoor ? "Yopiq zal" : "Ochiq maydon"}
           </span>
           <h1 className="lp-serif text-4xl md:text-5xl font-bold text-white leading-tight mb-3 max-w-2xl drop-shadow-lg">
             {venue.name}
@@ -196,11 +214,14 @@ export function VenueDetailPage() {
           <div className="flex items-center gap-4 text-white/80 text-sm flex-wrap">
             <div className="flex items-center gap-1.5">
               <StarRating rating={venue.rating} />
+              
               <span className="text-gold-light font-medium">
                 {venue.rating.toFixed(1)}
               </span>
             </div>
-            <span className="text-white/25">·</span>
+
+            <span className="text-white/25">•</span>
+
             <div className="flex items-center gap-1">
               <MapPin className="h-3.5 w-3.5 text-gold/60" />
               {venue.city}
@@ -214,7 +235,10 @@ export function VenueDetailPage() {
             {venue.imageUrls.map((url, i) => (
               <button
                 key={i}
-                onClick={() => { swiper?.slideTo(i); setImgIndex(i) }}
+                onClick={() => {
+                  swiper?.slideTo(i);
+                  setImgIndex(i);
+                }}
                 className={`h-12 w-16 rounded-lg overflow-hidden border-2 transition-all duration-200 cursor-pointer ${
                   i === imgIndex
                     ? "border-gold shadow-[0_0_14px_rgba(201,150,58,0.5)]"
@@ -230,10 +254,8 @@ export function VenueDetailPage() {
 
       {/* ── Main content: two-column ── */}
       <div className="mt-10 grid grid-cols-1 lg:grid-cols-12 gap-8">
-
         {/* ── Left column ── */}
         <div className="lg:col-span-7 flex flex-col gap-5">
-
           {/* Address block */}
           <div className="flex items-center gap-3 py-3 px-4 rounded-xl bg-muted/15 border border-border/35">
             <MapPin className="size-4 text-muted-foreground/35 shrink-0" />
@@ -283,7 +305,8 @@ export function VenueDetailPage() {
           <div>
             <div className="flex items-center justify-between mb-4">
               <p className="text-[10px] font-semibold text-muted-foreground/35 uppercase tracking-[0.15em]">
-                Sharhlar{reviews?.data.length ? ` (${reviews.data.length})` : ''}
+                Sharhlar
+                {reviews?.data.length ? ` (${reviews.data.length})` : ""}
               </p>
               {user && (
                 <button
@@ -298,14 +321,44 @@ export function VenueDetailPage() {
             {!reviews?.data.length ? (
               <div className="flex flex-col items-center justify-center py-10 gap-3 rounded-xl border border-border/30 bg-card/25">
                 <Star className="size-6 text-muted-foreground/12" />
-                <p className="text-[13px] text-muted-foreground/40">Hozircha sharhlar yo'q</p>
+                <p className="text-[13px] text-muted-foreground/40">
+                  Hozircha sharhlar yo'q
+                </p>
               </div>
             ) : (
-              <div className="flex flex-col gap-3">
+              <Swiper
+                modules={[Autoplay, Navigation]}
+                autoplay={{ delay: 3500, disableOnInteraction: false }}
+                loop={reviews.data.length >= 2}
+                spaceBetween={12}
+                slidesPerView={1}
+                navigation={{
+                  prevEl: ".prev",
+                  nextEl: ".next",
+                }}
+              >
+                <div className="flex items-center mt-2 space-x-1">
+                  <button
+                    type="button"
+                    className="prev ml-auto w-9 h-9 rounded-full bg-card/90 backdrop-blur-sm border border-border/50 flex items-center justify-center text-foreground/60 hover:text-foreground hover:border-gold/30 hover:bg-card transition-all duration-200 shadow-sm"
+                  >
+                    <ChevronLeft className="size-5" />
+                  </button>
+
+                  <button
+                    type="button"
+                    className="next w-9 h-9 rounded-full bg-card/90 backdrop-blur-sm border border-border/50 flex items-center justify-center text-foreground/60 hover:text-foreground hover:border-gold/30 hover:bg-card transition-all duration-200 shadow-sm"
+                  >
+                    <ChevronRight className="size-5" />
+                  </button>
+                </div>
+
                 {reviews.data.map((review) => (
-                  <ReviewCard key={review.id} review={review} />
+                  <SwiperSlide key={review.id} className="!w-full">
+                    <ReviewCard review={review} />
+                  </SwiperSlide>
                 ))}
-              </div>
+              </Swiper>
             )}
           </div>
         </div>
@@ -313,7 +366,6 @@ export function VenueDetailPage() {
         {/* ── Right column: booking card ── */}
         <div className="lg:col-span-5">
           <Card className="sticky top-20 ring-0 border-white/8 bg-white/3 backdrop-blur-md overflow-hidden gap-0">
-
             {/* Gold accent bar */}
             <div className="h-0.5 w-full bg-linear-to-r from-transparent via-gold to-transparent opacity-70" />
 
@@ -325,7 +377,7 @@ export function VenueDetailPage() {
                 kuniga ijarasi
               </CardTitle>
               <CardDescription className="text-[12px] text-muted-foreground/35 mt-0">
-                {venue.city} · {venue.isIndoor ? 'Yopiq zal' : 'Ochiq maydon'}
+                {venue.city} • {venue.isIndoor ? "Yopiq zal" : "Ochiq maydon"}
               </CardDescription>
             </CardHeader>
 
@@ -334,19 +386,25 @@ export function VenueDetailPage() {
 
               <div className="flex flex-col divide-y divide-white/5">
                 <div className="flex items-center justify-between py-3">
-                  <span className="text-[13px] text-muted-foreground/50">Sig'imi</span>
+                  <span className="text-[13px] text-muted-foreground/50">
+                    Sig'imi
+                  </span>
                   <span className="text-[13px] font-semibold text-cream/82">
                     {venue.capacity} kishi
                   </span>
                 </div>
                 <div className="flex items-center justify-between py-3">
-                  <span className="text-[13px] text-muted-foreground/50">Turi</span>
+                  <span className="text-[13px] text-muted-foreground/50">
+                    Turi
+                  </span>
                   <span className="text-[13px] font-semibold text-cream/82">
-                    {venue.isIndoor ? 'Yopiq zal' : 'Ochiq maydon'}
+                    {venue.isIndoor ? "Yopiq zal" : "Ochiq maydon"}
                   </span>
                 </div>
                 <div className="flex items-center justify-between py-3">
-                  <span className="text-[13px] text-muted-foreground/50">Reyting</span>
+                  <span className="text-[13px] text-muted-foreground/50">
+                    Reyting
+                  </span>
                   <div className="flex items-center gap-1.5">
                     <StarRating rating={avgRating} />
                     <span className="text-[13px] font-semibold text-cream/82">
@@ -355,7 +413,9 @@ export function VenueDetailPage() {
                   </div>
                 </div>
                 <div className="flex items-center justify-between py-3">
-                  <span className="text-[13px] text-muted-foreground/50">Manzil</span>
+                  <span className="text-[13px] text-muted-foreground/50">
+                    Manzil
+                  </span>
                   <span className="text-[13px] font-semibold text-cream/82 text-right max-w-[160px] leading-snug">
                     {venue.address}
                   </span>
@@ -380,7 +440,11 @@ export function VenueDetailPage() {
         </div>
       </div>
 
-      <Modal open={reviewModal} onClose={() => setReviewModal(false)} title="Sharh yozish">
+      <Modal
+        open={reviewModal}
+        onClose={() => setReviewModal(false)}
+        title="Sharh yozish"
+      >
         <CreateReviewForm
           venueId={venue.id}
           queryKey={venueKeys.reviews(id!)}
@@ -388,5 +452,5 @@ export function VenueDetailPage() {
         />
       </Modal>
     </div>
-  )
+  );
 }

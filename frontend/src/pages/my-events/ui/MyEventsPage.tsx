@@ -48,7 +48,7 @@ export function MyEventsPage() {
                 <Badge color={EVENT_STATUS_COLOR[event.status]}>{event.status}</Badge>
               </div>
               <p className="text-sm text-muted-foreground">
-                {formatDateDefault(event.startDate)} · {event.capacity} o'rin
+                {formatDateDefault(event.startDate)} • {event.capacity} o'rin
               </p>
             </div>
             <div className="flex items-center gap-2 shrink-0">

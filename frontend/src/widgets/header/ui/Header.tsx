@@ -249,13 +249,13 @@ export function Header() {
             </span>
           </Link>
 
-          <nav className="hidden md:flex h-full gap-5">
+          <nav className="hidden md:flex h-full gap-5 ml-auto">
             {BROWSE_LINKS.map((link) => (
               <DesktopNavLink key={link.to} {...link} />
             ))}
 
             {roleLinks.length > 0 && (
-              <div className="w-px bg-border/50 mx-1" />
+              <div className="w-px bg-border/50 mx-1 my-5" />
             )}
 
             {roleLinks.map((link) => (

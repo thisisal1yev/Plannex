@@ -35,7 +35,7 @@ export function MyTicketsPage() {
           >
             <div>
               <p className="font-semibold text-foreground">{ticket.event?.title ?? 'Tadbir'}</p>
-              <p className="text-sm text-muted-foreground">{ticket.tier?.name} · {formatUZS(ticket.tier?.price ?? 0)}</p>
+              <p className="text-sm text-muted-foreground">{ticket.tier?.name} • {formatUZS(ticket.tier?.price ?? 0)}</p>
               <p className="text-xs text-muted-foreground mt-1">
                 {ticket.event?.startDate && new Date(ticket.event.startDate).toLocaleDateString('uz-UZ')}
               </p>

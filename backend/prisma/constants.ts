@@ -396,7 +396,7 @@ export const COMPLETED_EVENTS = [
     capacity: 800,
     bannerUrl: [
       'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=1400&auto=format&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=1400&auto=format&fit=crop&q=80'
+      'https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=1400&auto=format&fit=crop&q=80',
     ],
     venueIndex: 4,
     organizerKey: 'organizer2@planner.ai',
@@ -589,5 +589,268 @@ export const SERVICES = [
       'https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=1200&auto=format&fit=crop&q=80',
     ],
     vendorKey: 'vendor2@planner.ai',
+  },
+];
+
+// ─── Venue Reviews ──────────────────────────────────────────────────────────
+export const VENUE_REVIEWS = [
+  {
+    userKey: 'participant@planner.ai',
+    venueIdx: 0,
+    rating: 5,
+    comment:
+      'Отличная площадка в самом центре города, всё оборудование работает идеально.',
+  },
+  {
+    userKey: 'participant2@planner.ai',
+    venueIdx: 0,
+    rating: 4,
+    comment:
+      'Хорошее место, персонал профессиональный. Небольшие проблемы с парковкой.',
+  },
+  {
+    userKey: 'participant3@planner.ai',
+    venueIdx: 1,
+    rating: 5,
+    comment:
+      'Незабываемая атмосфера Самарканда. Лучшая открытая площадка для мероприятий.',
+  },
+  {
+    userKey: 'participant4@planner.ai',
+    venueIdx: 2,
+    rating: 4,
+    comment: 'Уютный конференц-зал, хорошая акустика и стабильный Wi-Fi.',
+  },
+  {
+    userKey: 'participant5@planner.ai',
+    venueIdx: 3,
+    rating: 5,
+    comment:
+      'Дворец — это что-то невероятное. Гости в восторге, рекомендую для гала-вечеров.',
+  },
+  {
+    userKey: 'participant@planner.ai',
+    venueIdx: 4,
+    rating: 4,
+    comment:
+      'Просторный выставочный центр, удобная логистика и большая парковка.',
+  },
+  // Additional copies with variations
+  {
+    userKey: 'participant2@planner.ai',
+    venueIdx: 1,
+    rating: 4,
+    comment:
+      'Красивый вид на Регистан, но вечером немного прохладно — стоит учесть при планировании.',
+  },
+  {
+    userKey: 'participant5@planner.ai',
+    venueIdx: 0,
+    rating: 5,
+    comment:
+      'Парковку решили, а зал превзошёл ожидания. Звук и свет на высшем уровне.',
+  },
+  {
+    userKey: 'participant@planner.ai',
+    venueIdx: 2,
+    rating: 5,
+    comment:
+      'Камерная атмосфера Бухары идеально подошла для нашей конференции. Персонал — супер!',
+  },
+  {
+    userKey: 'participant3@planner.ai',
+    venueIdx: 3,
+    rating: 4,
+    comment:
+      'Роскошный зал, но цена кусается. Для особого случая — однозначно стоит.',
+  },
+  {
+    userKey: 'participant4@planner.ai',
+    venueIdx: 4,
+    rating: 5,
+    comment:
+      'Экспо-центр удобен для масштабных мероприятий. Логистика продумана до мелочей.',
+  },
+  {
+    userKey: 'participant5@planner.ai',
+    venueIdx: 1,
+    rating: 5,
+    comment:
+      'Самарканд — это магия! Открытая площадка, звёзды, живая музыка. Незабываемо.',
+  },
+];
+
+// ─── Service Reviews ────────────────────────────────────────────────────────
+export const SERVICE_REVIEWS = [
+  {
+    userKey: 'participant@planner.ai',
+    serviceIdx: 0,
+    rating: 5,
+    comment:
+      'Кейтеринг на высшем уровне! Еда была восхитительной, команда очень профессиональна.',
+  },
+  {
+    userKey: 'participant2@planner.ai',
+    serviceIdx: 1,
+    rating: 4,
+    comment:
+      'Отличное звуковое оборудование, техник был всегда рядом и всё оперативно настраивал.',
+  },
+  {
+    userKey: 'participant3@planner.ai',
+    serviceIdx: 2,
+    rating: 5,
+    comment:
+      'Фотографы работали незаметно, а результат превзошёл все ожидания. Очень рекомендую!',
+  },
+  {
+    userKey: 'participant4@planner.ai',
+    serviceIdx: 3,
+    rating: 5,
+    comment: 'Декор был стильным и элегантным, точно в рамках нашей концепции.',
+  },
+  {
+    userKey: 'participant5@planner.ai',
+    serviceIdx: 4,
+    rating: 3,
+    comment:
+      'Охрана выглядела профессионально, но реагировала медленно на некоторые ситуации.',
+  },
+  {
+    userKey: 'participant@planner.ai',
+    serviceIdx: 5,
+    rating: 5,
+    comment:
+      'Самсибой и плов были просто великолепны. Гости из Европы были в шоке от качества!',
+  },
+  // Additional copies with variations
+  {
+    userKey: 'participant2@planner.ai',
+    serviceIdx: 0,
+    rating: 5,
+    comment:
+      'Банкет прошёл безупречно. Меню разнообразное, подача — как в ресторане.',
+  },
+  {
+    userKey: 'participant4@planner.ai',
+    serviceIdx: 2,
+    rating: 4,
+    comment:
+      'Фотографии получились живыми и эмоциональными. Дрон-съёмка — отдельный плюс!',
+  },
+  {
+    userKey: 'participant3@planner.ai',
+    serviceIdx: 3,
+    rating: 5,
+    comment:
+      'Цветочные арки и центральная инсталляция — именно то, что мы хотели. Спасибо команде!',
+  },
+  {
+    userKey: 'participant5@planner.ai',
+    serviceIdx: 1,
+    rating: 5,
+    comment:
+      'Звук был чистым даже при полной заполненности зала. Техник — настоящий профи.',
+  },
+  {
+    userKey: 'participant@planner.ai',
+    serviceIdx: 3,
+    rating: 4,
+    comment:
+      'Декор стильный, но хотелось бы больше внимания к деталям на столах.',
+  },
+  {
+    userKey: 'participant4@planner.ai',
+    serviceIdx: 5,
+    rating: 5,
+    comment:
+      'Самаркандский кейтеринг — это бренд. Вкус аутентичный, обслуживание на уровне.',
+  },
+];
+
+// ─── Event Reviews ──────────────────────────────────────────────────────────
+export const EVENT_REVIEWS = [
+  {
+    userKey: 'participant@planner.ai',
+    eventIdx: 0,
+    rating: 5,
+    comment:
+      'Лучшая маркетинговая конференция, на которой я был. Спикеры — топ-уровня.',
+  },
+  {
+    userKey: 'participant2@planner.ai',
+    eventIdx: 0,
+    rating: 4,
+    comment: 'Очень информативно, полезные контакты. Буду участвовать снова.',
+  },
+  {
+    userKey: 'participant3@planner.ai',
+    eventIdx: 1,
+    rating: 5,
+    comment:
+      'Митап организован на отлично: питч-сессии живые, нетворкинг насыщенный.',
+  },
+  {
+    userKey: 'participant4@planner.ai',
+    eventIdx: 2,
+    rating: 5,
+    comment:
+      'Незабываемый фестиваль! Три дня джаза, food-зона и арт. Приду снова.',
+  },
+  {
+    userKey: 'participant5@planner.ai',
+    eventIdx: 3,
+    rating: 4,
+    comment:
+      'Воркшоп дал реальные навыки. Кейсы актуальные, преподаватели отзывчивые.',
+  },
+  {
+    userKey: 'participant3@planner.ai',
+    eventIdx: 4,
+    rating: 5,
+    comment:
+      'Выставка впечатляет — работы художников из разных стран создают уникальный диалог.',
+  },
+  // Additional copies with variations
+  {
+    userKey: 'participant5@planner.ai',
+    eventIdx: 0,
+    rating: 5,
+    comment:
+      'Нетворкинг-сессия стоила всего билета! Нашёл двух клиентов и ментора.',
+  },
+  {
+    userKey: 'participant4@planner.ai',
+    eventIdx: 1,
+    rating: 4,
+    comment: 'Питч-сессии полезные, но хотелось бы больше времени на Q&A.',
+  },
+  {
+    userKey: 'participant@planner.ai',
+    eventIdx: 2,
+    rating: 4,
+    comment:
+      'Джаз звучал потрясающе! Единственное — еда могла бы быть разнообразнее.',
+  },
+  {
+    userKey: 'participant2@planner.ai',
+    eventIdx: 3,
+    rating: 5,
+    comment:
+      'Figma-лаборатория — это находка. Теперь работаю в 2 раза быстрее после советов тренеров.',
+  },
+  {
+    userKey: 'participant5@planner.ai',
+    eventIdx: 4,
+    rating: 4,
+    comment:
+      'Кураторы подобрали сильные работы. Навигация по залам могла бы быть лучше.',
+  },
+  {
+    userKey: 'participant@planner.ai',
+    eventIdx: 1,
+    rating: 5,
+    comment:
+      'Инвесторы реальные, а не «понарошку». Два стартапа уже получили финансирование!',
   },
 ];

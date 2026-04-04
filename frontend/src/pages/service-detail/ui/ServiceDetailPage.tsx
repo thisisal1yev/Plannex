@@ -2,8 +2,10 @@ import { useState } from "react";
 import { useParams, Link } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay } from "swiper/modules";
+import { Autoplay, Navigation } from "swiper/modules";
+import { ArrowLeft, MapPin, ChevronLeft, ChevronRight } from "lucide-react";
 import type { Swiper as SwiperInstance } from "swiper";
+
 import { servicesApi } from "@entities/service";
 import { reviewsApi } from "@entities/review";
 import { ReviewCard } from "@entities/review";
@@ -17,7 +19,6 @@ import { serviceKeys } from "@shared/api/queryKeys";
 import { formatUZS } from "@shared/lib/dateUtils";
 
 import "swiper/swiper.css";
-import { ArrowLeft, MapPin } from "lucide-react";
 
 const CATEGORY_LABEL: Record<string, string> = {
   CATERING: "Katering",
@@ -71,7 +72,9 @@ export function ServiceDetailPage() {
             autoplay={{ delay: 2500, disableOnInteraction: false }}
             loop
             className="w-full h-full"
-            onSwiper={(s) => { setSwiper(s) }}
+            onSwiper={(s) => {
+              setSwiper(s);
+            }}
             onSlideChange={(s) => setImgIndex(s.realIndex)}
           >
             {service.imageUrls.map((img, i) => (
@@ -99,8 +102,13 @@ export function ServiceDetailPage() {
               size="sm"
               className="text-white/80 hover:text-white hover:bg-white/10 border border-white/20 backdrop-blur-sm flex items-center gap-2 group"
             >
-              <ArrowLeft size={24} className="transition-transform group-hover:-translate-x-0.5" />
-              <span className="text-[10px] tracking-[0.15em] uppercase text-white/80 hover:text-white">Barcha xizmatlar</span>
+              <ArrowLeft
+                size={24}
+                className="transition-transform group-hover:-translate-x-0.5"
+              />
+              <span className="text-[10px] tracking-[0.15em] uppercase text-white/80 hover:text-white">
+                Barcha xizmatlar
+              </span>
             </Button>
           </Link>
         </div>
@@ -120,7 +128,7 @@ export function ServiceDetailPage() {
                 {service.rating.toFixed(1)}
               </span>
             </div>
-            <span className="text-white/25">·</span>
+            <span className="text-white/25">•</span>
             <div className="flex items-center gap-1">
               <MapPin className="h-3.5 w-3.5 text-gold/60" />
               {service.city}
@@ -134,7 +142,10 @@ export function ServiceDetailPage() {
             {service.imageUrls.map((url, i) => (
               <button
                 key={i}
-                onClick={() => { swiper?.slideTo(i); setImgIndex(i) }}
+                onClick={() => {
+                  swiper?.slideTo(i);
+                  setImgIndex(i);
+                }}
                 className={`h-12 w-16 rounded-lg overflow-hidden border-2 transition-all duration-200 cursor-pointer ${
                   i === imgIndex
                     ? "border-gold shadow-[0_0_14px_rgba(201,150,58,0.5)]"
@@ -148,19 +159,20 @@ export function ServiceDetailPage() {
         )}
       </div>
 
-      {/* Body */}
-      <div className="py-8 w-full">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+       {/* ── Main layout ── */}
+       <div className="mt-10 grid grid-cols-1 lg:grid-cols-12 gap-10">
           {/* Left: description + reviews */}
-          <div className="lg:col-span-2 flex flex-col gap-8">
+          <div className="lg:col-span-7 flex flex-col gap-8">
             {service.description && (
               <div>
                 <div className="flex items-center gap-3 mb-4">
                   <h2 className="lp-serif text-2xl font-semibold text-foreground whitespace-nowrap">
                     Xizmat haqida
                   </h2>
+                  
                   <div className="flex-1 h-px bg-linear-to-r from-border to-transparent" />
                 </div>
+
                 <p className="text-muted-foreground leading-relaxed text-[15px]">
                   {service.description}
                 </p>
@@ -173,7 +185,9 @@ export function ServiceDetailPage() {
                 <h2 className="lp-serif text-2xl font-semibold text-foreground whitespace-nowrap">
                   Sharhlar
                 </h2>
+
                 <div className="flex-1 h-px bg-linear-to-r from-border to-transparent" />
+
                 {user && (
                   <Button
                     variant="outline"
@@ -196,17 +210,45 @@ export function ServiceDetailPage() {
                   </p>
                 </div>
               ) : (
-                <div className="flex flex-col gap-3">
+                <Swiper
+                  modules={[Autoplay, Navigation]}
+                  autoplay={{ delay: 3500 }}
+                  loop={(reviews?.data.length ?? 0) >= 2}
+                  spaceBetween={12}
+                  slidesPerView={1}
+                  navigation={{
+                    prevEl: ".prev",
+                    nextEl: ".next",
+                  }}
+                >
+                  <div className="flex items-center mt-2 space-x-1">
+                    <button
+                      type="button"
+                      className="prev ml-auto w-9 h-9 rounded-full bg-card/90 backdrop-blur-sm border border-border/50 flex items-center justify-center text-foreground/60 hover:text-foreground hover:border-gold/30 hover:bg-card transition-all duration-200 shadow-sm"
+                    >
+                      <ChevronLeft className="size-5" />
+                    </button>
+
+                    <button
+                      type="button"
+                      className="next w-9 h-9 rounded-full bg-card/90 backdrop-blur-sm border border-border/50 flex items-center justify-center text-foreground/60 hover:text-foreground hover:border-gold/30 hover:bg-card transition-all duration-200 shadow-sm"
+                    >
+                      <ChevronRight className="size-5" />
+                    </button>
+                  </div>
+
                   {reviews?.data.map((review) => (
-                    <ReviewCard key={review.id} review={review} />
+                    <SwiperSlide key={review.id} className="!w-full">
+                      <ReviewCard review={review} />
+                    </SwiperSlide>
                   ))}
-                </div>
+                </Swiper>
               )}
             </div>
           </div>
 
           {/* Right: pricing card */}
-          <div className="lg:col-span-1">
+          <div className="lg:col-span-5">
             <div className="sticky top-20 bg-card rounded-2xl border border-border overflow-hidden">
               {/* Gold top accent */}
               <div className="h-[3px] bg-linear-to-r from-gold-dark via-gold to-gold-light" />
@@ -224,6 +266,7 @@ export function ServiceDetailPage() {
                     <span className="text-sm text-muted-foreground">
                       Turkum
                     </span>
+
                     <span className="text-sm font-medium text-foreground">
                       {CATEGORY_LABEL[service.category]}
                     </span>
@@ -232,16 +275,20 @@ export function ServiceDetailPage() {
                     <span className="text-sm text-muted-foreground">
                       Shahar
                     </span>
+
                     <span className="text-sm font-medium text-foreground">
                       {service.city}
                     </span>
                   </div>
+
                   <div className="flex justify-between items-center py-2.5">
                     <span className="text-sm text-muted-foreground">
                       Reyting
                     </span>
+
                     <div className="flex items-center gap-1.5">
                       <StarRating rating={service.rating} />
+
                       <span className="text-sm font-medium text-foreground">
                         {service.rating.toFixed(1)}
                       </span>
@@ -263,7 +310,6 @@ export function ServiceDetailPage() {
               </div>
             </div>
           </div>
-        </div>
       </div>
 
       <Modal

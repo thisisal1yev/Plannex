@@ -84,7 +84,7 @@ function AttachModal({ eventId, onClose }: { eventId: string; onClose: () => voi
 
   const serviceOptions = allServices?.data.map((s) => ({
     value: s.id,
-    label: `${s.name} — ${SERVICE_CATEGORY_LABEL[s.category] ?? s.category} · ${s.city}`,
+    label: `${s.name} — ${SERVICE_CATEGORY_LABEL[s.category] ?? s.category} • ${s.city}`,
   })) ?? []
 
   return (
@@ -239,7 +239,9 @@ export function EventServicesPage() {
                   <span className="text-[11px] text-muted-foreground/50">
                     {SERVICE_CATEGORY_LABEL[es.service?.category ?? ''] ?? es.service?.category}
                   </span>
-                  <span className="text-[11px] text-muted-foreground/30">·</span>
+
+                  <span className="text-[11px] text-muted-foreground/30">•</span>
+                  
                   <span className="text-[11px] font-semibold text-gold/80">{formatUZS(Number(es.agreedPrice))}</span>
                 </div>
               </div>
