@@ -183,14 +183,18 @@ export function EventDetailPage() {
           <div className="flex items-center gap-4 text-white/80 text-sm flex-wrap">
             <div className="flex items-center gap-1.5">
               <StarRating rating={avgRating ?? 0} />
+
               <span className="text-gold-light font-medium">
                 {avgRating?.toFixed(1)}
               </span>
             </div>
+
             <span className="text-white/25">•</span>
+
             <div className="flex items-center gap-1">
               <MapPin className="h-3.5 w-3.5 text-gold/60" />
-              {event.venue?.city}
+
+              <span>{event.venue?.city}</span>
             </div>
           </div>
         </div>

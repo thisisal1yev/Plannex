@@ -214,7 +214,7 @@ export function VenueDetailPage() {
           <div className="flex items-center gap-4 text-white/80 text-sm flex-wrap">
             <div className="flex items-center gap-1.5">
               <StarRating rating={venue.rating} />
-              
+
               <span className="text-gold-light font-medium">
                 {venue.rating.toFixed(1)}
               </span>
@@ -365,17 +365,19 @@ export function VenueDetailPage() {
 
         {/* ── Right column: booking card ── */}
         <div className="lg:col-span-5">
-          <Card className="sticky top-20 ring-0 border-white/8 bg-white/3 backdrop-blur-md overflow-hidden gap-0">
-            {/* Gold accent bar */}
-            <div className="h-0.5 w-full bg-linear-to-r from-transparent via-gold to-transparent opacity-70" />
+          <div className="top-20 bg-card rounded-2xl overflow-hidden">
+            <div className="h-[3px] bg-linear-to-r from-gold-dark via-gold to-gold-light" />
+            {/* Gold top accent */}
 
             <CardHeader className="pb-5 pt-5">
               <div className="text-[34px] font-bold text-gold leading-none tracking-tight">
                 {formatUZS(venue.pricePerDay)}
               </div>
+
               <CardTitle className="text-[12px] font-normal text-muted-foreground/45 mt-1.5">
                 kuniga ijarasi
               </CardTitle>
+
               <CardDescription className="text-[12px] text-muted-foreground/35 mt-0">
                 {venue.city} • {venue.isIndoor ? "Yopiq zal" : "Ochiq maydon"}
               </CardDescription>
@@ -389,6 +391,7 @@ export function VenueDetailPage() {
                   <span className="text-[13px] text-muted-foreground/50">
                     Sig'imi
                   </span>
+
                   <span className="text-[13px] font-semibold text-cream/82">
                     {venue.capacity} kishi
                   </span>
@@ -397,6 +400,7 @@ export function VenueDetailPage() {
                   <span className="text-[13px] text-muted-foreground/50">
                     Turi
                   </span>
+
                   <span className="text-[13px] font-semibold text-cream/82">
                     {venue.isIndoor ? "Yopiq zal" : "Ochiq maydon"}
                   </span>
@@ -405,17 +409,21 @@ export function VenueDetailPage() {
                   <span className="text-[13px] text-muted-foreground/50">
                     Reyting
                   </span>
+
                   <div className="flex items-center gap-1.5">
                     <StarRating rating={avgRating} />
+
                     <span className="text-[13px] font-semibold text-cream/82">
                       {avgRating.toFixed(1)}
                     </span>
                   </div>
                 </div>
+
                 <div className="flex items-center justify-between py-3">
                   <span className="text-[13px] text-muted-foreground/50">
                     Manzil
                   </span>
+
                   <span className="text-[13px] font-semibold text-cream/82 text-right max-w-[160px] leading-snug">
                     {venue.address}
                   </span>
@@ -436,7 +444,7 @@ export function VenueDetailPage() {
                 </Link>
               )}
             </CardContent>
-          </Card>
+          </div>
         </div>
       </div>
 

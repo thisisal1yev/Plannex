@@ -257,6 +257,7 @@ export function ServiceDetailPage() {
                 <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground/50 mb-1">
                   Narxdan boshlab
                 </p>
+
                 <p className="lp-serif text-3xl font-bold text-gold leading-none mb-5">
                   {formatUZS(service.priceFrom)}
                 </p>
@@ -271,6 +272,7 @@ export function ServiceDetailPage() {
                       {CATEGORY_LABEL[service.category]}
                     </span>
                   </div>
+                  
                   <div className="flex justify-between items-center py-2.5 border-b border-border/50">
                     <span className="text-sm text-muted-foreground">
                       Shahar
