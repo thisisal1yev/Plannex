@@ -30,7 +30,6 @@ import { formatUZS } from "@shared/lib/dateUtils";
 import { Skeleton } from "@/shared/ui/primitives/skeleton";
 import { Separator } from "@/shared/ui/primitives/separator";
 import {
-  Card,
   CardContent,
   CardHeader,
   CardTitle,
