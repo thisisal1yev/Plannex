@@ -15,7 +15,7 @@ async function bootstrap() {
   const corsOrigin = configService.get<string>('CORS_FRONTEND_URL', 'http://localhost:5173');
   
   app.enableCors({
-    origin: true, // corsOrigin.split(',').map(url => url.trim())
+    origin: corsOrigin.split(',').map(url => url.trim()), 
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
@@ -36,6 +36,7 @@ async function bootstrap() {
 
   const port = process.env.PORT ?? 3000;
   await app.listen(port);
+  console.log(corsOrigin.split(',').map(url => url.trim()))
 
   console.log(`🚀 Planner AI API running on http://localhost:${port}`);
   console.log(`📖 Swagger docs: http://localhost:${port}/api/docs`);
