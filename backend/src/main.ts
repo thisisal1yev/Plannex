@@ -1,4 +1,5 @@
 import { NestFactory } from '@nestjs/core';
+import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { globalValidationPipe } from './common/pipes/validation-pipe.config';
@@ -10,14 +11,11 @@ async function bootstrap() {
   app.useGlobalPipes(globalValidationPipe);
 
   // CORS
+  const configService = app.get(ConfigService);
+  const corsOrigin = configService.get<string>('CORS_FRONTEND_URL', 'http://localhost:5173');
+  
   app.enableCors({
-    origin: [
-      'http://localhost:5173',
-      'http://localhost:5174',
-      'http://127.0.0.1:5173',
-      'http://127.0.0.1:5174',
-      'https://planner-ai-1.onrender.com/',
-    ],
+    origin: corsOrigin.split(',').map(url => url.trim()),
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
