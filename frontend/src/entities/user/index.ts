@@ -1,4 +1,5 @@
 export type { User } from './model/types'
 export { authApi, usersApi } from './api/usersApi'
+export type { SwitchRoleDto } from './api/usersApi'
 export type { RegisterDto, LoginDto, UpdateUserDto, QueryUsersDto } from './api/usersApi'
 export { ROLE_COLOR } from './model/constants'

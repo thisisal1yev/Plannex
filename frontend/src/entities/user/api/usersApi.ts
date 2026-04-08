@@ -1,4 +1,5 @@
 import { apiClient } from '@shared/api/client'
+import type { Role } from '@shared/types'
 import type { PaginatedResponse, TokenPair } from '@shared/types'
 import type { User } from '../model/types'
 
@@ -20,7 +21,10 @@ export interface UpdateUserDto {
   firstName?: string
   lastName?: string
   phone?: string
+  role?: Role
 }
+
+export type SwitchRoleDto = Pick<UpdateUserDto, 'role'>
 
 export interface QueryUsersDto {
   page?: number
@@ -49,6 +53,10 @@ export const usersApi = {
   },
   updateMe: async (dto: UpdateUserDto): Promise<User> => {
     const { data } = await apiClient.patch('/users/me', dto)
+    return data.data
+  },
+  switchRole: async (role: Role): Promise<User> => {
+    const { data } = await apiClient.patch('/users/me', { role })
     return data.data
   },
   list: async (params?: QueryUsersDto): Promise<PaginatedResponse<User>> => {

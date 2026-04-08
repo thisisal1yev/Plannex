@@ -63,11 +63,12 @@ async function seedUsers() {
 
 // ─── Venues ──────────────────────────────────────────────────────────────────
 async function seedVenues() {
-
-  const ownerId = createdIds.users['vendor@planner.ai'];
-
   for (const v of VENUES) {
-    const created = await prisma.venue.create({ data: { ...v, ownerId } });
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { vendorKey: _, ...venueData } = v;
+    const created = await prisma.venue.create({
+      data: { ...venueData, ownerId: createdIds.users[v.vendorKey] },
+    });
     createdIds.venues.push(created.id);
   }
 
@@ -220,6 +221,17 @@ async function seedTicketsAndPayments() {
     { participantKey: 'participant3@planner.ai', eventIdx: 4, tierIdx: 1, date: new Date('2026-03-02T09:00:00Z'), provider: PaymentProvider.PAYME },
     { participantKey: 'participant4@planner.ai', eventIdx: 0, tierIdx: 0, date: new Date('2026-03-07T10:00:00Z'), provider: PaymentProvider.CLICK },
     { participantKey: 'participant5@planner.ai', eventIdx: 5, tierIdx: 0, date: new Date('2026-03-12T13:00:00Z'), provider: PaymentProvider.PAYME },
+    // ── Additional tickets so every participant has at least 3 ──
+    { participantKey: 'participant@planner.ai',  eventIdx: 2, tierIdx: 0, date: new Date('2026-03-14T10:00:00Z'), provider: PaymentProvider.CLICK },
+    { participantKey: 'participant@planner.ai',  eventIdx: 4, tierIdx: 0, date: new Date('2026-03-16T11:00:00Z'), provider: PaymentProvider.PAYME },
+    { participantKey: 'participant2@planner.ai', eventIdx: 1, tierIdx: 0, date: new Date('2026-03-14T12:00:00Z'), provider: PaymentProvider.CLICK },
+    { participantKey: 'participant2@planner.ai', eventIdx: 6, tierIdx: 0, date: new Date('2026-03-17T09:00:00Z'), provider: PaymentProvider.PAYME },
+    { participantKey: 'participant3@planner.ai', eventIdx: 0, tierIdx: 0, date: new Date('2026-03-15T10:00:00Z'), provider: PaymentProvider.CLICK },
+    { participantKey: 'participant3@planner.ai', eventIdx: 2, tierIdx: 1, date: new Date('2026-03-18T14:00:00Z'), provider: PaymentProvider.PAYME },
+    { participantKey: 'participant4@planner.ai', eventIdx: 1, tierIdx: 0, date: new Date('2026-03-15T11:00:00Z'), provider: PaymentProvider.CLICK },
+    { participantKey: 'participant4@planner.ai', eventIdx: 2, tierIdx: 0, date: new Date('2026-03-19T09:00:00Z'), provider: PaymentProvider.PAYME },
+    { participantKey: 'participant5@planner.ai', eventIdx: 0, tierIdx: 0, date: new Date('2026-03-16T10:00:00Z'), provider: PaymentProvider.CLICK },
+    { participantKey: 'participant5@planner.ai', eventIdx: 4, tierIdx: 1, date: new Date('2026-03-20T14:00:00Z'), provider: PaymentProvider.PAYME },
   ];
 
   const COMMISSION_RATE = 0.1;
@@ -386,9 +398,21 @@ async function seedVolunteerApplications() {
     },
     {
       userKey: 'volunteer@planner.ai',
+      eventIdx: 1,
+      skills: ['tech support', 'live streaming'],
+      status: VolunteerStatus.PENDING,
+    },
+    {
+      userKey: 'volunteer2@planner.ai',
+      eventIdx: 1,
+      skills: ['registration', 'speaker coordination'],
+      status: VolunteerStatus.REJECTED,
+    },
+    {
+      userKey: 'volunteer@planner.ai',
       eventIdx: 2,
       skills: ['stage management', 'artist coordination'],
-      status: VolunteerStatus.PENDING,
+      status: VolunteerStatus.ACCEPTED,
     },
     {
       userKey: 'volunteer2@planner.ai',
@@ -404,9 +428,21 @@ async function seedVolunteerApplications() {
     },
     {
       userKey: 'volunteer2@planner.ai',
+      eventIdx: 3,
+      skills: ['design review', 'feedback collection'],
+      status: VolunteerStatus.ACCEPTED,
+    },
+    {
+      userKey: 'volunteer@planner.ai',
+      eventIdx: 4,
+      skills: ['art installation', 'visitor guidance'],
+      status: VolunteerStatus.PENDING,
+    },
+    {
+      userKey: 'volunteer2@planner.ai',
       eventIdx: 4,
       skills: ['art curation', 'visitor guidance', 'multilingual support'],
-      status: VolunteerStatus.PENDING,
+      status: VolunteerStatus.ACCEPTED,
     },
   ];
 

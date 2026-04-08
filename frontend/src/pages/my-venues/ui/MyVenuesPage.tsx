@@ -18,7 +18,7 @@ export function MyVenuesPage() {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-900">Mening maydonlarim</h1>
+        <h1 className="text-2xl font-bold">Mening maydonlarim</h1>
         <Link to="/my-venues/create"><Button>+ Qo'shish</Button></Link>
       </div>
 
@@ -31,9 +31,9 @@ export function MyVenuesPage() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {data?.data.map((venue) => (
-          <div key={venue.id} className="bg-white rounded-xl border border-gray-200 p-4 flex flex-col gap-3">
+          <div key={venue.id} className="bg-card rounded-xl p-4 flex flex-col gap-3">
             <div>
-              <h3 className="font-semibold text-gray-900">{venue.name}</h3>
+              <h3 className="font-semibold">{venue.name}</h3>
               <p className="text-sm text-gray-500">{venue.city}, {venue.address}</p>
               <div className="flex items-center gap-1 mt-1">
                 <StarRating rating={venue.rating} />

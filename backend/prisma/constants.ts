@@ -143,6 +143,7 @@ export const VENUES = [
       'https://images.unsplash.com/photo-1497366216548-37526070297c?w=1200&auto=format&fit=crop&q=80',
       'https://images.unsplash.com/photo-1511578314322-379afb476865?w=1200&auto=format&fit=crop&q=80',
     ],
+    vendorKey: 'vendor@planner.ai',
   },
   {
     name: 'Samarkand Garden',
@@ -164,6 +165,7 @@ export const VENUES = [
       'https://images.unsplash.com/photo-1464207687429-7505649dae38?w=1200&auto=format&fit=crop&q=80',
       'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=1200&auto=format&fit=crop&q=80',
     ],
+    vendorKey: 'vendor@planner.ai',
   },
   {
     name: 'Bukhara Conference Hall',
@@ -185,6 +187,7 @@ export const VENUES = [
       'https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=1200&auto=format&fit=crop&q=80',
       'https://images.unsplash.com/photo-1582481725274-d63bdf929a90?w=1200&auto=format&fit=crop&q=80',
     ],
+    vendorKey: 'vendor@planner.ai',
   },
   {
     name: 'Navoi Palace',
@@ -206,6 +209,7 @@ export const VENUES = [
       'https://images.unsplash.com/photo-1561489396-888724a1543d?w=1200&auto=format&fit=crop&q=80',
       'https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=1200&auto=format&fit=crop&q=80',
     ],
+    vendorKey: 'vendor2@planner.ai',
   },
   {
     name: 'Andijan Expo Center',
@@ -227,6 +231,7 @@ export const VENUES = [
       'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=1200&auto=format&fit=crop&q=80',
       'https://images.unsplash.com/photo-1505373877841-8d25f7d46678?w=1200&auto=format&fit=crop&q=80',
     ],
+    vendorKey: 'vendor2@planner.ai',
   },
 ];
 

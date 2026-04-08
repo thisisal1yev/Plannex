@@ -132,7 +132,6 @@ model Ticket {
 
 model Venue {
   id          String   @id @default(uuid())
-  ownerId     String?
   name        String
   description String?
   address     String
@@ -150,6 +149,7 @@ model Venue {
   rating      Float    @default(0)
   createdAt   DateTime @default(now())
 
+  ownerId     String?
   events   Event[]
   bookings VenueBooking[]
   reviews  Review[]

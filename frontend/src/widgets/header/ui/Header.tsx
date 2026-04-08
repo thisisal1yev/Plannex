@@ -18,11 +18,12 @@ import {
   X,
   ChevronDown,
 } from "lucide-react";
+
 import { useAuthStore } from "@shared/model/auth.store";
 import { useThemeStore } from "@shared/model/theme.store";
-import { authApi } from "@entities/user";
+import type { Role } from "@shared/types";
+import { authApi, usersApi } from "@entities/user";
 import { cn } from "@shared/lib/utils";
-
 interface NavItem {
   to: string;
   label: string;
@@ -31,20 +32,27 @@ interface NavItem {
 }
 
 const BROWSE_LINKS: NavItem[] = [
-  { to: "/events",   label: "Tadbirlar", icon: CalendarDays },
-  { to: "/venues",   label: "Maydonlar", icon: Building2 },
+  { to: "/events", label: "Tadbirlar", icon: CalendarDays },
+  { to: "/venues", label: "Maydonlar", icon: Building2 },
   { to: "/services", label: "Xizmatlar", icon: Wrench },
 ];
 
+const ROLES: Role[] = ["ORGANIZER", "PARTICIPANT", "VENDOR"];
+
 const ROLE_LINKS: Record<string, NavItem[]> = {
-  PARTICIPANT: [{ to: "/tickets",   label: "Chiptalarim", icon: Ticket }],
+  PARTICIPANT: [{ to: "/tickets", label: "Chiptalarim", icon: Ticket }],
   ORGANIZER: [
-    { to: "/dashboard", label: "Boshqaruv", icon: LayoutDashboard, exact: true },
+    {
+      to: "/dashboard",
+      label: "Boshqaruv",
+      icon: LayoutDashboard,
+      exact: true,
+    },
     { to: "/my-events", label: "Tadbirlarim", icon: ListChecks },
   ],
   VENDOR: [
-    { to: "/my-venues",   label: "Maydonlarim",  icon: MapPin },
-    { to: "/my-services", label: "Xizmatlarim",  icon: Settings2 },
+    { to: "/my-venues", label: "Maydonlarim", icon: MapPin },
+    { to: "/my-services", label: "Xizmatlarim", icon: Settings2 },
   ],
   VOLUNTEER: [],
 };
@@ -115,10 +123,10 @@ function MobileNavLink({
   );
 }
 
-function UserMenu() {
+function UserMenu({ className }: { className?: string }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
-  const { user, logout } = useAuthStore();
+  const { user, setUser, logout } = useAuthStore();
   const { theme, toggle } = useThemeStore();
   const navigate = useNavigate();
 
@@ -127,6 +135,13 @@ function UserMenu() {
     onSettled: () => {
       logout();
       navigate("/login");
+    },
+  });
+
+  const switchRoleMutation = useMutation({
+    mutationFn: (role: Role) => usersApi.switchRole(role),
+    onSuccess: (updatedUser) => {
+      setUser(updatedUser);
     },
   });
 
@@ -145,7 +160,7 @@ function UserMenu() {
     `${user.firstName[0] ?? ""}${user.lastName[0] ?? ""}`.toUpperCase();
 
   return (
-    <div ref={ref} className="relative">
+    <div ref={ref} className={cn(`relative ${className}`)}>
       <button
         onClick={() => setOpen((v) => !v)}
         className={cn(
@@ -179,46 +194,76 @@ function UserMenu() {
       </button>
 
       {open && (
-        <div className="nav-dd absolute right-0 top-[calc(100%+8px)] z-50 w-[220px] bg-card border border-border rounded-xl shadow-[0_16px_48px_rgba(0,0,0,0.3)] overflow-hidden">
+        <div className="nav-dd absolute right-0 top-[calc(100%+8px)] z-50 bg-card border border-border rounded-xl shadow-[0_16px_48px_rgba(0,0,0,0.3)] overflow-hidden">
           <div className="px-4 py-3 border-b border-border/60">
             <p className="text-[13px] font-semibold text-foreground truncate">
               {user.firstName} {user.lastName}
             </p>
+
             <p className="text-[11px] text-muted-foreground/50 truncate">
               {user.email}
             </p>
           </div>
-          <div className="py-1">
-            <Link
-              to="/profile"
-              onClick={() => setOpen(false)}
-              className="flex items-center gap-2.5 px-4 py-2 text-[13px] text-foreground/70 hover:text-foreground hover:bg-muted/30 transition-colors"
-            >
-              <UserRound className="size-3.5 text-muted-foreground/50" />
-              Profil
-            </Link>
-            <button
-              onClick={toggle}
-              className="flex items-center gap-2.5 w-full px-4 py-2 text-[13px] text-foreground/70 hover:text-foreground hover:bg-muted/30 transition-colors text-left"
-            >
-              {theme === "dark" ? (
-                <Sun className="size-3.5 text-muted-foreground/50" />
-              ) : (
-                <Moon className="size-3.5 text-muted-foreground/50" />
-              )}
-              {theme === "dark" ? "Yorug' mavzu" : "Qorong'u mavzu"}
-            </button>
-          </div>
-          <div className="border-t border-border/60 py-1">
-            <button
-              onClick={() => logoutMutation.mutate()}
-              disabled={logoutMutation.isPending}
-              className="flex items-center gap-2.5 w-full px-4 py-2 text-[13px] text-red-400/80 hover:text-red-400 hover:bg-red-500/8 transition-colors disabled:opacity-50"
-            >
-              <LogOut className="size-3.5" />
-              Chiqish
-            </button>
-          </div>
+
+          <nav className="space-y-1 py-1">
+            <div>
+              <div className="flex items-center justify-between text-xs gap-x-1">
+                {ROLES.map((role) => {
+                  const isActive = user?.role === role;
+
+                  return (
+                    <button
+                      key={role}
+                      disabled={switchRoleMutation.isPending}
+                      onClick={() => switchRoleMutation.mutate(role)}
+                      className={cn(
+                        "px-2 py-1 rounded-md text-[10px] font-medium transition-all duration-150",
+                        isActive
+                          ? "bg-gold/15 text-gold border border-gold/30"
+                          : "text-muted-foreground/60 hover:text-foreground/80 hover:bg-muted/30 border border-transparent",
+                      )}
+                    >
+                      {role}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div>
+              <Link
+                to="/profile"
+                onClick={() => setOpen(false)}
+                className="flex items-center gap-2.5 px-4 py-2 text-[13px] text-foreground/70 hover:text-foreground hover:bg-muted/30 transition-colors"
+              >
+                <UserRound className="size-3.5 text-muted-foreground/50" />
+                Profil
+              </Link>
+
+              <button
+                onClick={toggle}
+                className="flex items-center gap-2.5 w-full px-4 py-2 text-[13px] text-foreground/70 hover:text-foreground hover:bg-muted/30 transition-colors text-left"
+              >
+                {theme === "dark" ? (
+                  <Sun className="size-3.5 text-muted-foreground/50" />
+                ) : (
+                  <Moon className="size-3.5 text-muted-foreground/50" />
+                )}
+                {theme === "dark" ? "Yorug' mavzu" : "Qorong'u mavzu"}
+              </button>
+            </div>
+
+            <div className="border-t border-border/60">
+              <button
+                onClick={() => logoutMutation.mutate()}
+                disabled={logoutMutation.isPending}
+                className="flex items-center gap-2.5 w-full px-4 py-2 text-[13px] text-red-400/80 hover:text-red-400 hover:bg-red-500/8 transition-colors disabled:opacity-50"
+              >
+                <LogOut className="size-3.5" />
+                Chiqish
+              </button>
+            </div>
+          </nav>
         </div>
       )}
     </div>
@@ -227,10 +272,17 @@ function UserMenu() {
 
 export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const { user } = useAuthStore();
+  const { user, setUser } = useAuthStore();
   const roleLinks = user ? (ROLE_LINKS[user.role] ?? []) : [];
 
   const closeMobile = () => setMobileOpen(false);
+
+  const switchRoleMutation = useMutation({
+    mutationFn: (role: Role) => usersApi.switchRole(role),
+    onSuccess: (updatedUser) => {
+      setUser(updatedUser);
+    },
+  });
 
   return (
     <>
@@ -245,7 +297,8 @@ export function Header() {
             </span>
 
             <span className="font-bold text-[18px] text-gold tracking-[-0.01em]">
-              {" "}AI
+              {" "}
+              AI
             </span>
           </Link>
 
@@ -265,7 +318,7 @@ export function Header() {
 
           <div className="flex items-center gap-2">
             {user ? (
-              <UserMenu />
+              <UserMenu className="hidden md:flex" />
             ) : (
               <>
                 <Link
@@ -312,6 +365,32 @@ export function Header() {
                     onClick={closeMobile}
                   />
                 ))}
+              </>
+            )}
+
+            {user && (
+              <>
+                <div className="h-px bg-border/40 my-1.5" />
+                <div className="flex items-center gap-x-1 px-3 py-2">
+                  {ROLES.map((role) => {
+                    const isActive = user.role === role;
+                    return (
+                      <button
+                        key={role}
+                        disabled={switchRoleMutation.isPending}
+                        onClick={() => switchRoleMutation.mutate(role)}
+                        className={cn(
+                          "flex-1 px-2 py-2 rounded-md text-[11px] font-medium transition-all duration-150",
+                          isActive
+                            ? "bg-gold/15 text-gold border border-gold/30"
+                            : "text-muted-foreground/60 hover:text-foreground/80 hover:bg-muted/30 border border-transparent",
+                        )}
+                      >
+                        {role}
+                      </button>
+                    );
+                  })}
+                </div>
               </>
             )}
 

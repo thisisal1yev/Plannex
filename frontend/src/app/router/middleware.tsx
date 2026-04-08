@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
+import type { Role } from '@shared/types'
 import { Navigate } from 'react-router'
 import { useAuthStore } from '@shared/model/auth.store'
-import type { Role } from '@shared/types'
 
 interface Props {
   children: ReactNode
