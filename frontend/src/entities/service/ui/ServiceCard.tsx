@@ -7,7 +7,7 @@ import type { Service } from "../model/types";
 interface ServiceCardProps {
   service: Service;
   index: number;
-  className: string;
+  className?: string;
 }
 
 const CATEGORY_LABEL: Record<string, string> = {
