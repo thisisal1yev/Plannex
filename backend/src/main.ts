@@ -36,7 +36,6 @@ async function bootstrap() {
 
   const port = process.env.PORT ?? 3000;
   await app.listen(port);
-  console.log(corsOrigin.split(',').map(url => url.trim()))
 
   console.log(`🚀 Planner AI API running on http://localhost:${port}`);
   console.log(`📖 Swagger docs: http://localhost:${port}/api/docs`);
