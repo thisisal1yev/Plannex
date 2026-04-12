@@ -123,9 +123,9 @@ export function ServiceDetailPage() {
           </h1>
           <div className="flex items-center gap-4 text-white/80 text-sm flex-wrap">
             <div className="flex items-center gap-1.5">
-              <StarRating rating={service.rating} />
+              <StarRating rating={service.ratingStats?.avg ?? 0} />
               <span className="text-gold-light font-medium">
-                {service.rating.toFixed(1)}
+                {service.ratingStats?.avg}
               </span>
             </div>
             <span className="text-white/25">•</span>
@@ -289,10 +289,10 @@ export function ServiceDetailPage() {
                     </span>
 
                     <div className="flex items-center gap-1.5">
-                      <StarRating rating={service.rating} />
+                      <StarRating rating={service.ratingStats?.avg ?? 0} />
 
                       <span className="text-sm font-medium text-foreground">
-                        {service.rating.toFixed(1)}
+                        {service.ratingStats?.avg}
                       </span>
                     </div>
                   </div>

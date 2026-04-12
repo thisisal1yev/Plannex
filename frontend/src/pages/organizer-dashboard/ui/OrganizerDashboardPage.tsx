@@ -49,8 +49,8 @@ const STRINGS = {
 
 
 function RecentEventRow({ event }: { event: Event }) {
-  const sold = event.ticketTiers?.reduce((s, t) => s + t.sold, 0) ?? 0
   const total = event.ticketTiers?.reduce((s, t) => s + t.quantity, 0) ?? 0
+  const sold = event.ticketTiers?.reduce((s, t) => s + (t.sold ?? 0), 0) ?? 0
   const pct = total > 0 ? Math.round((sold / total) * 100) : 0
   const banner = event.bannerUrl?.[0]
 
@@ -63,10 +63,12 @@ function RecentEventRow({ event }: { event: Event }) {
           <CalendarDays className="size-4 text-gold/50" />
         </div>
       )}
+
       <div className="flex-1 min-w-0">
         <p className="text-[13px] font-medium text-foreground truncate">{event.title}</p>
         <p className="text-[11px] text-muted-foreground/50">{formatDateShort(event.startDate)}</p>
       </div>
+
       <div className="hidden sm:flex items-center gap-2 shrink-0">
         {total > 0 && (
           <div className="flex items-center gap-1.5">
@@ -76,6 +78,7 @@ function RecentEventRow({ event }: { event: Event }) {
                 style={{ width: `${pct}%` }}
               />
             </div>
+
             <span className="text-[11px] text-muted-foreground/50">{sold}/{total}</span>
           </div>
         )}
@@ -83,6 +86,7 @@ function RecentEventRow({ event }: { event: Event }) {
       <Badge color={EVENT_STATUS_COLOR[event.status] ?? 'gray'}>
         {EVENT_STATUS_LABEL[event.status] ?? event.status}
       </Badge>
+      
       <Link
         to={`/my-events/${event.id}/participants`}
         className="opacity-0 group-hover:opacity-100 text-[11px] text-gold/70 hover:text-gold transition-all shrink-0"
@@ -121,7 +125,7 @@ export function OrganizerDashboardPage() {
 
   const chartData = recentEvents.map((e) => ({
     name: e.title.slice(0, 14) + (e.title.length > 14 ? '…' : ''),
-    chipta: e.ticketTiers?.reduce((s, t) => s + t.sold, 0) ?? 0,
+    chipta: 0,
   })).reverse()
 
   return (
@@ -131,7 +135,7 @@ export function OrganizerDashboardPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-xl font-bold text-foreground tracking-tight">{STRINGS.title}</h1>
-          <p className="text-[12px] text-muted-foreground/50 mt-0.5">Tadbir statistikasi va ko'rsatkichlar</p>
+          <p className="text-xs text-muted-foreground/50 mt-0.5">Tadbir statistikasi va ko'rsatkichlar</p>
         </div>
         <Link
           to="/my-events/create"
@@ -233,7 +237,7 @@ export function OrganizerDashboardPage() {
               <p className="text-[13px] text-muted-foreground/40">{STRINGS.noEvents}</p>
               <Link
                 to="/my-events/create"
-                className="text-[12px] text-gold/70 hover:text-gold transition-colors"
+                className="text-xs text-gold/70 hover:text-gold transition-colors"
               >
                 Birinchi tadbiringizni yarating →
               </Link>

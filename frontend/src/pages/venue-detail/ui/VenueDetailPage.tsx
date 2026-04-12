@@ -140,7 +140,7 @@ export function VenueDetailPage() {
 
   const avgRating = reviews?.data.length
     ? reviews.data.reduce((sum, r) => sum + r.rating, 0) / reviews.data.length
-    : venue.rating;
+    : venue.ratingStats?.avg;
 
   const amenityItems = [
     venue.hasWifi && { Icon: Wifi, label: "WiFi" },
@@ -212,10 +212,10 @@ export function VenueDetailPage() {
           </h1>
           <div className="flex items-center gap-4 text-white/80 text-sm flex-wrap">
             <div className="flex items-center gap-1.5">
-              <StarRating rating={venue.rating} />
+              <StarRating rating={venue.ratingStats?.avg ?? 0} />
 
               <span className="text-gold-light font-medium">
-                {venue.rating.toFixed(1)}
+                {venue.ratingStats?.avg}
               </span>
             </div>
 
@@ -413,7 +413,7 @@ export function VenueDetailPage() {
                     <StarRating rating={avgRating} />
 
                     <span className="text-[13px] font-semibold text-cream/82">
-                      {avgRating.toFixed(1)}
+                      {avgRating}
                     </span>
                   </div>
                 </div>

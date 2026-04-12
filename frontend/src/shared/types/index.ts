@@ -5,7 +5,7 @@ export type EventStatus = 'DRAFT' | 'PUBLISHED' | 'CANCELLED' | 'COMPLETED'
 export type PaymentStatus = 'PENDING' | 'PAID' | 'FAILED' | 'REFUNDED'
 export type BookingStatus = 'PENDING' | 'CONFIRMED' | 'CANCELLED'
 export type ServiceCategory = 'CATERING' | 'DECORATION' | 'SOUND' | 'PHOTO' | 'SECURITY'
-export type PaymentProvider = 'CLICK' | 'PAYME'
+export type PaymentProvider = 'CLICK' | 'PAYME' | 'STRIPE'
 export type VolunteerStatus = 'PENDING' | 'ACCEPTED' | 'REJECTED'
 
 // ─── Auth ─────────────────────────────────────────────────────────────────────
@@ -15,10 +15,24 @@ export interface TokenPair {
   refreshToken: string
 }
 
+export interface RatingStats {
+  id: string
+  venueId?: string
+  serviceId?: string
+  avg: number
+  count: number
+  one: number
+  two: number
+  three: number
+  four: number
+  five: number
+}
+
 export interface AuthUser {
   id: string
   email: string
-  role: Role
+  roles: Role[]
+  activeRole: Role
   firstName: string
   lastName: string
   phone?: string

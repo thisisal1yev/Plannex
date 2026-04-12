@@ -56,8 +56,12 @@ export class ServicesController {
   @Roles('ADMIN', 'VENDOR')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Update service' })
-  update(@Param('id') id: string, @Body() dto: UpdateServiceDto) {
-    return this.servicesService.update(id, dto);
+  update(
+    @Param('id') id: string,
+    @Body() dto: UpdateServiceDto,
+    @CurrentUser('id') userId: string,
+  ) {
+    return this.servicesService.update(id, dto, userId);
   }
 
   @Post('events/:eventId/services')
@@ -67,8 +71,9 @@ export class ServicesController {
   attachToEvent(
     @Param('eventId') eventId: string,
     @Body() dto: AttachServiceDto,
+    @CurrentUser('id') userId: string,
   ) {
-    return this.servicesService.attachToEvent(eventId, dto);
+    return this.servicesService.attachToEvent(eventId, dto, userId);
   }
 
   @Get('events/:eventId/services')
@@ -85,8 +90,9 @@ export class ServicesController {
   updateEventService(
     @Param('eventServiceId') eventServiceId: string,
     @Body('status') status: string,
+    @CurrentUser('id') userId: string,
   ) {
-    return this.servicesService.updateEventService(eventServiceId, status);
+    return this.servicesService.updateEventService(eventServiceId, status, userId);
   }
 
   @Delete('events/:eventId/services/:eventServiceId')
@@ -94,7 +100,10 @@ export class ServicesController {
   @ApiBearerAuth()
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({ summary: 'Remove a service from an event (organizer)' })
-  removeEventService(@Param('eventServiceId') eventServiceId: string) {
-    return this.servicesService.removeEventService(eventServiceId);
+  removeEventService(
+    @Param('eventServiceId') eventServiceId: string,
+    @CurrentUser('id') userId: string,
+  ) {
+    return this.servicesService.removeEventService(eventServiceId, userId);
   }
 }

@@ -107,7 +107,7 @@ export function ServiceCard({
         >
           <Star className="w-3 h-3 text-gold fill-current" />
           <span className="text-[12px] font-medium text-cream/80">
-            {service.rating.toFixed(1)}
+            {(service.ratingStats?.avg ?? 0).toFixed(1)}
           </span>
         </div>
 

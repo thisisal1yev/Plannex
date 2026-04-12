@@ -4,18 +4,15 @@ import { PrismaService } from '../prisma/prisma.service';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { QueryReviewsDto } from './dto/query-reviews.dto';
 
-const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-
 @Injectable()
 export class ReviewsService {
   constructor(private readonly prisma: PrismaService) {}
 
   /**
    * Creates a review for a venue, service, or event.
-   * Automatically recalculates the target's rating.
+   * Automatically recalculates the target's RatingStats.
    */
   async create(authorId: string, dto: CreateReviewDto) {
-    await delay(800);
     if (!dto.venueId && !dto.serviceId && !dto.eventId)
       throw new BadRequestException(
         'Provide at least one of: venueId, serviceId, eventId',
@@ -32,7 +29,6 @@ export class ReviewsService {
       },
     });
 
-    // Recalculate ratings asynchronously
     if (dto.venueId) await this.recalculateVenueRating(dto.venueId);
     if (dto.serviceId) await this.recalculateServiceRating(dto.serviceId);
 
@@ -43,7 +39,6 @@ export class ReviewsService {
    * Returns reviews for a venue with pagination
    */
   async getVenueReviews(venueId: string, query: QueryReviewsDto) {
-    await delay(800);
     const page = query.page ?? 1;
     const limit = query.limit ?? 20;
     const skip = (page - 1) * limit;
@@ -81,7 +76,6 @@ export class ReviewsService {
    * Returns reviews for a service with pagination
    */
   async getServiceReviews(serviceId: string, query: QueryReviewsDto) {
-    await delay(800);
     const page = query.page ?? 1;
     const limit = query.limit ?? 20;
     const skip = (page - 1) * limit;
@@ -112,7 +106,6 @@ export class ReviewsService {
    * Returns reviews for an event with pagination
    */
   async getEventReviews(eventId: string, query: QueryReviewsDto) {
-    await delay(800);
     const page = query.page ?? 1;
     const limit = query.limit ?? 20;
     const skip = (page - 1) * limit;
@@ -147,32 +140,54 @@ export class ReviewsService {
   }
 
   /**
-   * Recalculates average rating for a venue
+   * Recalculates RatingStats for a venue based on all its reviews
    */
   private async recalculateVenueRating(venueId: string) {
-    const agg = await this.prisma.review.aggregate({
-      where: { venueId },
-      _avg: { rating: true },
-    });
+    const reviews = await this.prisma.review.findMany({ where: { venueId } });
+    const count = reviews.length;
+    if (count === 0) return;
 
-    await this.prisma.venue.update({
-      where: { id: venueId },
-      data: { rating: agg._avg.rating ?? 0 },
+    const avg = reviews.reduce((s, r) => s + r.rating, 0) / count;
+    const stats = {
+      avg,
+      count,
+      one:   reviews.filter((r) => r.rating === 1).length,
+      two:   reviews.filter((r) => r.rating === 2).length,
+      three: reviews.filter((r) => r.rating === 3).length,
+      four:  reviews.filter((r) => r.rating === 4).length,
+      five:  reviews.filter((r) => r.rating === 5).length,
+    };
+
+    await this.prisma.ratingStats.upsert({
+      where: { venueId },
+      update: stats,
+      create: { venueId, ...stats },
     });
   }
 
   /**
-   * Recalculates average rating for a service
+   * Recalculates RatingStats for a service based on all its reviews
    */
   private async recalculateServiceRating(serviceId: string) {
-    const agg = await this.prisma.review.aggregate({
-      where: { serviceId },
-      _avg: { rating: true },
-    });
+    const reviews = await this.prisma.review.findMany({ where: { serviceId } });
+    const count = reviews.length;
+    if (count === 0) return;
 
-    await this.prisma.service.update({
-      where: { id: serviceId },
-      data: { rating: agg._avg.rating ?? 0 },
+    const avg = reviews.reduce((s, r) => s + r.rating, 0) / count;
+    const stats = {
+      avg,
+      count,
+      one:   reviews.filter((r) => r.rating === 1).length,
+      two:   reviews.filter((r) => r.rating === 2).length,
+      three: reviews.filter((r) => r.rating === 3).length,
+      four:  reviews.filter((r) => r.rating === 4).length,
+      five:  reviews.filter((r) => r.rating === 5).length,
+    };
+
+    await this.prisma.ratingStats.upsert({
+      where: { serviceId },
+      update: stats,
+      create: { serviceId, ...stats },
     });
   }
 }

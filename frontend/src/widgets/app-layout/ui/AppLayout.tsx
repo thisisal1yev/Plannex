@@ -39,6 +39,7 @@ export function AppLayout() {
             </>
           )}
         </header>
+        
         <main className="flex-1 overflow-auto p-5">
           <Outlet />
         </main>

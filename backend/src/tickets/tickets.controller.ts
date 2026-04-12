@@ -31,8 +31,8 @@ export class TicketsController {
 
   @Get('tickets/:id')
   @ApiOperation({ summary: 'Get ticket details by ID' })
-  findOne(@Param('id') id: string) {
-    return this.ticketsService.findOne(id);
+  findOne(@Param('id') id: string, @CurrentUser('id') userId: string) {
+    return this.ticketsService.findOne(id, userId);
   }
 
   @Post('tickets/validate')

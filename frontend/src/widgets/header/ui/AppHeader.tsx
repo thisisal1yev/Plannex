@@ -36,9 +36,9 @@ function UserMenu() {
 
   const initials = `${user.firstName[0]}${user.lastName[0]}`.toUpperCase();
   const dashboardHref =
-    user.role === "ADMIN"      ? "/admin/dashboard" :
-    user.role === "ORGANIZER"  ? "/dashboard" :
-    user.role === "VENDOR"     ? "/my-venues" : "/events";
+    user.activeRole === "ADMIN"      ? "/admin/dashboard" :
+    user.activeRole === "ORGANIZER"  ? "/dashboard" :
+    user.activeRole === "VENDOR"     ? "/my-venues" : "/events";
 
   function handleLogout() {
     logout();

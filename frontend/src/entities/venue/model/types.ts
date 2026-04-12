@@ -1,8 +1,8 @@
-import type { BookingStatus } from '@shared/types'
+import type { BookingStatus, RatingStats } from '@shared/types'
 
 export interface Venue {
   id: string
-  ownerId?: string
+  ownerId: string
   name: string
   description?: string
   address: string
@@ -17,7 +17,7 @@ export interface Venue {
   hasSound: boolean
   hasStage: boolean
   imageUrls: string[]
-  rating: number
+  ratingStats?: RatingStats
   createdAt: string
 }
 
@@ -26,6 +26,7 @@ export interface VenueBooking {
   venueId: string
   venue?: Venue
   eventId: string
+  userId: string
   startDate: string
   endDate: string
   status: BookingStatus

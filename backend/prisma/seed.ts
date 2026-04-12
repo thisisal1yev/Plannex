@@ -40,15 +40,14 @@ const hashPassword = (pw: string) => hashSync(pw, 10);
 
 // ─── Users ───────────────────────────────────────────────────────────────────
 async function seedUsers() {
-
-  
   for (const u of USERS) {
     const created = await prisma.user.create({
       data: {
         email: u.email,
         firstName: u.firstName,
         lastName: u.lastName,
-        role: u.role as any,
+        roles: [u.activeRole as any],
+        activeRole: u.activeRole as any,
         passwordHash: hashPassword('12345678'),
         isVerified: true,
         avatarUrl: u.avatarUrl,
@@ -58,7 +57,7 @@ async function seedUsers() {
     createdIds.users[u.email] = created.id;
   }
 
-  console.log(`✓ ${Object.keys(createdIds.users).length} users`);
+  console.log('Users seeded');
 }
 
 // ─── Venues ──────────────────────────────────────────────────────────────────
@@ -72,7 +71,7 @@ async function seedVenues() {
     createdIds.venues.push(created.id);
   }
 
-  console.log(`✓ ${createdIds.venues.length} venues`);
+  console.log('Venues seeded');
 }
 
 // ─── Events ───────────────────────────────────────────────────────────────────
@@ -149,19 +148,13 @@ async function seedEvents() {
     });
   }
 
-  const total =
-    PUBLISHED_EVENTS.length +
-    COMPLETED_EVENTS.length +
-    DRAFT_EVENTS.length +
-    CANCELLED_EVENTS.length;
-  console.log(`✓ ${total} events`);
+  console.log('Events seeded');
 }
 
 // ─── Ticket Tiers ─────────────────────────────────────────────────────────────
 // TICKET_TIERS_BY_EVENT[0..4] → published events
 // TICKET_TIERS_BY_EVENT[5..6] → completed events
 async function seedTicketTiers() {
-
   const allEventIds = [
     ...createdIds.publishedEvents, // indices 0-4
     ...createdIds.completedEvents, // indices 5-6
@@ -181,7 +174,7 @@ async function seedTicketTiers() {
     createdIds.tiers.push(tierIds);
   }
 
-  console.log(`✓ ${TICKET_TIERS_BY_EVENT.flat().length} ticket tiers`);
+  console.log('Ticket tiers seeded');
 }
 
 // ─── Tickets & Payments ───────────────────────────────────────────────────────
@@ -189,7 +182,6 @@ async function seedTicketTiers() {
 //  eventIdx = index in [publishedEvents(0-4), completedEvents(5-6)]
 //  tierIdx  = tier index within that event's tiers
 async function seedTicketsAndPayments() {
-
   const allEventIds = [
     ...createdIds.publishedEvents,
     ...createdIds.completedEvents,
@@ -242,17 +234,27 @@ async function seedTicketsAndPayments() {
     const eventId = allEventIds[p.eventIdx];
     const tierId = createdIds.tiers[p.eventIdx][p.tierIdx];
 
-    // get tier price
     const tier = await prisma.ticketTier.findUnique({ where: { id: tierId } });
     if (!tier) continue;
 
     const amount = Number(tier.price);
     const commission = amount * COMMISSION_RATE;
 
-    const payment = await prisma.payment.create({
+    const ticket = await prisma.ticket.create({
       data: {
         userId,
         eventId,
+        tierId,
+        qrCode: `QR-${p.date.getFullYear()}${String(p.date.getMonth() + 1).padStart(2, '0')}-${qrSeq++}`,
+        isUsed: p.eventIdx >= 5, // completed events → ticket already used
+        createdAt: p.date,
+      },
+    });
+
+    await prisma.ticketPayment.create({
+      data: {
+        userId,
+        ticketId: ticket.id,
         amount,
         commission,
         provider: p.provider,
@@ -261,35 +263,18 @@ async function seedTicketsAndPayments() {
         createdAt: p.date,
       },
     });
-
-    await prisma.ticket.create({
-      data: {
-        userId,
-        eventId,
-        tierId,
-        paymentId: payment.id,
-        qrCode: `QR-${p.date.getFullYear()}${String(p.date.getMonth() + 1).padStart(2, '0')}-${qrSeq++}`,
-        isUsed: p.eventIdx >= 5, // completed events → ticket already used
-        createdAt: p.date,
-      },
-    });
-
-    await prisma.ticketTier.update({
-      where: { id: tierId },
-      data: { sold: { increment: 1 } },
-    });
   }
 
-  console.log(`✓ ${purchases.length} payments & tickets`);
+  console.log('Tickets and payments seeded');
 }
 
 // ─── Venue Bookings ───────────────────────────────────────────────────────────
 async function seedVenueBookings() {
-
   const bookings = [
     {
       venueId: createdIds.venues[0],
       eventId: createdIds.publishedEvents[0],   // Marketing Forum → City Hall
+      userId: createdIds.users['organizer@planner.ai'],
       startDate: new Date('2026-05-20T08:00:00Z'),
       endDate: new Date('2026-05-20T20:00:00Z'),
       status: BookingStatus.CONFIRMED,
@@ -298,6 +283,7 @@ async function seedVenueBookings() {
     {
       venueId: createdIds.venues[3],
       eventId: createdIds.publishedEvents[2],   // Jazz Festival → Navoi Palace
+      userId: createdIds.users['organizer@planner.ai'],
       startDate: new Date('2026-07-10T15:00:00Z'),
       endDate: new Date('2026-07-12T23:59:00Z'),
       status: BookingStatus.CONFIRMED,
@@ -306,6 +292,7 @@ async function seedVenueBookings() {
     {
       venueId: createdIds.venues[2],
       eventId: createdIds.publishedEvents[3],   // UX Workshop → Bukhara Hall
+      userId: createdIds.users['organizer2@planner.ai'],
       startDate: new Date('2026-04-25T08:00:00Z'),
       endDate: new Date('2026-04-26T20:00:00Z'),
       status: BookingStatus.CONFIRMED,
@@ -314,6 +301,7 @@ async function seedVenueBookings() {
     {
       venueId: createdIds.venues[1],
       eventId: createdIds.publishedEvents[1],   // Startup Meetup → Samarkand Garden
+      userId: createdIds.users['organizer2@planner.ai'],
       startDate: new Date('2026-06-15T16:00:00Z'),
       endDate: new Date('2026-06-15T23:00:00Z'),
       status: BookingStatus.PENDING,
@@ -325,12 +313,11 @@ async function seedVenueBookings() {
     await prisma.venueBooking.create({ data: b });
   }
 
-  console.log(`✓ ${bookings.length} venue bookings`);
+  console.log('Venue bookings seeded');
 }
 
 // ─── Services ────────────────────────────────────────────────────────────────
 async function seedServices() {
-
   for (const s of SERVICES) {
     const created = await prisma.service.create({
       data: {
@@ -339,7 +326,6 @@ async function seedServices() {
         description: s.description,
         priceFrom: s.priceFrom,
         city: s.city,
-        rating: s.rating,
         imageUrls: s.imageUrls,
         vendorId: createdIds.users[s.vendorKey],
       },
@@ -347,12 +333,11 @@ async function seedServices() {
     createdIds.services.push(created.id);
   }
 
-  console.log(`✓ ${createdIds.services.length} services`);
+  console.log('Services seeded');
 }
 
 // ─── Event Services ───────────────────────────────────────────────────────────
 async function seedEventServices() {
-
   const links = [
     { eventIdx: 0, serviceIdx: 0, agreedPrice: 12000000, status: BookingStatus.CONFIRMED }, // Forum ← Catering
     { eventIdx: 0, serviceIdx: 1, agreedPrice: 7000000,  status: BookingStatus.CONFIRMED }, // Forum ← Sound
@@ -377,12 +362,11 @@ async function seedEventServices() {
     });
   }
 
-  console.log(`✓ ${links.length} event-service links`);
+  console.log('Event services seeded');
 }
 
 // ─── Volunteer Applications ────────────────────────────────────────────────────
 async function seedVolunteerApplications() {
-
   const apps = [
     {
       userKey: 'volunteer@planner.ai',
@@ -457,7 +441,7 @@ async function seedVolunteerApplications() {
     });
   }
 
-  console.log(`✓ ${apps.length} volunteer applications`);
+  console.log('Volunteer applications seeded');
 }
 
 // ─── Reviews ──────────────────────────────────────────────────────────────────
@@ -495,8 +479,50 @@ async function seedReviews() {
     });
   }
 
-  const total = VENUE_REVIEWS.length + SERVICE_REVIEWS.length + EVENT_REVIEWS.length;
-  console.log(`✓ ${total} reviews`);
+  console.log('Reviews seeded');
+}
+
+// ─── Rating Stats ─────────────────────────────────────────────────────────────
+async function seedRatingStats() {
+  const computeStats = (ratings: number[]) => {
+    const count = ratings.length;
+    const avg = ratings.reduce((s, r) => s + r, 0) / count;
+    return {
+      avg,
+      count,
+      one:   ratings.filter(r => r === 1).length,
+      two:   ratings.filter(r => r === 2).length,
+      three: ratings.filter(r => r === 3).length,
+      four:  ratings.filter(r => r === 4).length,
+      five:  ratings.filter(r => r === 5).length,
+    };
+  };
+
+  for (const venueId of createdIds.venues) {
+    const reviews = await prisma.review.findMany({ where: { venueId } });
+    if (!reviews.length) continue;
+    await prisma.ratingStats.create({
+      data: {
+        venueId,
+        ...computeStats(reviews.map(r => r.rating)),
+        updatedAt: new Date(),
+      },
+    });
+  }
+
+  for (const serviceId of createdIds.services) {
+    const reviews = await prisma.review.findMany({ where: { serviceId } });
+    if (!reviews.length) continue;
+    await prisma.ratingStats.create({
+      data: {
+        serviceId,
+        ...computeStats(reviews.map(r => r.rating)),
+        updatedAt: new Date(),
+      },
+    });
+  }
+
+  console.log('Rating stats seeded');
 }
 
 // ─── Main ─────────────────────────────────────────────────────────────────────
@@ -511,18 +537,22 @@ async function up() {
   await seedEventServices();
   await seedVolunteerApplications();
   await seedReviews();
+  await seedRatingStats();
   console.log('✅ Done');
 }
 
 async function down() {
   await prisma.$executeRawUnsafe(`
     TRUNCATE TABLE
+      "RatingStats",
       "Review",
       "VolunteerApplication",
+      "ServicePayment",
+      "VenueBookingPayment",
+      "TicketPayment",
       "EventService",
       "VenueBooking",
       "Ticket",
-      "Payment",
       "TicketTier",
       "Event",
       "Venue",
@@ -530,7 +560,6 @@ async function down() {
       "User"
     RESTART IDENTITY CASCADE
   `);
-
 }
 
 async function main() {

@@ -50,7 +50,7 @@ export class VenuesService {
         where,
         skip,
         take: limit,
-        orderBy: { rating: 'desc' },
+        orderBy: { createdAt: 'desc' },
       }),
       this.prisma.venue.count({ where }),
     ]);
@@ -87,7 +87,7 @@ export class VenuesService {
   async update(userId: string, venueId: string, dto: UpdateVenueDto) {
     const venue = await this.findOne(venueId);
 
-    if (venue.ownerId && venue.ownerId !== userId)
+    if (venue.ownerId !== userId)
       throw new ForbiddenException('Only the venue owner can update it');
 
     return this.prisma.venue.update({ where: { id: venueId }, data: dto });
@@ -124,6 +124,7 @@ export class VenuesService {
       data: {
         venueId,
         eventId: dto.eventId,
+        userId,
         startDate: start,
         endDate: end,
         totalCost,

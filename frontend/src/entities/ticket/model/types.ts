@@ -2,10 +2,10 @@ import type { PaymentStatus, PaymentProvider } from '@shared/types'
 import type { TicketTier, Event } from '../../event/model/types'
 import type { User } from '../../user/model/types'
 
-export interface Payment {
+export interface TicketPayment {
   id: string
   userId: string
-  eventId?: string
+  ticketId: string
   amount: number
   commission: number
   provider: PaymentProvider
@@ -24,7 +24,6 @@ export interface Ticket {
   tier?: TicketTier
   qrCode: string
   isUsed: boolean
-  paymentId?: string
-  payment?: Payment
+  payment?: TicketPayment
   createdAt: string
 }

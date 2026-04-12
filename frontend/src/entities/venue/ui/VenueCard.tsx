@@ -91,7 +91,7 @@ export function VenueCard({ venue, className, index = 0 }: VenueCardProps) {
           >
             <Star className="w-3 h-3 text-gold fill-current" />
             <span className="text-xs font-medium text-cream/80">
-              {venue.rating.toFixed(1)}
+              {(venue.ratingStats?.avg ?? 0).toFixed(1)}
             </span>
           </div>
         </div>

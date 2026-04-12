@@ -160,7 +160,7 @@ export function AppSidebar() {
     },
   });
 
-  const extraLinks = user ? (roleLinks[user.role] ?? []) : [];
+  const extraLinks = user ? (roleLinks[user.activeRole] ?? []) : [];
   const initials = getInitials(user?.firstName, user?.lastName, user?.email);
   const displayName = user
     ? `${user.firstName} ${user.lastName}`.trim() || user.email
@@ -209,7 +209,7 @@ export function AppSidebar() {
                 </>
               ) : (
                 <span className="text-muted-foreground/50">
-                  {user ? roleLabels[user.role] : ""}
+                  {user ? roleLabels[user.activeRole] : ""}
                 </span>
               )}
             </SidebarGroupLabel>

@@ -8,7 +8,7 @@ export interface TicketTier {
   name: string
   price: number
   quantity: number
-  sold: number
+  sold?: number
   createdAt: string
 }
 

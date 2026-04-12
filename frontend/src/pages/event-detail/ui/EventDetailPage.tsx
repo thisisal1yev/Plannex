@@ -442,7 +442,7 @@ export function EventDetailPage() {
                         tiers={event.ticketTiers}
                       />
                     ) : (
-                      <div className="text-center py-5">
+                      <div className="text-center py-2.5">
                         <div className="w-11 h-11 rounded-xl bg-gold/7 border border-gold/12 flex items-center justify-center mx-auto mb-3">
                           <Users className="size-5 text-gold/50" />
                         </div>
@@ -477,6 +477,7 @@ export function EventDetailPage() {
                     <p className="text-[13px] font-semibold text-foreground/80">
                       Ko'ngilli bo'lish
                     </p>
+                    
                     <p className="text-[11px] text-muted-foreground/40 mt-0.5 leading-relaxed">
                       Tadbirni tashkil etishda yordam bering
                     </p>

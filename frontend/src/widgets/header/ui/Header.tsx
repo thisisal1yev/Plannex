@@ -129,6 +129,7 @@ function UserMenu({ className }: { className?: string }) {
   const { user, setUser, logout } = useAuthStore();
   const { theme, toggle } = useThemeStore();
   const navigate = useNavigate();
+  const { pathname } = useLocation();
 
   const logoutMutation = useMutation({
     mutationFn: authApi.logout,
@@ -142,6 +143,13 @@ function UserMenu({ className }: { className?: string }) {
     mutationFn: (role: Role) => usersApi.switchRole(role),
     onSuccess: (updatedUser) => {
       setUser(updatedUser);
+      const newRoleLinks = ROLE_LINKS[updatedUser.activeRole] ?? [];
+      const currentPageAllowed = newRoleLinks.some((l) =>
+        pathname === l.to || pathname.startsWith(l.to + "/")
+      );
+      if (!currentPageAllowed) {
+        navigate(newRoleLinks.length > 0 ? newRoleLinks[0].to : "/events");
+      }
     },
   });
 
@@ -209,7 +217,7 @@ function UserMenu({ className }: { className?: string }) {
             <div>
               <div className="flex items-center justify-between text-xs gap-x-1">
                 {ROLES.map((role) => {
-                  const isActive = user?.role === role;
+                  const isActive = user?.activeRole === role;
 
                   return (
                     <button
@@ -273,7 +281,7 @@ function UserMenu({ className }: { className?: string }) {
 export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { user, setUser } = useAuthStore();
-  const roleLinks = user ? (ROLE_LINKS[user.role] ?? []) : [];
+  const roleLinks = user ? (ROLE_LINKS[user.activeRole] ?? []) : [];
 
   const closeMobile = () => setMobileOpen(false);
 
@@ -290,7 +298,7 @@ export function Header() {
       <header className="sticky top-0 z-40 w-full border-b border-border/60 bg-background/95 backdrop-blur-md">
         <div className="h-0.5 bg-linear-to-r from-transparent via-gold/50 to-transparent" />
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-15 flex gap-4 items-center justify-between">
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 h-15 flex gap-4 items-center justify-between">
           <Link to="/" className="no-underline flex items-center">
             <span className="font-bold text-[18px] text-cream tracking-[-0.01em]">
               Planner
@@ -373,7 +381,7 @@ export function Header() {
                 <div className="h-px bg-border/40 my-1.5" />
                 <div className="flex items-center gap-x-1 px-3 py-2">
                   {ROLES.map((role) => {
-                    const isActive = user.role === role;
+                    const isActive = user.activeRole === role;
                     return (
                       <button
                         key={role}

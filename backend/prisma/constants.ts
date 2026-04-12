@@ -1,7 +1,4 @@
-import { hashSync } from 'bcrypt';
 import { ServiceCategory } from '../generated/prisma/enums';
-
-export const HASHED_PASSWORD = hashSync('12345678', 10);
 
 // ─── Users ──────────────────────────────────────────────────────────────────
 // createdAt spread across last 4 months so weekly-growth chart has real data
@@ -10,7 +7,7 @@ export const USERS = [
     email: 'admin@planner.ai',
     firstName: 'Elon',
     lastName: 'Musk',
-    role: 'ADMIN',
+    activeRole: 'ADMIN',
     avatarUrl:
       'https://upload.wikimedia.org/wikipedia/commons/5/5e/Elon_Musk_-_54820081119_%28cropped%29.jpg',
     createdAt: new Date('2025-12-01T09:00:00Z'),
@@ -19,7 +16,7 @@ export const USERS = [
     email: 'organizer@planner.ai',
     firstName: 'Sam',
     lastName: 'Altman',
-    role: 'ORGANIZER',
+    activeRole: 'ORGANIZER',
     avatarUrl:
       'https://upload.wikimedia.org/wikipedia/commons/f/f8/Sam_Altman_TechCrunch_SF_2019_Day_2_Oct_3_%28cropped_3%29.jpg',
     createdAt: new Date('2026-01-10T09:00:00Z'),
@@ -28,7 +25,7 @@ export const USERS = [
     email: 'organizer2@planner.ai',
     firstName: 'Sundar',
     lastName: 'Pichai',
-    role: 'ORGANIZER',
+    activeRole: 'ORGANIZER',
     avatarUrl:
       'https://upload.wikimedia.org/wikipedia/commons/c/c3/Sundar_Pichai_-_2023_%28cropped%29.jpg',
     createdAt: new Date('2026-01-14T09:00:00Z'),
@@ -37,7 +34,7 @@ export const USERS = [
     email: 'vendor@planner.ai',
     firstName: 'Linus',
     lastName: 'Torvalds',
-    role: 'VENDOR',
+    activeRole: 'VENDOR',
     avatarUrl:
       'https://upload.wikimedia.org/wikipedia/commons/e/e8/Lc3_2018_%28263682303%29_%28cropped%29.jpeg',
     createdAt: new Date('2026-01-20T09:00:00Z'),
@@ -46,7 +43,7 @@ export const USERS = [
     email: 'vendor2@planner.ai',
     firstName: 'Tim',
     lastName: 'Cook',
-    role: 'VENDOR',
+    activeRole: 'VENDOR',
     avatarUrl:
       'https://upload.wikimedia.org/wikipedia/commons/8/88/Tim_Cook_March_2026_%28cropped%29.jpg',
     createdAt: new Date('2026-02-04T09:00:00Z'),
@@ -56,7 +53,7 @@ export const USERS = [
     email: 'volunteer@planner.ai',
     firstName: 'Jensen',
     lastName: 'Huang',
-    role: 'VOLUNTEER',
+    activeRole: 'VOLUNTEER',
     avatarUrl:
       'https://upload.wikimedia.org/wikipedia/commons/e/e6/Jen-Hsun_Huang_2025.jpg',
     createdAt: new Date('2026-02-16T10:00:00Z'),
@@ -65,7 +62,7 @@ export const USERS = [
     email: 'volunteer2@planner.ai',
     firstName: 'Satya',
     lastName: 'Nadella',
-    role: 'VOLUNTEER',
+    activeRole: 'VOLUNTEER',
     avatarUrl:
       'https://upload.wikimedia.org/wikipedia/commons/7/78/MS-Exec-Nadella-Satya-2017-08-31-22_%28cropped%29.jpg',
     createdAt: new Date('2026-02-21T10:00:00Z'),
@@ -75,7 +72,7 @@ export const USERS = [
     email: 'participant@planner.ai',
     firstName: 'Mark',
     lastName: 'Zuckerberg',
-    role: 'PARTICIPANT',
+    activeRole: 'PARTICIPANT',
     avatarUrl:
       'https://upload.wikimedia.org/wikipedia/commons/2/21/Mark_Zuckerberg_in_September_2025_%28cropped%29.jpg',
     createdAt: new Date('2026-02-24T10:00:00Z'),
@@ -84,7 +81,7 @@ export const USERS = [
     email: 'participant2@planner.ai',
     firstName: 'Jeff',
     lastName: 'Bezos',
-    role: 'PARTICIPANT',
+    activeRole: 'PARTICIPANT',
     avatarUrl:
       'https://upload.wikimedia.org/wikipedia/commons/0/03/Jeff_Bezos_visits_LAAFB_SMC_%283908618%29_%28cropped%29.jpeg',
     createdAt: new Date('2026-02-27T10:00:00Z'),
@@ -94,7 +91,7 @@ export const USERS = [
     email: 'participant3@planner.ai',
     firstName: 'Bill',
     lastName: 'Gates',
-    role: 'PARTICIPANT',
+    activeRole: 'PARTICIPANT',
     avatarUrl:
       'https://upload.wikimedia.org/wikipedia/commons/8/88/Bill_Gates_at_the_European_Commission_-_2025_-_P067383-987995_%28cropped%29.jpg',
     createdAt: new Date('2026-03-03T10:00:00Z'),
@@ -103,7 +100,7 @@ export const USERS = [
     email: 'participant4@planner.ai',
     firstName: 'Sheryl',
     lastName: 'Sandberg',
-    role: 'PARTICIPANT',
+    activeRole: 'PARTICIPANT',
     avatarUrl:
       'https://upload.wikimedia.org/wikipedia/commons/6/61/Sheryl_Sandberg_WEF_2013_%28crop_by_James_Tamim%29.jpg',
     createdAt: new Date('2026-03-06T10:00:00Z'),
@@ -113,7 +110,7 @@ export const USERS = [
     email: 'participant5@planner.ai',
     firstName: 'Reed',
     lastName: 'Hastings',
-    role: 'PARTICIPANT',
+    activeRole: 'PARTICIPANT',
     avatarUrl:
       'https://upload.wikimedia.org/wikipedia/commons/b/b0/Re_publica_2015_-_Tag_1_%2817381870955%29_%28cropped%29.jpg',
     createdAt: new Date('2026-03-11T10:00:00Z'),
@@ -137,7 +134,6 @@ export const VENUES = [
     hasParking: true,
     hasSound: true,
     hasStage: true,
-    rating: 4.5,
     imageUrls: [
       'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?w=1200&auto=format&fit=crop&q=80',
       'https://images.unsplash.com/photo-1497366216548-37526070297c?w=1200&auto=format&fit=crop&q=80',
@@ -160,7 +156,6 @@ export const VENUES = [
     hasParking: true,
     hasSound: false,
     hasStage: false,
-    rating: 4.8,
     imageUrls: [
       'https://images.unsplash.com/photo-1464207687429-7505649dae38?w=1200&auto=format&fit=crop&q=80',
       'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=1200&auto=format&fit=crop&q=80',
@@ -182,7 +177,6 @@ export const VENUES = [
     hasParking: true,
     hasSound: true,
     hasStage: true,
-    rating: 4.2,
     imageUrls: [
       'https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=1200&auto=format&fit=crop&q=80',
       'https://images.unsplash.com/photo-1582481725274-d63bdf929a90?w=1200&auto=format&fit=crop&q=80',
@@ -204,7 +198,6 @@ export const VENUES = [
     hasParking: true,
     hasSound: true,
     hasStage: true,
-    rating: 4.9,
     imageUrls: [
       'https://images.unsplash.com/photo-1561489396-888724a1543d?w=1200&auto=format&fit=crop&q=80',
       'https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=1200&auto=format&fit=crop&q=80',
@@ -226,7 +219,6 @@ export const VENUES = [
     hasParking: true,
     hasSound: false,
     hasStage: false,
-    rating: 4.0,
     imageUrls: [
       'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=1200&auto=format&fit=crop&q=80',
       'https://images.unsplash.com/photo-1505373877841-8d25f7d46678?w=1200&auto=format&fit=crop&q=80',
@@ -493,7 +485,6 @@ export const SERVICES = [
       "Har qanday miqyosdagi tadbirlar uchun to'liq katering: banketlar, furshetlar, kofe-tanaffuslar. 20+ oshpazdan iborat jamoa.",
     priceFrom: 15000000,
     city: 'Toshkent',
-    rating: 4.8,
     imageUrls: [
       'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1200&auto=format&fit=crop&q=80',
       'https://images.unsplash.com/photo-1555244162-803834f70033?w=1200&auto=format&fit=crop&q=80',
@@ -507,7 +498,6 @@ export const SERVICES = [
       "Tadbirda texnik bilan professional ovoz va yorug'lik jihozlarini ijaraga berish.",
     priceFrom: 8000000,
     city: 'Toshkent',
-    rating: 4.5,
     imageUrls: [
       'https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=1200&auto=format&fit=crop&q=80',
       'https://images.unsplash.com/photo-1524368535928-5b5e00ddc76b?w=1200&auto=format&fit=crop&q=80',
@@ -521,7 +511,6 @@ export const SERVICES = [
       'Tadbirlarni professional foto va video suratga olish. Reportaj, portretlar, dron orqali aerial suratga olish.',
     priceFrom: 3000000,
     city: 'Toshkent',
-    rating: 4.9,
     imageUrls: [
       'https://images.unsplash.com/photo-1520854221256-17451cc331bf?w=1200&auto=format&fit=crop&q=80',
       'https://images.unsplash.com/photo-1542744095-291d1f67b221?w=1200&auto=format&fit=crop&q=80',
@@ -535,7 +524,6 @@ export const SERVICES = [
       "Har qanday format uchun mualliflik dekori va floristika: to'ylar, konferensiyalar, ko'rgazmalar. To'liq tsikl.",
     priceFrom: 5000000,
     city: 'Toshkent',
-    rating: 4.6,
     imageUrls: [
       'https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=1200&auto=format&fit=crop&q=80',
       'https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=1200&auto=format&fit=crop&q=80',
@@ -549,7 +537,6 @@ export const SERVICES = [
       "Tadbirlarni professional qo'riqlash: kirish nazorati, VIP-hamrohlik, videokuzatuv.",
     priceFrom: 2000000,
     city: 'Toshkent',
-    rating: 3.8,
     imageUrls: [
       'https://images.unsplash.com/photo-1517732306149-e8f829eb588a?w=1200&auto=format&fit=crop&q=80',
     ],
@@ -562,7 +549,6 @@ export const SERVICES = [
       "Tadbiringizda o'zbek milliy taomlari. Palov, samsa, go'shtli taomlar va shirinliklar.",
     priceFrom: 8000000,
     city: 'Samarqand',
-    rating: 4.7,
     imageUrls: [
       'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=1200&auto=format&fit=crop&q=80',
       'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1200&auto=format&fit=crop&q=80',
@@ -576,7 +562,6 @@ export const SERVICES = [
       'Buxoradagi foto va video ishlab chiqarish studiyasi. Hujjatli suratga olish, intervyu, masterklaslar.',
     priceFrom: 2000000,
     city: 'Buxoro',
-    rating: 4.3,
     imageUrls: [
       'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1200&auto=format&fit=crop&q=80',
     ],
@@ -589,7 +574,6 @@ export const SERVICES = [
       'Andijonda maydonlarni dekorativ bezash. Pardalar, gul arkalari, bannerlar, tematik dekor.',
     priceFrom: 3000000,
     city: 'Andijon',
-    rating: 4.1,
     imageUrls: [
       'https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=1200&auto=format&fit=crop&q=80',
     ],
@@ -640,7 +624,6 @@ export const VENUE_REVIEWS = [
     comment:
       'Просторный выставочный центр, удобная логистика и большая парковка.',
   },
-  // Additional copies with variations
   {
     userKey: 'participant2@planner.ai',
     venueIdx: 1,
@@ -728,7 +711,6 @@ export const SERVICE_REVIEWS = [
     comment:
       'Самсибой и плов были просто великолепны. Гости из Европы были в шоке от качества!',
   },
-  // Additional copies with variations
   {
     userKey: 'participant2@planner.ai',
     serviceIdx: 0,
@@ -816,7 +798,6 @@ export const EVENT_REVIEWS = [
     comment:
       'Выставка впечатляет — работы художников из разных стран создают уникальный диалог.',
   },
-  // Additional copies with variations
   {
     userKey: 'participant5@planner.ai',
     eventIdx: 0,

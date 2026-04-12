@@ -113,7 +113,7 @@ export function AdminUsersPage() {
                       </td>
                       <td className="px-4 py-3 text-[12px] text-muted-foreground hidden sm:table-cell">{u.email}</td>
                       <td className="px-4 py-3">
-                        <Badge color={ROLE_COLOR[u.role]}>{ROLE_LABELS[u.role] ?? u.role}</Badge>
+                        <Badge color={ROLE_COLOR[u.activeRole]}>{ROLE_LABELS[u.activeRole] ?? u.activeRole}</Badge>
                       </td>
                       <td className="px-4 py-3 text-[12px] text-muted-foreground hidden md:table-cell">
                         {formatDateDefault(u.createdAt)}

@@ -15,7 +15,7 @@ export function RequireAuth({ children }: Props) {
 export function RequireRole({ role, children }: Props & { role: Role | Role[] }) {
   const user = useAuthStore((s) => s.user)
   const roles = Array.isArray(role) ? role : [role]
-  return user && roles.includes(user.role) ? <>{children}</> : <Navigate to="/" replace />
+  return user && roles.includes(user.activeRole) ? <>{children}</> : <Navigate to="/" replace />
 }
 
 export function GuestOnly({ children }: Props) {

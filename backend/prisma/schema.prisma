@@ -63,18 +63,24 @@ model User {
   passwordHash String
   firstName    String
   lastName     String
-  role         Role     @default(PARTICIPANT)
+  roles        Role[]   @default([PARTICIPANT])
+  activeRole   Role     @default(PARTICIPANT)
   avatarUrl    String?
   isVerified   Boolean  @default(false)
   refreshToken String?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  events        Event[]
-  tickets       Ticket[]
-  payments      Payment[]
-  reviews       Review[]
-  volunteerApps VolunteerApplication[]
+  events          Event[]
+  tickets         Ticket[]
+  reviews         Review[]
+  volunteerApps   VolunteerApplication[]
+  ownedVenues     Venue[]              @relation("VenueOwner")
+  ownedServices   Service[]            @relation("ServiceVendor")
+  venueBookings   VenueBooking[]
+  ticketPayments  TicketPayment[]
+  venuePayments   VenueBookingPayment[]
+  servicePayments ServicePayment[]
 }
 
 model Event {
@@ -99,17 +105,16 @@ model Event {
   services      EventService[]
   reviews       Review[]
   volunteerApps VolunteerApplication[]
-  payments      Payment[]
+  venueBooking  VenueBooking?
 }
 
 model TicketTier {
   id        String   @id @default(uuid())
   eventId   String
   event     Event    @relation(fields: [eventId], references: [id])
-  name      String // VIP, Standard, Free
+  name      String
   price     Decimal  @db.Decimal(12, 2)
   quantity  Int
-  sold      Int      @default(0)
   createdAt DateTime @default(now())
 
   tickets Ticket[]
@@ -125,13 +130,15 @@ model Ticket {
   tier      TicketTier @relation(fields: [tierId], references: [id])
   qrCode    String     @unique
   isUsed    Boolean    @default(false)
-  paymentId String?    @unique
-  payment   Payment?   @relation(fields: [paymentId], references: [id])
   createdAt DateTime   @default(now())
+
+  payment TicketPayment?
 }
 
 model Venue {
   id          String   @id @default(uuid())
+  ownerId     String
+  owner       User     @relation("VenueOwner", fields: [ownerId], references: [id])
   name        String
   description String?
   address     String
@@ -146,13 +153,12 @@ model Venue {
   hasSound    Boolean  @default(false)
   hasStage    Boolean  @default(false)
   imageUrls   String[]
-  rating      Float    @default(0)
   createdAt   DateTime @default(now())
 
-  ownerId     String?
-  events   Event[]
-  bookings VenueBooking[]
-  reviews  Review[]
+  events      Event[]
+  bookings    VenueBooking[]
+  reviews     Review[]
+  ratingStats RatingStats?
 }
 
 model VenueBooking {
@@ -160,27 +166,33 @@ model VenueBooking {
   venueId   String
   venue     Venue         @relation(fields: [venueId], references: [id])
   eventId   String        @unique
+  event     Event         @relation(fields: [eventId], references: [id])
+  userId    String
+  user      User          @relation(fields: [userId], references: [id])
   startDate DateTime
   endDate   DateTime
   status    BookingStatus @default(PENDING)
   totalCost Decimal       @db.Decimal(12, 2)
   createdAt DateTime      @default(now())
+
+  payment VenueBookingPayment?
 }
 
 model Service {
-  id          String   @id @default(uuid())
-  vendorId    String?
+  id          String          @id @default(uuid())
+  vendorId    String
+  vendor      User            @relation("ServiceVendor", fields: [vendorId], references: [id])
   name        String
   category    ServiceCategory
   description String?
-  priceFrom   Decimal  @db.Decimal(12, 2)
-  rating      Float    @default(0)
+  priceFrom   Decimal         @db.Decimal(12, 2)
   imageUrls   String[]
   city        String
-  createdAt   DateTime @default(now())
+  createdAt   DateTime        @default(now())
 
   eventServices EventService[]
   reviews       Review[]
+  ratingStats   RatingStats?
 }
 
 model EventService {
@@ -193,34 +205,82 @@ model EventService {
   agreedPrice Decimal       @db.Decimal(12, 2)
   createdAt   DateTime      @default(now())
 
+  payment ServicePayment?
+
   @@unique([eventId, serviceId])
 }
 
-model Payment {
-  id           String        @id @default(uuid())
+model TicketPayment {
+  id           String          @id @default(uuid())
   userId       String
-  user         User          @relation(fields: [userId], references: [id])
-  eventId      String?
-  event        Event?        @relation(fields: [eventId], references: [id])
-  amount       Decimal       @db.Decimal(12, 2)
-  commission   Decimal       @db.Decimal(12, 2)
+  user         User            @relation(fields: [userId], references: [id])
+  ticketId     String          @unique
+  ticket       Ticket          @relation(fields: [ticketId], references: [id])
+  amount       Decimal         @db.Decimal(12, 2)
+  commission   Decimal         @db.Decimal(12, 2)
   provider     PaymentProvider
   providerTxId String?
-  status       PaymentStatus @default(PENDING)
-  createdAt    DateTime      @default(now())
+  status       PaymentStatus   @default(PENDING)
+  createdAt    DateTime        @default(now())
+}
 
-  ticket Ticket?
+model VenueBookingPayment {
+  id             String          @id @default(uuid())
+  userId         String
+  user           User            @relation(fields: [userId], references: [id])
+  venueBookingId String          @unique
+  venueBooking   VenueBooking    @relation(fields: [venueBookingId], references: [id])
+  amount         Decimal         @db.Decimal(12, 2)
+  commission     Decimal         @db.Decimal(12, 2)
+  provider       PaymentProvider
+  providerTxId   String?
+  status         PaymentStatus   @default(PENDING)
+  createdAt      DateTime        @default(now())
+}
+
+model ServicePayment {
+  id             String          @id @default(uuid())
+  userId         String
+  user           User            @relation(fields: [userId], references: [id])
+  eventServiceId String          @unique
+  eventService   EventService    @relation(fields: [eventServiceId], references: [id])
+  amount         Decimal         @db.Decimal(12, 2)
+  commission     Decimal         @db.Decimal(12, 2)
+  provider       PaymentProvider
+  providerTxId   String?
+  status         PaymentStatus   @default(PENDING)
+  createdAt      DateTime        @default(now())
+}
+
+model RatingStats {
+  id        String   @id @default(uuid())
+
+  venueId   String?  @unique
+  venue     Venue?   @relation(fields: [venueId], references: [id])
+
+  serviceId String?  @unique
+  service   Service? @relation(fields: [serviceId], references: [id])
+
+  avg       Float    @default(0)
+  count     Int      @default(0)
+  one       Int      @default(0)
+  two       Int      @default(0)
+  three     Int      @default(0)
+  four      Int      @default(0)
+  five      Int      @default(0)
+
+  updatedAt DateTime @updatedAt
 }
 
 model VolunteerApplication {
-  id        String   @id @default(uuid())
+  id        String          @id @default(uuid())
   userId    String
-  user      User     @relation(fields: [userId], references: [id])
+  user      User            @relation(fields: [userId], references: [id])
   eventId   String
-  event     Event    @relation(fields: [eventId], references: [id])
+  event     Event           @relation(fields: [eventId], references: [id])
   skills    String[]
   status    VolunteerStatus @default(PENDING)
-  createdAt DateTime @default(now())
+  createdAt DateTime        @default(now())
 
   @@unique([userId, eventId])
 }
@@ -238,4 +298,8 @@ model Review {
   rating    Int
   comment   String?
   createdAt DateTime @default(now())
+
+  @@unique([authorId, eventId])
+  @@unique([authorId, venueId])
+  @@unique([authorId, serviceId])
 }

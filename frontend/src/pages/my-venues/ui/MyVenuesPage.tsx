@@ -36,8 +36,8 @@ export function MyVenuesPage() {
               <h3 className="font-semibold">{venue.name}</h3>
               <p className="text-sm text-gray-500">{venue.city}, {venue.address}</p>
               <div className="flex items-center gap-1 mt-1">
-                <StarRating rating={venue.rating} />
-                <span className="text-xs text-gray-400">{venue.rating.toFixed(1)}</span>
+                <StarRating rating={venue.ratingStats?.avg ?? 0} />
+                <span className="text-xs text-gray-400">{venue.ratingStats?.avg}</span>
               </div>
             </div>
             <div className="flex items-center justify-between">

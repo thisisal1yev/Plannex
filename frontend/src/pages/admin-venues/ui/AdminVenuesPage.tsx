@@ -128,10 +128,10 @@ export function AdminVenuesPage() {
                         </div>
                       </td>
                       <td className="px-4 py-3 hidden md:table-cell">
-                        {v.rating > 0 ? (
+                        {v.ratingStats?.avg ?? 0 > 0 ? (
                           <span className="inline-flex items-center gap-1 text-[12px] text-amber-500">
                             <Star className="size-3 fill-current" />
-                            {v.rating.toFixed(1)}
+                            {v.ratingStats?.avg}
                           </span>
                         ) : (
                           <span className="text-[12px] text-muted-foreground/30">—</span>

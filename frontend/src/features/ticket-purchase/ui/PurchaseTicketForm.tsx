@@ -54,10 +54,8 @@ export function PurchaseTicketForm({ eventId, tiers, onSuccess }: PurchaseTicket
           Chipta turi
         </p>
         {tiers.map((tier) => {
-          const remaining  = tier.quantity - tier.sold
-          const pct        = Math.round((remaining / tier.quantity) * 100)
           const isSelected = tierId === tier.id
-          const isSoldOut  = remaining <= 0
+          const isSoldOut  = false
 
           return (
             <button
@@ -95,7 +93,7 @@ export function PurchaseTicketForm({ eventId, tiers, onSuccess }: PurchaseTicket
                       {tier.name}
                     </p>
                     <p className="text-[11px] text-muted-foreground/40 mt-0.5">
-                      {isSoldOut ? 'Sotildi' : `${remaining} ta qoldi`}
+                      {tier.quantity} ta
                     </p>
                   </div>
                 </div>
@@ -109,19 +107,6 @@ export function PurchaseTicketForm({ eventId, tiers, onSuccess }: PurchaseTicket
                 </span>
               </div>
 
-              {/* Availability bar */}
-              {!isSoldOut && (
-                <div className="mt-3 h-[2px] rounded-full bg-border/30 overflow-hidden">
-                  <div
-                    className={cn(
-                      'h-full rounded-full transition-all duration-500',
-                      pct > 60 ? 'bg-emerald-500/50' : pct > 25 ? 'bg-amber-400/60' : 'bg-red-400/60',
-                      isSelected && 'opacity-80',
-                    )}
-                    style={{ width: `${pct}%` }}
-                  />
-                </div>
-              )}
             </button>
           )
         })}

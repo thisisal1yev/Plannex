@@ -185,9 +185,9 @@ function SignInForm() {
       return user;
     },
     onSuccess: (user) => {
-      if (user.role === "ORGANIZER") navigate("/dashboard");
-      else if (user.role === "ADMIN") navigate("/admin/users");
-      else if (user.role === "VENDOR") navigate("/my-venues");
+      if (user.activeRole === "ORGANIZER") navigate("/dashboard");
+      else if (user.activeRole === "ADMIN") navigate("/admin/users");
+      else if (user.activeRole === "VENDOR") navigate("/my-venues");
       else navigate("/");
     },
     onError: () =>
@@ -300,7 +300,7 @@ function CreateAccountForm() {
       return user;
     },
     onSuccess: (user) => {
-      if (user.role === "ORGANIZER") navigate("/dashboard");
+      if (user.activeRole === "ORGANIZER") navigate("/dashboard");
       else navigate("/");
     },
     onError: () =>

@@ -1,5 +1,6 @@
 import {
   ConflictException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -43,7 +44,7 @@ export class ServicesService {
         where,
         skip,
         take: limit,
-        orderBy: { rating: 'desc' },
+        orderBy: { createdAt: 'desc' },
       }),
       this.prisma.service.count({ where }),
     ]);
@@ -64,18 +65,25 @@ export class ServicesService {
   }
 
   /**
-   * Updates a service
+   * Updates a service — only the owning vendor or admin
    */
-  async update(id: string, dto: UpdateServiceDto) {
-    await this.findOne(id);
+  async update(id: string, dto: UpdateServiceDto, vendorId: string) {
+    const service = await this.findOne(id);
+    if (service.vendorId !== vendorId)
+      throw new ForbiddenException('You do not own this service');
     return this.prisma.service.update({ where: { id }, data: dto });
   }
 
   /**
-   * Attaches a service to an event with agreed price
+   * Attaches a service to an event — only the event organizer
    */
-  async attachToEvent(eventId: string, dto: AttachServiceDto) {
+  async attachToEvent(eventId: string, dto: AttachServiceDto, userId: string) {
     await this.findOne(dto.serviceId);
+
+    const event = await this.prisma.event.findUnique({ where: { id: eventId } });
+    if (!event) throw new NotFoundException('Event not found');
+    if (event.organizerId !== userId)
+      throw new ForbiddenException('You do not own this event');
 
     const existing = await this.prisma.eventService.findUnique({
       where: { eventId_serviceId: { eventId, serviceId: dto.serviceId } },
@@ -105,11 +113,16 @@ export class ServicesService {
   }
 
   /**
-   * Updates the booking status of an event service link
+   * Updates the booking status of an event service link — only the event organizer
    */
-  async updateEventService(eventServiceId: string, status: string) {
-    const link = await this.prisma.eventService.findUnique({ where: { id: eventServiceId } });
+  async updateEventService(eventServiceId: string, status: string, userId: string) {
+    const link = await this.prisma.eventService.findUnique({
+      where: { id: eventServiceId },
+      include: { event: true },
+    });
     if (!link) throw new NotFoundException('Event service not found');
+    if (link.event.organizerId !== userId)
+      throw new ForbiddenException('You do not own this event');
     return this.prisma.eventService.update({
       where: { id: eventServiceId },
       data: { status: status as 'PENDING' | 'CONFIRMED' | 'CANCELLED' },
@@ -118,11 +131,16 @@ export class ServicesService {
   }
 
   /**
-   * Removes a service from an event
+   * Removes a service from an event — only the event organizer
    */
-  async removeEventService(eventServiceId: string) {
-    const link = await this.prisma.eventService.findUnique({ where: { id: eventServiceId } });
+  async removeEventService(eventServiceId: string, userId: string) {
+    const link = await this.prisma.eventService.findUnique({
+      where: { id: eventServiceId },
+      include: { event: true },
+    });
     if (!link) throw new NotFoundException('Event service not found');
+    if (link.event.organizerId !== userId)
+      throw new ForbiddenException('You do not own this event');
     await this.prisma.eventService.delete({ where: { id: eventServiceId } });
   }
 }

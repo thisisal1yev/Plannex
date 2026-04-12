@@ -1,12 +1,13 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { Prisma } from '../../generated/prisma/client';
 import { PaymentStatus } from '../../generated/prisma/enums';
 const { Decimal } = Prisma;
-import { generateQRCode } from '../common/utils/qr.util';
+import { generateQRCode, validateQRCode } from '../common/utils/qr.util';
 import { PrismaService } from '../prisma/prisma.service';
 import { PurchaseTicketDto } from './dto/purchase-ticket.dto';
 import { ValidateQrDto } from './dto/validate-qr.dto';
@@ -18,8 +19,7 @@ export class TicketsService {
   constructor(private readonly prisma: PrismaService) {}
 
   /**
-   * Purchases a ticket: creates Payment + Ticket + increments tier.sold
-   * All operations run in a single Prisma transaction
+   * Purchases a ticket: creates Ticket + TicketPayment in a single transaction
    */
   async purchase(userId: string, eventId: string, dto: PurchaseTicketDto) {
     const tier = await this.prisma.ticketTier.findUnique({
@@ -30,18 +30,31 @@ export class TicketsService {
     if (!tier) throw new NotFoundException('Ticket tier not found');
     if (tier.eventId !== eventId)
       throw new BadRequestException('Tier does not belong to this event');
-    if (tier.sold >= tier.quantity)
+
+    const soldCount = await this.prisma.ticket.count({
+      where: { tierId: dto.tierId },
+    });
+    if (soldCount >= tier.quantity)
       throw new BadRequestException('No tickets remaining in this tier');
 
     const amount = new Decimal(tier.price);
     const commission = amount.mul(COMMISSION_RATE);
     const qrCode = generateQRCode();
 
-    const [payment, ticket] = await this.prisma.$transaction(async (tx) => {
-      const payment = await tx.payment.create({
+    const [ticket, payment] = await this.prisma.$transaction(async (tx) => {
+      const ticket = await tx.ticket.create({
         data: {
           userId,
           eventId,
+          tierId: dto.tierId,
+          qrCode,
+        },
+      });
+
+      const payment = await tx.ticketPayment.create({
+        data: {
+          userId,
+          ticketId: ticket.id,
           amount,
           commission,
           provider: dto.provider,
@@ -49,22 +62,7 @@ export class TicketsService {
         },
       });
 
-      const ticket = await tx.ticket.create({
-        data: {
-          userId,
-          eventId,
-          tierId: dto.tierId,
-          paymentId: payment.id,
-          qrCode,
-        },
-      });
-
-      await tx.ticketTier.update({
-        where: { id: dto.tierId },
-        data: { sold: { increment: 1 } },
-      });
-
-      return [payment, ticket];
+      return [ticket, payment];
     });
 
     return { payment, ticket };
@@ -90,7 +88,7 @@ export class TicketsService {
   /**
    * Returns a ticket by ID
    */
-  async findOne(id: string) {
+  async findOne(id: string, userId: string) {
     const ticket = await this.prisma.ticket.findUnique({
       where: { id },
       include: {
@@ -104,6 +102,7 @@ export class TicketsService {
     });
 
     if (!ticket) throw new NotFoundException('Ticket not found');
+    if (ticket.userId !== userId) throw new ForbiddenException('Access denied');
 
     return ticket;
   }
@@ -112,6 +111,9 @@ export class TicketsService {
    * Validates a ticket by QR code — marks it as used (organizer use)
    */
   async validateQR(dto: ValidateQrDto) {
+    if (!validateQRCode(dto.qrCode))
+      throw new BadRequestException('Invalid QR code signature');
+
     const ticket = await this.prisma.ticket.findUnique({
       where: { qrCode: dto.qrCode },
       include: {
