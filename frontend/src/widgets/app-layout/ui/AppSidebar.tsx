@@ -165,7 +165,7 @@ export function AppSidebar() {
   const displayName = user
     ? `${user.firstName} ${user.lastName}`.trim() || user.email
     : "";
-  const isAdmin = user?.role === "ADMIN";
+  const isAdmin = user?.activeRole === "ADMIN";
 
   return (
     <Sidebar className="border-r border-gold/8">
