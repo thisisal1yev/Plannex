@@ -19,7 +19,7 @@ apiClient.interceptors.request.use((config) => {
 
 // Auto-refresh on 401
 let isRefreshing = false
-let queue: Array<(token: string) => void> = []
+let queue: Array<{ resolve: (token: string) => void; reject: (err: unknown) => void }> = []
 
 apiClient.interceptors.response.use(
   (res) => res,
@@ -37,10 +37,13 @@ apiClient.interceptors.response.use(
     }
 
     if (isRefreshing) {
-      return new Promise((resolve) => {
-        queue.push((token) => {
-          original.headers.Authorization = `Bearer ${token}`
-          resolve(apiClient(original))
+      return new Promise((resolve, reject) => {
+        queue.push({
+          resolve: (token) => {
+            original.headers.Authorization = `Bearer ${token}`
+            resolve(apiClient(original))
+          },
+          reject,
         })
       })
     }
@@ -50,11 +53,13 @@ apiClient.interceptors.response.use(
       const { data } = await axios.post(`${BASE_URL}/auth/refresh`, { refreshToken })
       const tokens = data.data as { accessToken: string; refreshToken: string }
       useAuthStore.getState().setTokens(tokens)
-      queue.forEach((cb) => cb(tokens.accessToken))
+      queue.forEach(({ resolve }) => resolve(tokens.accessToken))
       queue = []
       original.headers.Authorization = `Bearer ${tokens.accessToken}`
       return apiClient(original)
-    } catch {
+    } catch (err) {
+      queue.forEach(({ reject }) => reject(err))
+      queue = []
       useAuthStore.getState().logout()
       return Promise.reject(error)
     } finally {
