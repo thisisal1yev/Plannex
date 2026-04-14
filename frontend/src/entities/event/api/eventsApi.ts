@@ -27,6 +27,7 @@ export interface QueryEventsDto {
   dateFrom?: string
   dateTo?: string
   status?: string
+  title?: string
 }
 
 export const eventsApi = {

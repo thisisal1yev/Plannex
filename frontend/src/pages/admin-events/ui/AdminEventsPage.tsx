@@ -26,7 +26,7 @@ export function AdminEventsPage() {
 
   const { data, isLoading } = useQuery({
     queryKey: eventKeys.list({ page, search, status }),
-    queryFn: () => eventsApi.list({ page, limit: 20, status: status || undefined }),
+    queryFn: () => eventsApi.list({ page, limit: 20, status: status || undefined, title: search || undefined }),
   })
 
   const publishMutation = useMutation({
@@ -41,10 +41,6 @@ export function AdminEventsPage() {
 
   const events = data?.data ?? []
   const isPending = publishMutation.isPending || deleteMutation.isPending
-
-  const filtered = search
-    ? events.filter((e) => e.title.toLowerCase().includes(search.toLowerCase()))
-    : events
 
   return (
     <div className="flex flex-col gap-5">
@@ -83,7 +79,7 @@ export function AdminEventsPage() {
             type="text"
             placeholder="Tadbir nomini qidirish..."
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) => { setSearch(e.target.value); setPage(1) }}
             className="w-52 h-9 pl-8 pr-3 text-[13px] bg-card border border-border rounded-lg focus:outline-none focus:border-gold/40 transition-colors placeholder:text-muted-foreground/40"
           />
         </div>
@@ -97,7 +93,7 @@ export function AdminEventsPage() {
       ) : (
         <>
           <div className="rounded-xl border border-border bg-card overflow-hidden">
-            {filtered.length === 0 ? (
+            {events.length === 0 ? (
               <div className="py-16 text-center text-[13px] text-muted-foreground/50">
                 Tadbirlar topilmadi
               </div>
@@ -113,7 +109,7 @@ export function AdminEventsPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {filtered.map((e: Event) => (
+                  {events.map((e: Event) => (
                     <tr key={e.id} className="border-b border-border/40 last:border-0 hover:bg-muted/15 transition-colors group">
                       <td className="px-5 py-3">
                         <div className="flex items-center gap-2.5">
