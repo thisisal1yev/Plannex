@@ -125,7 +125,7 @@ export function ServiceDetailPage() {
             <div className="flex items-center gap-1.5">
               <StarRating rating={service.ratingStats?.avg ?? 0} />
               <span className="text-gold-light font-medium">
-                {service.ratingStats?.avg}
+                {parseFloat((service.ratingStats?.avg ?? 0).toFixed(1))}
               </span>
             </div>
             <span className="text-white/25">•</span>
@@ -148,7 +148,7 @@ export function ServiceDetailPage() {
                 }}
                 className={`h-12 w-16 rounded-lg overflow-hidden border-2 transition-all duration-200 cursor-pointer ${
                   i === imgIndex
-                    ? "border-gold shadow-[0_0_14px_rgba(201,150,58,0.5)]"
+                    ? "border-gold shadow-[0_0_14px_rgba(76,140,167,0.5)]"
                     : "border-white/20 opacity-55 hover:opacity-100"
                 }`}
               >
@@ -216,26 +216,25 @@ export function ServiceDetailPage() {
                   loop={(reviews?.data.length ?? 0) >= 2}
                   spaceBetween={12}
                   slidesPerView={1}
-                  navigation={{
-                    prevEl: ".prev",
-                    nextEl: ".next",
-                  }}
+                  navigation={(reviews?.data.length ?? 0) >= 2 ? { prevEl: ".prev", nextEl: ".next" } : false}
                 >
-                  <div className="flex items-center mt-2 space-x-1">
-                    <button
-                      type="button"
-                      className="prev ml-auto w-9 h-9 rounded-full bg-card/90 backdrop-blur-sm border border-border/50 flex items-center justify-center text-foreground/60 hover:text-foreground hover:border-gold/30 hover:bg-card transition-all duration-200 shadow-sm"
-                    >
-                      <ChevronLeft className="size-5" />
-                    </button>
+                  {(reviews?.data.length ?? 0) >= 2 && (
+                    <div className="flex items-center mt-2 space-x-1">
+                      <button
+                        type="button"
+                        className="prev ml-auto w-9 h-9 rounded-full bg-card/90 backdrop-blur-sm border border-border/50 flex items-center justify-center text-foreground/60 hover:text-foreground hover:border-gold/30 hover:bg-card transition-all duration-200 shadow-sm"
+                      >
+                        <ChevronLeft className="size-5" />
+                      </button>
 
-                    <button
-                      type="button"
-                      className="next w-9 h-9 rounded-full bg-card/90 backdrop-blur-sm border border-border/50 flex items-center justify-center text-foreground/60 hover:text-foreground hover:border-gold/30 hover:bg-card transition-all duration-200 shadow-sm"
-                    >
-                      <ChevronRight className="size-5" />
-                    </button>
-                  </div>
+                      <button
+                        type="button"
+                        className="next w-9 h-9 rounded-full bg-card/90 backdrop-blur-sm border border-border/50 flex items-center justify-center text-foreground/60 hover:text-foreground hover:border-gold/30 hover:bg-card transition-all duration-200 shadow-sm"
+                      >
+                        <ChevronRight className="size-5" />
+                      </button>
+                    </div>
+                  )}
 
                   {reviews?.data.map((review) => (
                     <SwiperSlide key={review.id} className="!w-full">
@@ -292,7 +291,7 @@ export function ServiceDetailPage() {
                       <StarRating rating={service.ratingStats?.avg ?? 0} />
 
                       <span className="text-sm font-medium text-foreground">
-                        {service.ratingStats?.avg}
+                        {parseFloat((service.ratingStats?.avg ?? 0).toFixed(1))}
                       </span>
                     </div>
                   </div>

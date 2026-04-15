@@ -26,19 +26,19 @@ function OrnamentStar({
     >
       <polygon
         points="100,6 116,60 172,60 127,94 144,148 100,115 56,148 73,94 28,60 84,60"
-        stroke="#C9963A"
+        stroke="#4c8ca7"
         strokeWidth="1"
         fill="none"
       />
       <polygon
         points="100,22 112,58 150,58 120,80 132,116 100,95 68,116 80,80 50,58 88,58"
-        stroke="#C9963A"
+        stroke="#4c8ca7"
         strokeWidth="0.7"
         fill="none"
       />
       <polygon
         points="100,40 108,65 134,65 114,80 122,106 100,91 78,106 86,80 66,65 92,65"
-        stroke="#C9963A"
+        stroke="#4c8ca7"
         strokeWidth="0.5"
         fill="none"
       />
@@ -46,7 +46,7 @@ function OrnamentStar({
         cx="100"
         cy="100"
         r="6"
-        stroke="#C9963A"
+        stroke="#4c8ca7"
         strokeWidth="0.7"
         fill="none"
       />
@@ -54,7 +54,7 @@ function OrnamentStar({
         cx="100"
         cy="100"
         r="12"
-        stroke="#C9963A"
+        stroke="#4c8ca7"
         strokeWidth="0.4"
         fill="none"
       />
@@ -62,7 +62,7 @@ function OrnamentStar({
         cx="100"
         cy="100"
         r="20"
-        stroke="#C9963A"
+        stroke="#4c8ca7"
         strokeWidth="0.3"
         fill="none"
       />
@@ -88,7 +88,7 @@ function TilePattern() {
           <polygon
             points="44,5 53,32 80,32 59,49 67,76 44,59 21,76 29,49 8,32 35,32"
             fill="none"
-            stroke="rgba(201,150,58,0.07)"
+            stroke="rgba(76,140,167,0.07)"
             strokeWidth="0.7"
           />
           <circle
@@ -96,7 +96,7 @@ function TilePattern() {
             cy="44"
             r="5"
             fill="none"
-            stroke="rgba(201,150,58,0.05)"
+            stroke="rgba(76,140,167,0.05)"
             strokeWidth="0.5"
           />
           <line
@@ -104,7 +104,7 @@ function TilePattern() {
             y1="0"
             x2="44"
             y2="88"
-            stroke="rgba(201,150,58,0.02)"
+            stroke="rgba(76,140,167,0.02)"
             strokeWidth="0.4"
           />
           <line
@@ -112,7 +112,7 @@ function TilePattern() {
             y1="44"
             x2="88"
             y2="44"
-            stroke="rgba(201,150,58,0.02)"
+            stroke="rgba(76,140,167,0.02)"
             strokeWidth="0.4"
           />
         </pattern>
@@ -129,7 +129,7 @@ const inputCls = [
   "bg-[rgba(15,25,37,0.6)] border border-white/8",
   "text-[14px] text-cream placeholder:text-cream/22",
   "transition-[border-color,box-shadow] duration-200",
-  "focus:outline-none focus:border-gold/40 focus:shadow-[0_0_0_3px_rgba(201,150,58,0.07)]",
+  "focus:outline-none focus:border-gold/40 focus:shadow-[0_0_0_3px_rgba(76,140,167,0.07)]",
 ].join(" ");
 
 // ─── Field wrapper ────────────────────────────────────────────────────────────
@@ -263,7 +263,7 @@ function SignInForm() {
       <button
         type="submit"
         disabled={mutation.isPending}
-        className="w-full h-11 bg-linear-to-r from-gold to-gold-dark text-navy font-semibold text-sm rounded-md -tracking-tight transition-all duration-200 hover:opacity-90 disabled:opacity-50 shadow-[0_4px_20px_rgba(201,150,58,0.25)] mt-1"
+        className="w-full h-11 bg-linear-to-r from-gold to-gold-dark text-navy font-semibold text-sm rounded-md -tracking-tight transition-all duration-200 hover:opacity-90 disabled:opacity-50 shadow-[0_4px_20px_rgba(76,140,167,0.25)] mt-1"
       >
         {mutation.isPending ? "Kirish…" : "Kirish"}
       </button>
@@ -429,7 +429,7 @@ function CreateAccountForm() {
                 onClick={() => setValue("role", value)}
                 className={`text-left p-3 rounded-[8px] border transition-[border-color,background,box-shadow] duration-200 ${
                   active
-                    ? "border-gold/45 bg-gold/5 shadow-[inset_0_0_0_1px_rgba(201,150,58,0.12)]"
+                    ? "border-gold/45 bg-gold/5 shadow-[inset_0_0_0_1px_rgba(76,140,167,0.12)]"
                     : "border-white/8 bg-transparent hover:border-white/16 hover:bg-white/2"
                 }`}
               >
@@ -451,7 +451,7 @@ function CreateAccountForm() {
       <button
         type="submit"
         disabled={mutation.isPending}
-        className="w-full h-11 bg-linear-to-r from-gold to-gold-dark text-navy font-semibold text-sm rounded-md -tracking-tight transition-all duration-200 hover:opacity-90 disabled:opacity-50 shadow-[0_4px_20px_rgba(201,150,58,0.25)] mt-1"
+        className="w-full h-11 bg-linear-to-r from-gold to-gold-dark text-navy font-semibold text-sm rounded-md -tracking-tight transition-all duration-200 hover:opacity-90 disabled:opacity-50 shadow-[0_4px_20px_rgba(76,140,167,0.25)] mt-1"
       >
         {mutation.isPending ? "Yaratilmoqda…" : "Akkaunt yaratish"}
       </button>
@@ -480,7 +480,7 @@ export function AuthPage() {
           className="absolute inset-0 pointer-events-none"
           style={{
             background:
-              "radial-gradient(ellipse 75% 55% at 35% 55%, rgba(201,150,58,0.055) 0%, transparent 65%)",
+              "radial-gradient(ellipse 75% 55% at 35% 55%, rgba(76,140,167,0.055) 0%, transparent 65%)",
           }}
         />
 
@@ -498,17 +498,17 @@ export function AuthPage() {
           className="absolute top-0 left-0 right-0 h-px"
           style={{
             background:
-              "linear-gradient(90deg, transparent, rgba(201,150,58,0.38), transparent)",
+              "linear-gradient(90deg, transparent, rgba(76,140,167,0.38), transparent)",
           }}
         />
 
         {/* Logo */}
         <Link to={"/"} className="relative z-10 flex items-center">
-          <span className="font-bold text-[20px] text-cream tracking-[-0.01em]">
+          <span className="font-bold text-xl text-cream tracking-[-0.01em]">
             Planner
           </span>
 
-          <span className="font-bold text-[20px] text-gold tracking-[-0.01em]">
+          <span className="font-bold text-xl text-gold tracking-[-0.01em]">
             &nbsp;AI
           </span>
         </Link>
@@ -539,7 +539,7 @@ export function AuthPage() {
               <br className="block 2xl:hidden" />
               <em
                 className="lp-serif"
-                style={{ color: "#C9963A", fontStyle: "italic" }}
+                style={{ color: "#4c8ca7", fontStyle: "italic" }}
               >
                 muammosiz
               </em>
@@ -569,7 +569,7 @@ export function AuthPage() {
                   style={{
                     fontSize: "26px",
                     fontWeight: 700,
-                    color: "#E8C06A",
+                    color: "#4c8ca7",
                   }}
                 >
                   {s.v}
@@ -585,7 +585,7 @@ export function AuthPage() {
           {/* Social proof */}
           <div className="flex items-center gap-3.5">
             <div className="flex -space-x-2">
-              {["#C9963A", "#9E7220", "#E8C06A", "#7A6D59"].map((bg, i) => (
+              {["#4c8ca7", "#9E7220", "#E8C06A", "#7A6D59"].map((bg, i) => (
                 <div
                   key={i}
                   className="w-8 h-8 rounded-full border-2 border-navy-dark flex items-center justify-center text-navy text-[11px] font-bold shrink-0"
@@ -610,7 +610,7 @@ export function AuthPage() {
           className="relative z-10 h-px"
           style={{
             background:
-              "linear-gradient(90deg, rgba(201,150,58,0.22), transparent)",
+              "linear-gradient(90deg, rgba(76,140,167,0.22), transparent)",
           }}
         />
       </div>
@@ -619,7 +619,7 @@ export function AuthPage() {
       <div className="flex-1 flex items-center justify-center p-6 sm:p-10 overflow-y-auto">
         <div className="w-full max-w-[400px]">
           {/* Mobile logo */}
-          <div className="flex items-center mb-8 lg:hidden">
+          <h1 className="flex items-center mb-8 lg:hidden">
             <span className="font-bold text-[18px] text-cream tracking-[-0.01em]">
               Planner
             </span>
@@ -627,7 +627,7 @@ export function AuthPage() {
             <span className="font-bold text-[18px] text-gold tracking-[-0.01em]">
               &nbsp;AI
             </span>
-          </div>
+          </h1>
 
           {/* Heading — re-animates on tab change via key */}
           <div key={`heading-${tab}`} className="mb-7 auth-a auth-d1">

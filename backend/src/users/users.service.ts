@@ -94,14 +94,20 @@ export class UsersService {
   }
 
   /**
-   * Updates the current user's own profile (cannot change role)
+   * Updates the current user's own profile
+   * If activeRole is provided, validates it is in the user's roles array
    */
   async updateSelf(userId: string, dto: UpdateUserDto) {
-    await this.findOne(userId);
+    const user = await this.findOne(userId);
+
+    const newRoles =
+      dto.activeRole && !user.roles.includes(dto.activeRole)
+        ? { roles: { set: [...user.roles, dto.activeRole] } }
+        : {};
 
     return this.prisma.user.update({
       where: { id: userId },
-      data: dto,
+      data: { ...dto, ...newRoles },
       select: {
         id: true,
         email: true,
@@ -111,6 +117,7 @@ export class UsersService {
         roles: true,
         activeRole: true,
         avatarUrl: true,
+        isVerified: true,
         updatedAt: true,
       },
     });

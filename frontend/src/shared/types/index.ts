@@ -19,6 +19,7 @@ export interface RatingStats {
   id: string
   venueId?: string
   serviceId?: string
+  eventId?: string
   avg: number
   count: number
   one: number

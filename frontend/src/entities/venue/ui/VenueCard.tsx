@@ -42,7 +42,7 @@ export function VenueCard({ venue, className, index = 0 }: VenueCardProps) {
           transition-transform duration-500 ease-out"
         style={{
           background:
-            "linear-gradient(90deg, transparent 0%, #c9963a 40%, #e8c06a 60%, transparent 100%)",
+            "linear-gradient(90deg, transparent 0%, #4c8ca7 40%, #7ab8cc 60%, transparent 100%)",
         }}
       />
 
@@ -85,15 +85,19 @@ export function VenueCard({ venue, className, index = 0 }: VenueCardProps) {
           </div>
 
           {/* Rating — top right */}
-          <div
-            className="flex items-center gap-1 backdrop-blur-sm
-          bg-[rgba(8,15,25,0.55)] border border-white/10 rounded-lg px-2 py-1.5"
-          >
-            <Star className="w-3 h-3 text-gold fill-current" />
-            <span className="text-xs font-medium text-cream/80">
-              {(venue.ratingStats?.avg ?? 0).toFixed(1)}
-            </span>
-          </div>
+          {venue.ratingStats && venue.ratingStats.count > 0 ? (
+            <div className="flex items-center gap-1 backdrop-blur-sm bg-[rgba(8,15,25,0.55)] border border-white/10 rounded-lg px-2 py-1.5">
+              <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
+
+              <span className="text-xs font-medium text-cream/80">
+                {venue.ratingStats.avg.toFixed(1)}
+              </span>
+
+              <span className="text-[10px] text-cream/40">
+                ({venue.ratingStats.count})
+              </span>
+            </div>
+          ) : null}
         </div>
 
         {/* Name bleeds over image bottom */}

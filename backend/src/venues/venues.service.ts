@@ -50,6 +50,7 @@ export class VenuesService {
         where,
         skip,
         take: limit,
+        include: { ratingStats: true },
         orderBy: { createdAt: 'desc' },
       }),
       this.prisma.venue.count({ where }),
@@ -68,6 +69,7 @@ export class VenuesService {
     const venue = await this.prisma.venue.findUnique({
       where: { id },
       include: {
+        ratingStats: true,
         reviews: {
           include: {
             author: { select: { id: true, firstName: true, lastName: true } },

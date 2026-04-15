@@ -31,7 +31,7 @@ export function MyEventCard({ event, index = 0, onDelete, isDeleting = false, cl
       <div
         className="absolute bottom-0 left-0 right-0 h-[2px] z-10 pointer-events-none origin-center scale-x-0 group-hover:scale-x-100 transition-transform duration-500 ease-out"
         style={{
-          background: 'linear-gradient(90deg, transparent 0%, #c9963a 40%, #e8c06a 60%, transparent 100%)',
+          background: 'linear-gradient(90deg, transparent 0%, #4c8ca7 40%, #7ab8cc 60%, transparent 100%)',
         }}
       />
 

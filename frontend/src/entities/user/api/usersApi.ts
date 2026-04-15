@@ -56,7 +56,7 @@ export const usersApi = {
     return data.data
   },
   switchRole: async (role: Role): Promise<User> => {
-    const { data } = await apiClient.patch('/users/me', { role })
+    const { data } = await apiClient.patch('/users/me', { activeRole: role })
     return data.data
   },
   list: async (params?: QueryUsersDto): Promise<PaginatedResponse<User>> => {

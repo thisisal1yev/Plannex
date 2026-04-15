@@ -91,6 +91,7 @@ export function AdminVenuesPage() {
                     <th className="px-5 py-2.5" />
                   </tr>
                 </thead>
+
                 <tbody>
                   {filtered.map((v: Venue) => (
                     <tr key={v.id} className="border-b border-border/40 last:border-0 hover:bg-muted/15 transition-colors group">
@@ -113,9 +114,11 @@ export function AdminVenuesPage() {
                       <td className="px-4 py-3 text-[12px] text-muted-foreground hidden md:table-cell">
                         {v.capacity.toLocaleString()} kishi
                       </td>
+                      
                       <td className="px-4 py-3 text-[12px] text-muted-foreground hidden lg:table-cell">
                         {formatUZS(v.pricePerDay)}
                       </td>
+
                       <td className="px-4 py-3 hidden xl:table-cell">
                         <div className="flex items-center gap-1 flex-wrap">
                           <AmenityChip active={v.hasWifi}    icon={Wifi}         label="Wi-Fi" />
@@ -127,16 +130,18 @@ export function AdminVenuesPage() {
                           )}
                         </div>
                       </td>
-                      <td className="px-4 py-3 hidden md:table-cell">
+
+                      <td className="mr-auto px-4 py-3 hidden md:table-cell">
                         {v.ratingStats?.avg ?? 0 > 0 ? (
-                          <span className="inline-flex items-center gap-1 text-[12px] text-amber-500">
-                            <Star className="size-3 fill-current" />
-                            {v.ratingStats?.avg}
+                          <span className="inline-flex items-center gap-1 text-[12px] fill-amber-400 text-amber-400">
+                            <Star className="size-3 fill-amber-400 text-amber-400" />
+                            {parseFloat((v.ratingStats?.avg ?? 0).toFixed(1))}
                           </span>
                         ) : (
                           <span className="text-[12px] text-muted-foreground/30">—</span>
                         )}
                       </td>
+
                       <td className="px-5 py-3">
                         <button
                           onClick={() => {

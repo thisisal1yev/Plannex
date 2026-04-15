@@ -37,7 +37,7 @@ export function CreateReviewForm({ eventId, venueId, serviceId, queryKey, onSucc
             onClick={() => setRating(s)}
             className="cursor-pointer"
           >
-            <Star className={`h-6 w-6 ${s <= rating ? 'text-yellow-400' : 'text-border'}`} fill="currentColor" />
+            <Star className={`h-6 w-6 ${s <= rating ? 'fill-amber-400 text-amber-400' : 'text-border'}`} fill="currentColor" />
           </button>
         ))}
       </div>

@@ -64,6 +64,7 @@ export class EventsService {
           organizer: { select: { id: true, firstName: true, lastName: true } },
           venue: { select: { id: true, name: true, city: true } },
           ticketTiers: true,
+          ratingStats: true,
         },
       }),
       this.prisma.event.count({ where }),
@@ -88,6 +89,7 @@ export class EventsService {
         venue: true,
         ticketTiers: true,
         services: { include: { service: true } },
+        ratingStats: true,
       },
     });
 

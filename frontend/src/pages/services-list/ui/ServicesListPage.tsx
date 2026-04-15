@@ -67,7 +67,7 @@ export function ServicesListPage() {
           onClick={() => { setCategory(''); setPage(1) }}
           className={`px-5 py-2 rounded-full text-sm font-medium transition-all duration-200 cursor-pointer border ${
             !category
-              ? 'bg-gold text-navy border-gold shadow-[0_0_18px_rgba(201,150,58,0.3)]'
+              ? 'bg-gold text-navy border-gold shadow-[0_0_18px_rgba(76,140,167,0.3)]'
               : 'bg-transparent border-border text-muted-foreground hover:border-gold/40 hover:text-foreground'
           }`}
         >
@@ -80,7 +80,7 @@ export function ServicesListPage() {
             onClick={() => { setCategory(c.value); setPage(1) }}
             className={`px-5 py-2 rounded-full text-sm font-medium transition-all duration-200 cursor-pointer border flex items-center gap-1.5 ${
               category === c.value
-                ? 'bg-gold text-navy border-gold shadow-[0_0_18px_rgba(201,150,58,0.3)]'
+                ? 'bg-gold text-navy border-gold shadow-[0_0_18px_rgba(76,140,167,0.3)]'
                 : 'bg-transparent border-border text-muted-foreground hover:border-gold/40 hover:text-foreground'
             }`}
           >
