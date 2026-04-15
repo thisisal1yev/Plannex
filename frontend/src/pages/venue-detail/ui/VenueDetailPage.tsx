@@ -1,6 +1,6 @@
-import { useState } from "react";
-import { useParams, Link } from "react-router";
-import { useQuery } from "@tanstack/react-query";
+import { useState } from 'react'
+import { useParams, Link } from 'react-router'
+import { useQuery } from '@tanstack/react-query'
 import {
   ArrowLeft,
   MapPin,
@@ -13,47 +13,42 @@ import {
   Sun,
   ChevronRight,
   ChevronLeft,
-} from "lucide-react";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay, Navigation } from "swiper/modules";
-import type { Swiper as SwiperInstance } from "swiper";
+} from 'lucide-react'
+import { Swiper, SwiperSlide } from 'swiper/react'
+import { Autoplay, Navigation } from 'swiper/modules'
+import type { Swiper as SwiperInstance } from 'swiper'
 
-import { venuesApi } from "@entities/venue";
-import { reviewsApi } from "@entities/review";
-import { ReviewCard } from "@entities/review";
-import { CreateReviewForm } from "@features/review-create";
-import { StarRating } from "@shared/ui/StarRating";
-import { Modal } from "@shared/ui/Modal";
-import { useAuthStore } from "@shared/model/auth.store";
-import { venueKeys } from "@shared/api/queryKeys";
-import { formatUZS } from "@shared/lib/dateUtils";
-import { Skeleton } from "@/shared/ui/primitives/skeleton";
-import { Separator } from "@/shared/ui/primitives/separator";
-import {
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/shared/ui/primitives/card";
+import { venuesApi } from '@entities/venue'
+import { reviewsApi } from '@entities/review'
+import { ReviewCard } from '@entities/review'
+import { CreateReviewForm } from '@features/review-create'
+import { StarRating } from '@shared/ui/StarRating'
+import { Modal } from '@shared/ui/Modal'
+import { useAuthStore } from '@shared/model/auth.store'
+import { venueKeys } from '@shared/api/queryKeys'
+import { formatUZS } from '@shared/lib/dateUtils'
+import { Skeleton } from '@/shared/ui/primitives/skeleton'
+import { Separator } from '@/shared/ui/primitives/separator'
+import { CardContent, CardHeader, CardTitle, CardDescription } from '@/shared/ui/primitives/card'
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/shared/ui/primitives/tooltip";
-import { Button } from "@/shared/ui/primitives/button";
+} from '@/shared/ui/primitives/tooltip'
+import { Button } from '@/shared/ui/primitives/button'
 
 function DetailSkeleton() {
   return (
     <div className="flex flex-col gap-0 pb-16">
-      <Skeleton className="h-4 w-24 mb-8" />
+      <Skeleton className="mb-8 h-4 w-24" />
 
       {/* Editorial title skeleton */}
-      <div className="flex flex-col gap-3 mb-8">
+      <div className="mb-8 flex flex-col gap-3">
         <Skeleton className="h-3 w-16" />
         <Skeleton className="h-14 w-3/4" />
         <Skeleton className="h-14 w-1/2" />
-        <div className="flex items-center gap-3 mt-1">
+        <div className="mt-1 flex items-center gap-3">
           <Skeleton className="h-4 w-24" />
           <Skeleton className="h-4 w-px" />
           <Skeleton className="h-4 w-16" />
@@ -61,7 +56,7 @@ function DetailSkeleton() {
       </div>
 
       {/* Gallery skeleton */}
-      <div className="grid grid-cols-[1fr_80px] gap-2 h-[460px]">
+      <div className="grid h-[460px] grid-cols-[1fr_80px] gap-2">
         <Skeleton className="rounded-2xl" />
         <div className="flex flex-col gap-2">
           <Skeleton className="h-[120px] rounded-lg" />
@@ -71,10 +66,10 @@ function DetailSkeleton() {
       </div>
 
       {/* Content skeleton */}
-      <div className="mt-10 grid grid-cols-1 lg:grid-cols-12 gap-8">
-        <div className="lg:col-span-7 flex flex-col gap-6">
+      <div className="mt-10 grid grid-cols-1 gap-8 lg:grid-cols-12">
+        <div className="flex flex-col gap-6 lg:col-span-7">
           <Skeleton className="h-12 rounded-xl" />
-          <div className="pl-5 border-l border-border/20 flex flex-col gap-3">
+          <div className="border-border/20 flex flex-col gap-3 border-l pl-5">
             <Skeleton className="h-3.5 w-full" />
             <Skeleton className="h-3.5 w-full" />
             <Skeleton className="h-3.5 w-2/3" />
@@ -90,98 +85,90 @@ function DetailSkeleton() {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
 export function VenueDetailPage() {
-  const { id } = useParams<{ id: string }>();
-  const user = useAuthStore((s) => s.user);
-  const [imgIndex, setImgIndex] = useState(0);
-  const [swiper, setSwiper] = useState<SwiperInstance | null>(null);
-  const [reviewModal, setReviewModal] = useState(false);
+  const { id } = useParams<{ id: string }>()
+  const user = useAuthStore((s) => s.user)
+  const [imgIndex, setImgIndex] = useState(0)
+  const [swiper, setSwiper] = useState<SwiperInstance | null>(null)
+  const [reviewModal, setReviewModal] = useState(false)
 
   const { data: venue, isLoading } = useQuery({
     queryKey: venueKeys.detail(id!),
     queryFn: () => venuesApi.get(id!),
     enabled: !!id,
-  });
+  })
 
   const { data: reviews } = useQuery({
     queryKey: venueKeys.reviews(id!),
     queryFn: () => reviewsApi.forVenue(id!),
     enabled: !!id,
-  });
+  })
 
-  if (isLoading) return <DetailSkeleton />;
+  if (isLoading) return <DetailSkeleton />
 
   if (!venue) {
     return (
-      <div className="flex flex-col items-center justify-center py-24 gap-5">
-        <div className="w-16 h-16 rounded-2xl bg-card border border-border/60 flex items-center justify-center">
-          <Home className="size-7 text-muted-foreground/20" />
+      <div className="flex flex-col items-center justify-center gap-5 py-24">
+        <div className="bg-card border-border/60 flex h-16 w-16 items-center justify-center rounded-2xl border">
+          <Home className="text-muted-foreground/20 size-7" />
         </div>
         <div className="text-center">
-          <p className="text-[15px] font-semibold text-foreground">
-            Maydon topilmadi
-          </p>
-          <p className="text-[13px] text-muted-foreground/50 mt-1">
+          <p className="text-foreground text-[15px] font-semibold">Maydon topilmadi</p>
+          <p className="text-muted-foreground/50 mt-1 text-[13px]">
             Bu maydon mavjud emas yoki o'chirilgan
           </p>
         </div>
         <Link
           to="/venues"
-          className="h-8 px-4 rounded-lg border border-border text-[12px] text-muted-foreground hover:text-foreground hover:border-gold/30 transition-colors flex items-center"
+          className="border-border text-muted-foreground hover:text-foreground hover:border-gold/30 flex h-8 items-center rounded-lg border px-4 text-[12px] transition-colors"
         >
           Barcha maydonlar
         </Link>
       </div>
-    );
+    )
   }
 
-  const avgRating = reviews?.data.length
-    ? reviews.data.reduce((sum, r) => sum + r.rating, 0) / reviews.data.length
-    : venue.ratingStats?.avg;
+  const avgRating = venue.ratingStats?.avg ?? null
 
   const amenityItems = [
-    venue.hasWifi && { Icon: Wifi, label: "WiFi" },
-    venue.hasParking && { Icon: Car, label: "Parkovka" },
-    venue.hasSound && { Icon: Volume2, label: "Ovoz tizimi" },
-    venue.hasStage && { Icon: Music, label: "Sahna" },
-    venue.isIndoor && { Icon: Home, label: "Yopiq zal" },
-    !venue.isIndoor && { Icon: Sun, label: "Ochiq maydon" },
-  ].filter(Boolean) as Array<{ Icon: typeof Wifi; label: string }>;
+    venue.hasWifi && { Icon: Wifi, label: 'WiFi' },
+    venue.hasParking && { Icon: Car, label: 'Parkovka' },
+    venue.hasSound && { Icon: Volume2, label: 'Ovoz tizimi' },
+    venue.hasStage && { Icon: Music, label: 'Sahna' },
+    venue.isIndoor && { Icon: Home, label: 'Yopiq zal' },
+    !venue.isIndoor && { Icon: Sun, label: 'Ochiq maydon' },
+  ].filter(Boolean) as Array<{ Icon: typeof Wifi; label: string }>
 
   return (
     <div className="flex flex-col gap-0 pb-16">
       {/* Cinematic hero */}
-      <div className="relative w-full h-[58vh] min-h-[380px] max-h-[560px] overflow-hidden rounded-2xl">
+      <div className="relative h-[58vh] max-h-[560px] min-h-[380px] w-full overflow-hidden rounded-2xl">
         {venue.imageUrls.length > 0 ? (
           <Swiper
             modules={[Autoplay]}
             autoplay={{ delay: 2500, disableOnInteraction: false }}
             loop
-            className="w-full h-full"
+            className="h-full w-full"
             onSwiper={(s) => {
-              setSwiper(s);
+              setSwiper(s)
             }}
             onSlideChange={(s) => setImgIndex(s.realIndex)}
           >
             {venue.imageUrls.map((img, i) => (
               <SwiperSlide key={i}>
-                <img
-                  src={img}
-                  alt={venue.name}
-                  className="w-full h-full object-cover"
-                />
+                <img src={img} alt={venue.name} className="h-full w-full object-cover" />
               </SwiperSlide>
             ))}
           </Swiper>
         ) : (
-          <div className="absolute inset-0 bg-linear-to-br from-navy to-navy-2 z-0" />
+          <div className="from-navy to-navy-2 absolute inset-0 z-0 bg-linear-to-br" />
         )}
 
         {/* Gradient overlay */}
-        <div className="absolute inset-0 bg-linear-to-t from-black/85 via-black/25 to-black/10 z-10" />
+        <div className="absolute inset-0 z-10 bg-linear-to-t from-black/85 via-black/25 to-black/10" />
 
         {/* Back button */}
         <div className="absolute top-5 left-5 z-10">
@@ -189,13 +176,10 @@ export function VenueDetailPage() {
             <Button
               variant="ghost"
               size="sm"
-              className="text-white/80 hover:text-white hover:bg-white/10 border border-white/20 backdrop-blur-sm flex items-center gap-2 group"
+              className="group flex items-center gap-2 border border-white/20 text-white/80 backdrop-blur-sm hover:bg-white/10 hover:text-white"
             >
-              <ArrowLeft
-                size={24}
-                className="transition-transform group-hover:-translate-x-0.5"
-              />
-              <span className="text-[10px] tracking-[0.15em] uppercase text-white/80 hover:text-white">
+              <ArrowLeft size={24} className="transition-transform group-hover:-translate-x-0.5" />
+              <span className="text-[10px] tracking-[0.15em] text-white/80 uppercase hover:text-white">
                 Barcha maydonlar
               </span>
             </Button>
@@ -203,26 +187,26 @@ export function VenueDetailPage() {
         </div>
 
         {/* Title overlay */}
-        <div className="absolute inset-x-0 bottom-0 px-6 pb-8 mx-auto z-10">
-          <span className="inline-flex items-center text-xs font-medium uppercase tracking-[0.18em] text-gold-light/90 mb-3 bg-black/45 backdrop-blur-sm px-3 py-1.5 rounded-full border border-gold/20">
-            {venue.isIndoor ? "Yopiq zal" : "Ochiq maydon"}
+        <div className="absolute inset-x-0 bottom-0 z-10 mx-auto px-6 pb-8">
+          <span className="text-gold-light/90 border-gold/20 mb-3 inline-flex items-center rounded-full border bg-black/45 px-3 py-1.5 text-xs font-medium tracking-[0.18em] uppercase backdrop-blur-sm">
+            {venue.isIndoor ? 'Yopiq zal' : 'Ochiq maydon'}
           </span>
-          <h1 className="lp-serif text-4xl md:text-5xl font-bold text-white leading-tight mb-3 max-w-2xl drop-shadow-lg">
+          <h1 className="lp-serif mb-3 max-w-2xl text-4xl leading-tight font-bold text-white drop-shadow-lg md:text-5xl">
             {venue.name}
           </h1>
-          <div className="flex items-center gap-4 text-white/80 text-sm flex-wrap">
+          <div className="flex flex-wrap items-center gap-4 text-sm text-white/80">
             <div className="flex items-center gap-1.5">
               <StarRating rating={venue.ratingStats?.avg ?? 0} />
 
               <span className="text-gold-light font-medium">
-                {venue.ratingStats?.avg}
+                {parseFloat((venue.ratingStats?.avg ?? 0).toFixed(1))}
               </span>
             </div>
 
             <span className="text-white/25">•</span>
 
             <div className="flex items-center gap-1">
-              <MapPin className="h-3.5 w-3.5 text-gold/60" />
+              <MapPin className="text-gold/60 h-3.5 w-3.5" />
               {venue.city}
             </div>
           </div>
@@ -230,18 +214,18 @@ export function VenueDetailPage() {
 
         {/* Thumbnail strip */}
         {venue.imageUrls.length > 1 && (
-          <div className="absolute bottom-6 right-6 flex gap-1.5 z-10">
+          <div className="absolute right-6 bottom-6 z-10 flex gap-1.5">
             {venue.imageUrls.map((url, i) => (
               <button
                 key={i}
                 onClick={() => {
-                  swiper?.slideTo(i);
-                  setImgIndex(i);
+                  swiper?.slideTo(i)
+                  setImgIndex(i)
                 }}
-                className={`h-12 w-16 rounded-lg overflow-hidden border-2 transition-all duration-200 cursor-pointer ${
+                className={`h-12 w-16 cursor-pointer overflow-hidden rounded-lg border-2 transition-all duration-200 ${
                   i === imgIndex
-                    ? "border-gold shadow-[0_0_14px_rgba(201,150,58,0.5)]"
-                    : "border-white/20 opacity-55 hover:opacity-100"
+                    ? 'border-gold shadow-[0_0_14px_rgba(76,140,167,0.5)]'
+                    : 'border-white/20 opacity-55 hover:opacity-100'
                 }`}
               >
                 <img src={url} alt="" className="h-full w-full object-cover" />
@@ -252,21 +236,21 @@ export function VenueDetailPage() {
       </div>
 
       {/* ── Main content: two-column ── */}
-      <div className="mt-10 grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <div className="mt-10 grid grid-cols-1 gap-8 lg:grid-cols-12">
         {/* ── Left column ── */}
-        <div className="lg:col-span-7 flex flex-col gap-5">
+        <div className="flex flex-col gap-5 lg:col-span-7">
           {/* Address block */}
-          <div className="flex items-center gap-3 py-3 px-4 rounded-xl bg-muted/15 border border-border/35">
-            <MapPin className="size-4 text-muted-foreground/35 shrink-0" />
-            <span className="text-[14px] text-muted-foreground/65">
+          <div className="bg-muted/15 border-border/35 flex items-center gap-3 rounded-xl border px-4 py-3">
+            <MapPin className="text-muted-foreground/35 size-4 shrink-0" />
+            <span className="text-muted-foreground/65 text-[14px]">
               {venue.address}, {venue.city}
             </span>
           </div>
 
           {/* Description */}
           {venue.description && (
-            <div className="pl-5 border-l border-gold/18">
-              <p className="text-[15px] text-muted-foreground/72 leading-[1.8]">
+            <div className="border-gold/18 border-l pl-5">
+              <p className="text-muted-foreground/72 text-[15px] leading-[1.8]">
                 {venue.description}
               </p>
             </div>
@@ -275,7 +259,7 @@ export function VenueDetailPage() {
           {/* Amenities — icon-only with Tooltips */}
           {amenityItems.length > 0 && (
             <div>
-              <p className="text-[10px] font-semibold text-muted-foreground/35 uppercase tracking-[0.15em] mb-4">
+              <p className="text-muted-foreground/35 mb-4 text-[10px] font-semibold tracking-[0.15em] uppercase">
                 Qulayliklar
               </p>
               <TooltipProvider>
@@ -285,9 +269,9 @@ export function VenueDetailPage() {
                       <TooltipTrigger asChild>
                         <button
                           type="button"
-                          className="w-11 h-11 rounded-xl border border-white/7 bg-white/3 flex items-center justify-center backdrop-blur-xs transition-all duration-200 hover:border-gold/30 hover:bg-gold/8 cursor-default"
+                          className="hover:border-gold/30 hover:bg-gold/8 flex h-11 w-11 cursor-default items-center justify-center rounded-xl border border-white/7 bg-white/3 backdrop-blur-xs transition-all duration-200"
                         >
-                          <Icon className="size-[18px] text-gold/60" />
+                          <Icon className="text-gold/60 size-[18px]" />
                         </button>
                       </TooltipTrigger>
                       <TooltipContent side="bottom" sideOffset={6}>
@@ -302,27 +286,53 @@ export function VenueDetailPage() {
 
           {/* Reviews */}
           <div>
-            <div className="flex items-center justify-between mb-4">
-              <p className="text-[10px] font-semibold text-muted-foreground/35 uppercase tracking-[0.15em]">
-                Sharhlar
-                {reviews?.data.length ? ` (${reviews.data.length})` : ""}
-              </p>
+            <div className="mb-5 flex items-start justify-between">
+              <div>
+                <h2 className="text-muted-foreground/35 text-[10px] font-semibold tracking-[0.22em] uppercase">
+                  Sharhlar
+                </h2>
+
+                {avgRating ? (
+                  <div className="mt-2.5 flex items-center gap-2">
+                    <StarRating rating={avgRating} />
+
+                    <span className="text-foreground/80 text-[13px] font-semibold">
+                      {avgRating.toFixed(1)}
+                    </span>
+
+                    <span className="text-muted-foreground/35 text-[11px]">
+                      — {} ta sharh
+                    </span>
+                  </div>
+                ) : (
+                  <p className="text-muted-foreground/30 mt-1.5 text-[11px]">Hali sharh yo'q</p>
+                )}
+              </div>
+
               {user && (
                 <button
                   onClick={() => setReviewModal(true)}
-                  className="h-7 px-3 rounded-lg border border-border/55 text-[12px] text-muted-foreground/60 hover:text-foreground hover:border-gold/30 transition-colors"
+                  className="border-gold/18 text-gold/60 hover:bg-gold/7 hover:text-gold hover:border-gold/35 h-8 rounded-lg border px-4 text-[10px] font-medium tracking-[0.12em] uppercase transition-all duration-200"
                 >
-                  + Sharh yozish
+                  Sharh yozish
                 </button>
               )}
             </div>
 
             {!reviews?.data.length ? (
-              <div className="flex flex-col items-center justify-center py-10 gap-3 rounded-xl border border-border/30 bg-card/25">
-                <Star className="size-6 text-muted-foreground/12" />
-                <p className="text-[13px] text-muted-foreground/40">
+              <div className="border-border/35 flex flex-col items-center justify-center gap-3 rounded-xl border border-dashed py-10">
+                <Star className="text-muted-foreground/12 size-6" />
+                <p className="text-muted-foreground/35 text-[12px] tracking-wide">
                   Hozircha sharhlar yo'q
                 </p>
+                {user && (
+                  <button
+                    onClick={() => setReviewModal(true)}
+                    className="text-gold/50 hover:text-gold text-[10px] tracking-[0.12em] uppercase transition-colors"
+                  >
+                    Birinchi bo'lib sharh yozing
+                  </button>
+                )}
               </div>
             ) : (
               <Swiper
@@ -331,26 +341,25 @@ export function VenueDetailPage() {
                 loop={reviews.data.length >= 2}
                 spaceBetween={12}
                 slidesPerView={1}
-                navigation={{
-                  prevEl: ".prev",
-                  nextEl: ".next",
-                }}
+                navigation={reviews.data.length >= 2 ? { prevEl: '.prev', nextEl: '.next' } : false}
               >
-                <div className="flex items-center mt-2 space-x-1">
-                  <button
-                    type="button"
-                    className="prev ml-auto w-9 h-9 rounded-full bg-card/90 backdrop-blur-sm border border-border/50 flex items-center justify-center text-foreground/60 hover:text-foreground hover:border-gold/30 hover:bg-card transition-all duration-200 shadow-sm"
-                  >
-                    <ChevronLeft className="size-5" />
-                  </button>
+                {reviews.data.length >= 2 && (
+                  <div className="mt-2 flex items-center space-x-1">
+                    <button
+                      type="button"
+                      className="prev bg-card/90 border-border/50 text-foreground/60 hover:text-foreground hover:border-gold/30 hover:bg-card ml-auto flex h-9 w-9 items-center justify-center rounded-full border shadow-sm backdrop-blur-sm transition-all duration-200"
+                    >
+                      <ChevronLeft className="size-5" />
+                    </button>
 
-                  <button
-                    type="button"
-                    className="next w-9 h-9 rounded-full bg-card/90 backdrop-blur-sm border border-border/50 flex items-center justify-center text-foreground/60 hover:text-foreground hover:border-gold/30 hover:bg-card transition-all duration-200 shadow-sm"
-                  >
-                    <ChevronRight className="size-5" />
-                  </button>
-                </div>
+                    <button
+                      type="button"
+                      className="next bg-card/90 border-border/50 text-foreground/60 hover:text-foreground hover:border-gold/30 hover:bg-card flex h-9 w-9 items-center justify-center rounded-full border shadow-sm backdrop-blur-sm transition-all duration-200"
+                    >
+                      <ChevronRight className="size-5" />
+                    </button>
+                  </div>
+                )}
 
                 {reviews.data.map((review) => (
                   <SwiperSlide key={review.id} className="!w-full">
@@ -364,80 +373,72 @@ export function VenueDetailPage() {
 
         {/* ── Right column: booking card ── */}
         <div className="lg:col-span-5">
-          <div className="top-20 bg-card rounded-2xl overflow-hidden">
-            <div className="h-[3px] bg-linear-to-r from-gold-dark via-gold to-gold-light" />
+          <div className="bg-card top-20 overflow-hidden rounded-2xl">
+            <div className="from-gold-dark via-gold to-gold-light h-[3px] bg-linear-to-r" />
             {/* Gold top accent */}
 
-            <CardHeader className="pb-5 pt-5">
-              <div className="text-[34px] font-bold text-gold leading-none tracking-tight">
+            <CardHeader className="pt-5 pb-5">
+              <div className="text-gold text-[34px] leading-none font-bold tracking-tight">
                 {formatUZS(venue.pricePerDay)}
               </div>
 
-              <CardTitle className="text-[12px] font-normal text-muted-foreground/45 mt-1.5">
+              <CardTitle className="text-muted-foreground/45 mt-1.5 text-[12px] font-normal">
                 kuniga ijarasi
               </CardTitle>
 
-              <CardDescription className="text-[12px] text-muted-foreground/35 mt-0">
-                {venue.city} • {venue.isIndoor ? "Yopiq zal" : "Ochiq maydon"}
+              <CardDescription className="text-muted-foreground/35 mt-0 text-[12px]">
+                {venue.city} • {venue.isIndoor ? 'Yopiq zal' : 'Ochiq maydon'}
               </CardDescription>
             </CardHeader>
 
             <CardContent className="flex flex-col gap-0 pt-0 pb-5">
-              <Separator className="opacity-8 mb-4" />
+              <Separator className="mb-4 opacity-8" />
 
               <div className="flex flex-col divide-y divide-white/5">
                 <div className="flex items-center justify-between py-3">
-                  <span className="text-[13px] text-muted-foreground/50">
-                    Sig'imi
-                  </span>
+                  <span className="text-muted-foreground/50 text-[13px]">Sig'imi</span>
 
-                  <span className="text-[13px] font-semibold text-cream/82">
+                  <span className="text-cream/82 text-[13px] font-semibold">
                     {venue.capacity} kishi
                   </span>
                 </div>
                 <div className="flex items-center justify-between py-3">
-                  <span className="text-[13px] text-muted-foreground/50">
-                    Turi
-                  </span>
+                  <span className="text-muted-foreground/50 text-[13px]">Turi</span>
 
-                  <span className="text-[13px] font-semibold text-cream/82">
-                    {venue.isIndoor ? "Yopiq zal" : "Ochiq maydon"}
+                  <span className="text-cream/82 text-[13px] font-semibold">
+                    {venue.isIndoor ? 'Yopiq zal' : 'Ochiq maydon'}
                   </span>
                 </div>
                 <div className="flex items-center justify-between py-3">
-                  <span className="text-[13px] text-muted-foreground/50">
-                    Reyting
-                  </span>
+                  <span className="text-muted-foreground/50 text-[13px]">Reyting</span>
 
                   <div className="flex items-center gap-1.5">
                     <StarRating rating={avgRating} />
 
-                    <span className="text-[13px] font-semibold text-cream/82">
-                      {avgRating}
+                    <span className="text-cream/82 text-[13px] font-semibold">
+                      {avgRating != null ? parseFloat(avgRating.toFixed(1)) : 0}
                     </span>
                   </div>
                 </div>
 
                 <div className="flex items-center justify-between py-3">
-                  <span className="text-[13px] text-muted-foreground/50">
-                    Manzil
-                  </span>
+                  <span className="text-muted-foreground/50 text-[13px]">Manzil</span>
 
-                  <span className="text-[13px] font-semibold text-cream/82 text-right max-w-[160px] leading-snug">
+                  <span className="text-cream/82 max-w-[160px] text-right text-[13px] leading-snug font-semibold">
                     {venue.address}
                   </span>
                 </div>
               </div>
 
-              <Separator className="opacity-8 my-4" />
+              <Separator className="my-4 opacity-8" />
 
               {user ? (
-                <div className="rounded-xl bg-gold/5 border border-gold/10 px-4 py-3.5 text-[12px] text-gold/55 text-center leading-relaxed">
+                <div className="bg-gold/5 border-gold/10 text-gold/55 rounded-xl border px-4 py-3.5 text-center text-[12px] leading-relaxed">
                   Maydonni band qilish uchun tadbir yaratishda foydalaning
                 </div>
               ) : (
                 <Link to="/login" className="block">
-                  <button className="w-full h-10 rounded-xl bg-gold text-[13px] font-semibold text-background hover:bg-gold/88 transition-colors cursor-pointer">
+                  <button className="bg-gold text-background hover:bg-gold/88 h-10 w-full cursor-pointer rounded-xl text-[13px] font-semibold transition-colors">
                     Band qilish uchun kiring
                   </button>
                 </Link>
@@ -447,11 +448,7 @@ export function VenueDetailPage() {
         </div>
       </div>
 
-      <Modal
-        open={reviewModal}
-        onClose={() => setReviewModal(false)}
-        title="Sharh yozish"
-      >
+      <Modal open={reviewModal} onClose={() => setReviewModal(false)} title="Sharh yozish">
         <CreateReviewForm
           venueId={venue.id}
           queryKey={venueKeys.reviews(id!)}
@@ -459,5 +456,5 @@ export function VenueDetailPage() {
         />
       </Modal>
     </div>
-  );
+  )
 }

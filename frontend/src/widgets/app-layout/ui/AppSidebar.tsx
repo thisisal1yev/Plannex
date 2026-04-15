@@ -127,7 +127,7 @@ function NavLink({
       >
         <Link to={to} className="flex items-center gap-2.5 px-2.5">
           {active && (
-            <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 bg-gold rounded-r-full shadow-[0_0_6px_rgba(201,150,58,0.6)]" />
+            <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 bg-gold rounded-r-full shadow-[0_0_6px_rgba(76,140,167,0.6)]" />
           )}
           <Icon
             className={`size-[15px] shrink-0 transition-colors ${

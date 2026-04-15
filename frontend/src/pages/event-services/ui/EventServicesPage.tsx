@@ -181,7 +181,7 @@ export function EventServicesPage() {
           )}
           <button
             onClick={() => setAttachOpen(true)}
-            className="inline-flex items-center gap-1.5 h-9 px-4 rounded-xl text-[13px] font-semibold bg-gold text-navy hover:bg-gold-light shadow-[0_4px_12px_rgba(201,150,58,0.2)] transition-all duration-200"
+            className="inline-flex items-center gap-1.5 h-9 px-4 rounded-xl text-[13px] font-semibold bg-gold text-navy hover:bg-gold-light shadow-[0_4px_12px_rgba(76,140,167,0.2)] transition-all duration-200"
           >
             <Plus className="size-3.5" />
             {STRINGS.add}

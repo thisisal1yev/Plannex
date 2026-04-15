@@ -22,7 +22,7 @@ import { formatDateDefault, formatUZS } from '@shared/lib/dateUtils'
 
 const TOOLTIP_STYLE = {
   background: 'hsl(var(--card))',
-  border: '1px solid rgba(201,150,58,0.18)',
+  border: '1px solid rgba(76,140,167,0.18)',
   borderRadius: 8,
   fontSize: 12,
   boxShadow: '0 8px 24px rgba(0,0,0,0.25)',

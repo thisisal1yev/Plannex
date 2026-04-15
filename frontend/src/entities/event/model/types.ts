@@ -1,4 +1,4 @@
-import type { EventStatus } from '@shared/types'
+import type { EventStatus, RatingStats } from '@shared/types'
 import type { User } from '../../user/model/types'
 import type { Venue } from '../../venue/model/types'
 
@@ -28,6 +28,7 @@ export interface Event {
   venueId?: string
   venue?: Venue
   ticketTiers?: TicketTier[]
+  ratingStats?: RatingStats
   createdAt: string
   updatedAt: string
 }

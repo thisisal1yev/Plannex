@@ -12,7 +12,7 @@ interface StatCardProps {
 }
 
 const ACCENT_MAP: Record<string, { bg: string; border: string; icon: string; glow: string }> = {
-  gold:    { bg: 'bg-gold/8',        border: 'border-gold/15',        icon: 'text-gold',        glow: 'hover:shadow-[0_0_12px_rgba(201,150,58,0.15)]'   },
+  gold:    { bg: 'bg-gold/8',        border: 'border-gold/15',        icon: 'text-gold',        glow: 'hover:shadow-[0_0_12px_rgba(76,140,167,0.15)]'   },
   emerald: { bg: 'bg-emerald-500/8', border: 'border-emerald-500/15', icon: 'text-emerald-500', glow: 'hover:shadow-[0_0_12px_rgba(16,185,129,0.12)]'   },
   blue:    { bg: 'bg-blue-500/8',    border: 'border-blue-500/15',    icon: 'text-blue-400',    glow: 'hover:shadow-[0_0_12px_rgba(59,130,246,0.12)]'   },
   amber:   { bg: 'bg-amber-500/8',   border: 'border-amber-500/15',   icon: 'text-amber-400',   glow: 'hover:shadow-[0_0_12px_rgba(245,158,11,0.12)]'   },

@@ -37,7 +37,7 @@ export function MyVenuesPage() {
               <p className="text-sm text-gray-500">{venue.city}, {venue.address}</p>
               <div className="flex items-center gap-1 mt-1">
                 <StarRating rating={venue.ratingStats?.avg ?? 0} />
-                <span className="text-xs text-gray-400">{venue.ratingStats?.avg}</span>
+                <span className="text-xs text-gray-400">{parseFloat((venue.ratingStats?.avg ?? 0).toFixed(1))}</span>
               </div>
             </div>
             <div className="flex items-center justify-between">

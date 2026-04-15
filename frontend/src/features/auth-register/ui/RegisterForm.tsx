@@ -167,7 +167,7 @@ export function RegisterForm() {
             <button
               type="button"
               onClick={goNext}
-              className="w-full h-10 rounded-xl text-[13px] font-semibold bg-gold text-navy hover:bg-gold-light shadow-[0_4px_12px_rgba(201,150,58,0.2)] hover:shadow-[0_4px_16px_rgba(201,150,58,0.3)] transition-all duration-200 flex items-center justify-center gap-1.5"
+              className="w-full h-10 rounded-xl text-[13px] font-semibold bg-gold text-navy hover:bg-gold-light shadow-[0_4px_12px_rgba(76,140,167,0.2)] hover:shadow-[0_4px_16px_rgba(76,140,167,0.3)] transition-all duration-200 flex items-center justify-center gap-1.5"
             >
               {STRINGS.next}
               <ChevronRight className="size-4" />
@@ -225,7 +225,7 @@ export function RegisterForm() {
                     className={cn(
                       'relative flex flex-col gap-1.5 p-3 rounded-xl border cursor-pointer transition-all duration-200',
                       role === value
-                        ? 'border-gold/40 bg-gold/6 shadow-[0_0_0_1px_rgba(201,150,58,0.15)]'
+                        ? 'border-gold/40 bg-gold/6 shadow-[0_0_0_1px_rgba(76,140,167,0.15)]'
                         : 'border-border/60 bg-card/40 hover:border-gold/20',
                     )}
                   >

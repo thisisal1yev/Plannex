@@ -44,6 +44,7 @@ export class ServicesService {
         where,
         skip,
         take: limit,
+        include: { ratingStats: true },
         orderBy: { createdAt: 'desc' },
       }),
       this.prisma.service.count({ where }),
@@ -59,7 +60,10 @@ export class ServicesService {
    * Returns a single service by ID
    */
   async findOne(id: string) {
-    const service = await this.prisma.service.findUnique({ where: { id } });
+    const service = await this.prisma.service.findUnique({
+      where: { id },
+      include: { ratingStats: true },
+    });
     if (!service) throw new NotFoundException('Service not found');
     return service;
   }

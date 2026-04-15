@@ -58,7 +58,7 @@ export function ServiceCard({
           transition-transform duration-500 ease-out"
         style={{
           background:
-            "linear-gradient(90deg, transparent 0%, #c9963a 40%, #e8c06a 60%, transparent 100%)",
+            "linear-gradient(90deg, transparent 0%, #4c8ca7 40%, #7ab8cc 60%, transparent 100%)",
         }}
       />
 
@@ -101,15 +101,20 @@ export function ServiceCard({
         </div>
 
         {/* Rating — top right */}
-        <div
-          className="absolute top-3 right-3 flex items-center gap-1 backdrop-blur-sm
-          bg-[rgba(8,15,25,0.55)] border border-white/10 rounded-lg px-2 py-1.5"
-        >
-          <Star className="w-3 h-3 text-gold fill-current" />
-          <span className="text-[12px] font-medium text-cream/80">
-            {(service.ratingStats?.avg ?? 0).toFixed(1)}
-          </span>
-        </div>
+        {service.ratingStats && service.ratingStats.count > 0 ? (
+          <div className="absolute top-3 right-3 flex items-center gap-1 backdrop-blur-sm bg-[rgba(8,15,25,0.55)] border border-white/10 rounded-lg px-2 py-1.5">
+
+            <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
+
+            <span className="text-[12px] font-medium text-cream/80">
+              {service.ratingStats.avg.toFixed(1)}
+            </span>
+
+            <span className="text-[10px] text-cream/40">
+              ({service.ratingStats.count})
+            </span>
+          </div>
+        ) : null}
 
         {/* Name bleeds over image bottom */}
         <div className="absolute bottom-0 left-0 right-0 px-4 pb-3.5">

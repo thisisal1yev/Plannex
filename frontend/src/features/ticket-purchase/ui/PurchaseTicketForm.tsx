@@ -67,7 +67,7 @@ export function PurchaseTicketForm({ eventId, tiers, onSuccess }: PurchaseTicket
                 'group relative w-full text-left rounded-xl border px-4 py-3.5 transition-all duration-200 cursor-pointer',
                 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/40',
                 isSelected
-                  ? 'border-gold/40 bg-gold/6 shadow-[0_0_0_1px_rgba(201,150,58,0.15),inset_0_1px_0_rgba(201,150,58,0.08)]'
+                  ? 'border-gold/40 bg-gold/6 shadow-[0_0_0_1px_rgba(76,140,167,0.15),inset_0_1px_0_rgba(76,140,167,0.08)]'
                   : 'border-border/50 bg-card/40 hover:border-gold/20 hover:bg-card/70',
                 isSoldOut && 'opacity-40 cursor-not-allowed hover:border-border/50 hover:bg-card/40',
               )}
@@ -129,7 +129,7 @@ export function PurchaseTicketForm({ eventId, tiers, onSuccess }: PurchaseTicket
                 'relative h-11 rounded-xl border text-[12px] font-semibold tracking-wide transition-all duration-200 cursor-pointer',
                 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/30',
                 provider === id
-                  ? 'border-gold/35 bg-gold/8 text-gold shadow-[inset_0_1px_0_rgba(201,150,58,0.12)]'
+                  ? 'border-gold/35 bg-gold/8 text-gold shadow-[inset_0_1px_0_rgba(76,140,167,0.12)]'
                   : 'border-border/40 bg-card/30 text-muted-foreground/50 hover:border-border hover:text-foreground/60',
               )}
             >
@@ -185,7 +185,7 @@ export function PurchaseTicketForm({ eventId, tiers, onSuccess }: PurchaseTicket
           className={cn(
             'w-full h-11 rounded-xl text-[13px] font-semibold tracking-wide gap-2 transition-all duration-200',
             'bg-gold hover:bg-gold-light text-navy border-0',
-            'shadow-[0_4px_14px_rgba(201,150,58,0.25)] hover:shadow-[0_4px_20px_rgba(201,150,58,0.35)]',
+            'shadow-[0_4px_14px_rgba(76,140,167,0.25)] hover:shadow-[0_4px_20px_rgba(76,140,167,0.35)]',
             'disabled:bg-gold/40 disabled:text-navy/60 disabled:shadow-none',
           )}
         >

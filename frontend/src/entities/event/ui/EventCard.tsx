@@ -45,7 +45,7 @@ export function EventCard({ event, className, index = 0 }: EventCardProps) {
           transition-transform duration-500 ease-out"
         style={{
           background:
-            "linear-gradient(90deg, transparent 0%, #c9963a 40%, #e8c06a 60%, transparent 100%)",
+            "linear-gradient(90deg, transparent 0%, #4c8ca7 40%, #7ab8cc 60%, transparent 100%)",
         }}
       />
 
