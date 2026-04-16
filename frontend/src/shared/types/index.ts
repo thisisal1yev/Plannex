@@ -4,8 +4,7 @@ export type Role = 'ORGANIZER' | 'PARTICIPANT' | 'ADMIN' | 'VENDOR' | 'VOLUNTEER
 export type EventStatus = 'DRAFT' | 'PUBLISHED' | 'CANCELLED' | 'COMPLETED'
 export type PaymentStatus = 'PENDING' | 'PAID' | 'FAILED' | 'REFUNDED'
 export type BookingStatus = 'PENDING' | 'CONFIRMED' | 'CANCELLED'
-export type ServiceCategory = 'CATERING' | 'DECORATION' | 'SOUND' | 'PHOTO' | 'SECURITY'
-export type PaymentProvider = 'CLICK' | 'PAYME' | 'STRIPE'
+export type PaymentProvider = 'CLICK' | 'PAYME'
 export type VolunteerStatus = 'PENDING' | 'ACCEPTED' | 'REJECTED'
 
 // ─── Auth ─────────────────────────────────────────────────────────────────────
@@ -17,9 +16,8 @@ export interface TokenPair {
 
 export interface RatingStats {
   id: string
-  venueId?: string
+  squareId?: string   // was venueId
   serviceId?: string
-  eventId?: string
   avg: number
   count: number
   one: number

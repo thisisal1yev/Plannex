@@ -1,22 +1,28 @@
 import { apiClient } from '@shared/api/client'
-import type { PaginatedResponse, ServiceCategory } from '@shared/types'
+import type { PaginatedResponse } from '@shared/types'
 import type { Service } from '../model/types'
 
 export interface CreateServiceDto {
   name: string
-  category: ServiceCategory
+  categoryId: string   // UUID of ServiceCategory (was: category: ServiceCategory enum)
   description?: string
   priceFrom: number
   city: string
   imageUrls?: string[]
 }
 
-export type UpdateServiceDto = Partial<CreateServiceDto>
+export interface UpdateServiceDto {
+  name?: string
+  description?: string
+  priceFrom?: number
+  city?: string
+}
 
 export interface QueryServicesDto {
   page?: number
   limit?: number
-  category?: ServiceCategory
+  vendorId?: string    // filter by vendor
+  category?: string    // text search on category name (e.g. 'Katering')
   city?: string
   maxPrice?: number
 }

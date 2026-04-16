@@ -9,14 +9,13 @@ import { Button } from '@shared/ui/Button'
 import { Input } from '@shared/ui/Input'
 import { serviceKeys } from '@shared/api/queryKeys'
 import { UZBEK_CITIES } from '@shared/lib/constants'
-import type { ServiceCategory } from '@shared/types'
 
 const selectCls =
   'h-9 rounded-lg border border-input bg-background px-3 text-sm outline-none transition-colors focus-visible:border-ring text-foreground'
 
 export function ServicesListPage() {
   const [page, setPage]               = useState(1)
-  const [category, setCategory]       = useState<ServiceCategory | ''>('')
+  const [category, setCategory]       = useState('')
   const [city, setCity]               = useState('')
   const [maxPrice, setMaxPrice]       = useState('')
   const [filtersOpen, setFiltersOpen] = useState(false)
@@ -77,9 +76,9 @@ export function ServicesListPage() {
         {SERVICE_CATEGORIES.map((c) => (
           <button
             key={c.value}
-            onClick={() => { setCategory(c.value); setPage(1) }}
+            onClick={() => { setCategory(c.label); setPage(1) }}
             className={`px-5 py-2 rounded-full text-sm font-medium transition-all duration-200 cursor-pointer border flex items-center gap-1.5 ${
-              category === c.value
+              category === c.label
                 ? 'bg-gold text-navy border-gold shadow-[0_0_18px_rgba(76,140,167,0.3)]'
                 : 'bg-transparent border-border text-muted-foreground hover:border-gold/40 hover:text-foreground'
             }`}

@@ -23,7 +23,7 @@ export interface Venue {
 
 export interface VenueBooking {
   id: string
-  venueId: string
+  squareId: string    // was venueId
   venue?: Venue
   eventId: string
   userId: string

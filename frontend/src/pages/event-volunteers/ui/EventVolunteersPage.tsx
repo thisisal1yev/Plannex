@@ -36,9 +36,9 @@ export function EventVolunteersPage() {
               <p className="font-semibold text-foreground">{app.user?.firstName} {app.user?.lastName}</p>
               <p className="text-sm text-muted-foreground">{app.user?.email}</p>
               <div className="flex flex-wrap gap-1 mt-2">
-                {app.skills.map((s) => (
-                  <span key={s} className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full">{s}</span>
-                ))}
+                <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full">
+                  {app.skill?.name ?? app.skillId}
+                </span>
               </div>
             </div>
             <div className="flex items-center gap-2">

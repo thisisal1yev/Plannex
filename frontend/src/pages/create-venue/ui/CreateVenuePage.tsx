@@ -33,6 +33,7 @@ export function CreateVenuePage() {
           </CardHeader>
           <CardContent className="flex flex-col gap-4 pt-0">
             <Input label="Nomi" error={errors.name?.message} {...register('name', { required: 'Majburiy maydon' })} />
+            <Input label="Turkum ID (UUID)" error={errors.categoryId?.message} {...register('categoryId', { required: 'Majburiy maydon' })} />
             <Textarea label="Tavsif" rows={3} {...register('description')} />
             <div className="grid grid-cols-2 gap-4">
               <Input label="Shahar" error={errors.city?.message} {...register('city', { required: 'Majburiy maydon' })} />

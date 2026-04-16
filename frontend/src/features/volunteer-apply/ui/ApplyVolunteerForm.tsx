@@ -2,58 +2,52 @@ import { useState } from 'react'
 import { useMutation } from '@tanstack/react-query'
 import { volunteersApi } from '@entities/volunteer'
 import { Button } from '@shared/ui/Button'
-import { Input } from '@shared/ui/Input'
+
+// Seeded volunteer skills from backend/prisma/constants.ts
+// In production these should come from a GET /volunteer-skills endpoint
+const SKILL_OPTIONS = [
+  'registration', 'guest greeting', 'info desk', 'translation',
+  'badge scanning', 'crowd control', 'tech support', 'live streaming',
+  'speaker coordination', 'stage management', 'artist coordination',
+  'audio monitoring', 'lighting assistance', 'coordination', 'scheduling',
+  'design review', 'feedback collection', 'art installation',
+  'visitor guidance', 'art curation', 'multilingual support',
+]
 
 interface ApplyVolunteerFormProps {
   eventId: string
   onSuccess?: () => void
 }
 
+const selectCls =
+  'h-9 w-full rounded-lg border border-input bg-background px-3 text-sm outline-none transition-colors focus-visible:border-ring text-foreground'
+
 export function ApplyVolunteerForm({ eventId, onSuccess }: ApplyVolunteerFormProps) {
-  const [skillInput, setSkillInput] = useState('')
-  const [skills, setSkills] = useState<string[]>([])
+  const [skillId, setSkillId] = useState('')
 
   const mutation = useMutation({
-    mutationFn: () => volunteersApi.apply(eventId, skills),
+    mutationFn: () => volunteersApi.apply(eventId, skillId),
     onSuccess,
   })
 
-  const addSkill = () => {
-    const s = skillInput.trim()
-    if (s && !skills.includes(s)) {
-      setSkills([...skills, s])
-      setSkillInput('')
-    }
-  }
-
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex gap-2">
-        <Input
-          placeholder="Masalan: ro'yxatga olish, tarjima"
-          value={skillInput}
-          onChange={(e) => setSkillInput(e.target.value)}
-          onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addSkill() } }}
-          className="flex-1"
-        />
-        <Button variant="secondary" onClick={addSkill} type="button">Qo'shish</Button>
-      </div>
-      {skills.length > 0 && (
-        <div className="flex flex-wrap gap-2">
-          {skills.map((s) => (
-            <span key={s} className="inline-flex items-center gap-1 bg-primary/10 text-primary text-sm px-2 py-1 rounded-full">
-              {s}
-              <button type="button" onClick={() => setSkills(skills.filter((x) => x !== s))} className="hover:text-primary/80 cursor-pointer">×</button>
-            </span>
-          ))}
-        </div>
-      )}
+      <select
+        value={skillId}
+        onChange={(e) => setSkillId(e.target.value)}
+        className={selectCls}
+      >
+        <option value="">Ko'nikma tanlang</option>
+        {SKILL_OPTIONS.map((s) => (
+          <option key={s} value={s}>{s}</option>
+        ))}
+      </select>
       {mutation.isError && <p className="text-sm text-destructive">Ariza topshirishda xatolik</p>}
       {mutation.isSuccess && <p className="text-sm text-green-500 dark:text-green-400">Ariza topshirildi!</p>}
       <Button
         onClick={() => mutation.mutate()}
         loading={mutation.isPending}
-        disabled={skills.length === 0}
+        disabled={!skillId}
         className="w-full"
       >
         Ko'ngilli ariza topshirish

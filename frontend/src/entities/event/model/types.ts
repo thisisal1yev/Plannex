@@ -25,7 +25,7 @@ export interface Event {
   eventType: string
   capacity: number
   status: EventStatus
-  venueId?: string
+  squareId?: string   // was venueId
   venue?: Venue
   ticketTiers?: TicketTier[]
   ratingStats?: RatingStats

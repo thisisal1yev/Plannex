@@ -13,7 +13,7 @@ export interface CreateEventDto {
   endDate: string
   eventType: string
   capacity: number
-  venueId?: string
+  squareId?: string   // was venueId — backend field is squareId
   ticketTiers?: { name: string; price: number; quantity: number }[]
 }
 
