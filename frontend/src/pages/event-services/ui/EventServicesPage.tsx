@@ -84,7 +84,7 @@ function AttachModal({ eventId, onClose }: { eventId: string; onClose: () => voi
 
   const serviceOptions = allServices?.data.map((s) => ({
     value: s.id,
-    label: `${s.name} — ${SERVICE_CATEGORY_LABEL[s.category] ?? s.category} • ${s.city}`,
+    label: `${s.name} — ${SERVICE_CATEGORY_LABEL[s.category?.name ?? ''] ?? s.category?.name} • ${s.city}`,
   })) ?? []
 
   return (
@@ -154,7 +154,7 @@ export function EventServicesPage() {
   if (isLoading) return <Spinner />
 
   const filtered = category
-    ? (attached ?? []).filter((es) => es.service?.category === category)
+    ? (attached ?? []).filter((es) => es.service?.category?.name === category)
     : (attached ?? [])
 
   const total = (attached ?? []).reduce((s, es) => s + (Number(es.agreedPrice) || 0), 0)
@@ -217,7 +217,7 @@ export function EventServicesPage() {
         )}
 
         {filtered.map((es: EventService) => {
-          const CategoryIcon = CATEGORY_ICON[es.service?.category ?? ''] ?? Wrench
+          const CategoryIcon = CATEGORY_ICON[es.service?.category?.name ?? ''] ?? Wrench
           const isPending   = es.status === 'PENDING'
           const isConfirmed = es.status === 'CONFIRMED'
           const isMutating  = statusMutation.isPending || removeMutation.isPending
@@ -237,7 +237,7 @@ export function EventServicesPage() {
                 <p className="text-[13px] font-semibold text-foreground truncate">{es.service?.name}</p>
                 <div className="flex items-center gap-2 mt-0.5">
                   <span className="text-[11px] text-muted-foreground/50">
-                    {SERVICE_CATEGORY_LABEL[es.service?.category ?? ''] ?? es.service?.category}
+                    {SERVICE_CATEGORY_LABEL[es.service?.category?.name ?? ''] ?? es.service?.category?.name}
                   </span>
 
                   <span className="text-[11px] text-muted-foreground/30">•</span>

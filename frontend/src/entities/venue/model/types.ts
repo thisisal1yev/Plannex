@@ -20,6 +20,11 @@ export interface Venue {
   capacity: number
   pricePerDay: number
   characteristics?: { id: string; name: string }[]
+  isIndoor?: boolean
+  hasWifi?: boolean
+  hasParking?: boolean
+  hasSound?: boolean
+  hasStage?: boolean
   imageUrls: string[]
   ratingStats?: RatingStats
   createdAt: string

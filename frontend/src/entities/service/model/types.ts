@@ -1,4 +1,4 @@
-import type { RatingStats } from '@shared/types'
+import type { BookingStatus, RatingStats } from '@shared/types'
 
 export interface ServiceCategory {
   id: string
@@ -26,5 +26,6 @@ export interface EventService {
   serviceId: string
   service?: Service
   agreedPrice: number
+  status?: BookingStatus
   createdAt: string
 }

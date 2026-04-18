@@ -44,7 +44,7 @@ export function MyServicesPage() {
                 <h3 className="font-semibold">{service.name}</h3>
                 <p className="text-sm text-gray-500">{service.city}</p>
               </div>
-              <Badge color={categoryColor[service.category]}>{categoryLabel[service.category]}</Badge>
+              <Badge color={categoryColor[service.category?.name ?? '']}>{categoryLabel[service.category?.name ?? '']}</Badge>
             </div>
             <div className="flex items-center justify-between">
               <span className="font-semibold text-primary">{formatUZS(service.priceFrom)} dan</span>
