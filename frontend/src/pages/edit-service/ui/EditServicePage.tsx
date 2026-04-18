@@ -23,7 +23,7 @@ export function EditServicePage() {
   })
 
   const { register, handleSubmit } = useForm<UpdateServiceDto>({
-    values: service ? { name: service.name, category: service.category, description: service.description, city: service.city, priceFrom: service.priceFrom } : undefined,
+    values: service ? { name: service.name, categoryId: service.categoryId, description: service.description, city: service.city, priceFrom: service.priceFrom } : undefined,
   })
 
   const mutation = useMutation({
@@ -50,7 +50,7 @@ export function EditServicePage() {
                 { value: 'CATERING', label: 'Katering' }, { value: 'DECORATION', label: 'Bezak' },
                 { value: 'SOUND', label: 'Ovoz' }, { value: 'PHOTO', label: 'Foto' }, { value: 'SECURITY', label: 'Xavfsizlik' },
               ]}
-              {...register('category')}
+              {...register('categoryId')}
             />
             <Textarea label="Tavsif" rows={3} {...register('description')} />
             <Input label="Shahar" {...register('city')} />

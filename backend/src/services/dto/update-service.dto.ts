@@ -10,6 +10,11 @@ export class UpdateServiceDto {
   @ApiPropertyOptional()
   @IsOptional()
   @IsString()
+  categoryId?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
   description?: string;
 
   @ApiPropertyOptional()
