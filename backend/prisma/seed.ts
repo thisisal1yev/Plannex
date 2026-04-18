@@ -1,4 +1,5 @@
 import 'dotenv/config';
+import { randomUUID } from 'crypto';
 import { hashSync } from 'bcrypt';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from '../generated/prisma/client';
@@ -44,9 +45,14 @@ const createdIds = {
   completedEvents: [] as string[],
   services: [] as string[],
   tiers: [] as string[][],
-}
+};
 
 const hashPassword = (pw: string) => hashSync(pw, 10);
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
+/** Генерирует уникальный providerTxId без коллизий при быстром цикле */
+const makeTxId = (prefix: string) => `TX-${prefix}-${randomUUID()}`;
 
 // ─── Categories ───────────────────────────────────────────────────────────────
 async function seedCategories() {
@@ -73,14 +79,14 @@ async function seedVolunteerSkills() {
   console.log('✅ Volunteer skills seeded');
 }
 
-// ─── Square Charecteristics ─────────────────────────────────────────────────────────
-async function seedSquareCharecteristics() {
+// ─── Square Characteristics ───────────────────────────────────────────────────
+async function seedSquareCharacteristics() {
   for (const name of SQUARE_CHARACTERISTICS) {
     const s = await prisma.squareCharacteristics.create({ data: { name } });
     createdIds.squareCharacteristics[name] = s.id;
   }
 
-  console.log('✅ Square charecteristics seeded');
+  console.log('✅ Square characteristics seeded');
 }
 
 // ─── Users ────────────────────────────────────────────────────────────────────
@@ -118,12 +124,14 @@ async function seedSquares() {
         capacity: s.capacity,
         pricePerDay: s.pricePerDay,
         imageUrls: s.imageUrls,
-        ownerId: createdIds.users[s.vendorKey],
-        categoryId: createdIds.squareCategories[s.categoryName],
+        owner: { connect: { id: createdIds.users[s.vendorKey] } },
+        category: {
+          connect: { id: createdIds.squareCategories[s.categoryName] },
+        },
         characteristics: {
           connect: Object.values(createdIds.squareCharacteristics)
-          .slice(0, SQUARE_CHARACTERISTICS.length)
-          .map(id => ({ id })),
+            .slice(0, SQUARE_CHARACTERISTICS.length)
+            .map((id) => ({ id })),
         },
       },
     });
@@ -147,8 +155,8 @@ async function seedEvents() {
         capacity: e.capacity,
         bannerUrl: e.bannerUrl,
         status: EventStatus.PUBLISHED,
-        organizerId: createdIds.users[e.organizerKey],
-        squareId: createdIds.squares[e.squareIndex],
+        organizer: { connect: { id: createdIds.users[e.organizerKey] } },
+        square: { connect: { id: createdIds.squares[e.squareIndex] } },
       },
     });
     createdIds.publishedEvents.push(created.id);
@@ -165,40 +173,44 @@ async function seedEvents() {
         capacity: e.capacity,
         bannerUrl: e.bannerUrl,
         status: EventStatus.COMPLETED,
-        organizerId: createdIds.users[e.organizerKey],
-        squareId: createdIds.squares[e.squareIndex],
+        organizer: { connect: { id: createdIds.users[e.organizerKey] } },
+        square: { connect: { id: createdIds.squares[e.squareIndex] } },
       },
     });
     createdIds.completedEvents.push(created.id);
   }
 
-  await prisma.event.createMany({
-    data: DRAFT_EVENTS.map((e) => ({
-      title: e.title,
-      description: e.description,
-      startDate: e.startDate,
-      endDate: e.endDate,
-      eventType: e.eventType,
-      capacity: e.capacity,
-      bannerUrl: e.bannerUrl,
-      status: EventStatus.DRAFT,
-      organizerId: createdIds.users[e.organizerKey],
-    })),
-  });
+  for (const e of DRAFT_EVENTS) {
+    await prisma.event.create({
+      data: {
+        title: e.title,
+        description: e.description,
+        startDate: e.startDate,
+        endDate: e.endDate,
+        eventType: e.eventType,
+        capacity: e.capacity,
+        bannerUrl: e.bannerUrl,
+        status: EventStatus.DRAFT,
+        organizer: { connect: { id: createdIds.users[e.organizerKey] } },
+      },
+    });
+  }
 
-  await prisma.event.createMany({
-    data: CANCELLED_EVENTS.map((e) => ({
-      title: e.title,
-      description: e.description,
-      startDate: e.startDate,
-      endDate: e.endDate,
-      eventType: e.eventType,
-      capacity: e.capacity,
-      bannerUrl: e.bannerUrl,
-      status: EventStatus.CANCELLED,
-      organizerId: createdIds.users[e.organizerKey],
-    })),
-  });
+  for (const e of CANCELLED_EVENTS) {
+    await prisma.event.create({
+      data: {
+        title: e.title,
+        description: e.description,
+        startDate: e.startDate,
+        endDate: e.endDate,
+        eventType: e.eventType,
+        capacity: e.capacity,
+        bannerUrl: e.bannerUrl,
+        status: EventStatus.CANCELLED,
+        organizer: { connect: { id: createdIds.users[e.organizerKey] } },
+      },
+    });
+  }
 
   console.log('✅ Events seeded');
 }
@@ -215,7 +227,7 @@ async function seedTicketTiers() {
     const tierIds: string[] = [];
     for (const t of TICKET_TIERS_BY_EVENT[i]) {
       const created = await prisma.ticketTier.create({
-        data: { ...t, eventId },
+        data: { ...t, event: { connect: { id: eventId } } },
       });
       tierIds.push(created.id);
     }
@@ -422,7 +434,14 @@ async function seedTicketsAndPayments() {
   for (const p of purchases) {
     const userId = createdIds.users[p.participantKey];
     const eventId = allEventIds[p.eventIdx];
-    const tierId = createdIds.tiers[p.eventIdx][p.tierIdx];
+    const tierId = createdIds.tiers[p.eventIdx]?.[p.tierIdx];
+
+    if (!tierId) {
+      console.warn(
+        `⚠️  No tier found for eventIdx=${p.eventIdx} tierIdx=${p.tierIdx}, skipping`,
+      );
+      continue;
+    }
 
     const tier = await prisma.ticketTier.findUnique({ where: { id: tierId } });
     if (!tier) continue;
@@ -432,24 +451,26 @@ async function seedTicketsAndPayments() {
 
     const ticket = await prisma.ticket.create({
       data: {
-        userId,
-        eventId,
-        tierId,
+        user: { connect: { id: userId } },
+        event: { connect: { id: eventId } },
+        tier: { connect: { id: tierId } },
+        pricePaid: amount,
         qrCode: `QR-${p.date.getFullYear()}${String(p.date.getMonth() + 1).padStart(2, '0')}-${qrSeq++}`,
         isUsed: p.eventIdx >= 5,
+        usedAt: p.eventIdx >= 5 ? p.date : null,
         createdAt: p.date,
       },
     });
 
     await prisma.payment.create({
       data: {
-        userId,
+        user: { connect: { id: userId } },
         type: PaymentType.TICKET,
-        ticketId: ticket.id,
+        ticket: { connect: { id: ticket.id } },
         amount,
         commission,
         provider: p.provider,
-        providerTxId: `TX-${Date.now()}-${qrSeq}`,
+        providerTxId: makeTxId('TICKET'), // fix: был Date.now() — риск коллизий
         status: PaymentStatus.PAID,
         createdAt: p.date,
       },
@@ -470,6 +491,7 @@ async function seedBookings() {
       endDate: new Date('2026-05-20T20:00:00Z'),
       status: BookingStatus.CONFIRMED,
       totalCost: 10000000,
+      provider: PaymentProvider.CLICK,
     },
     {
       squareId: createdIds.squares[3],
@@ -479,6 +501,7 @@ async function seedBookings() {
       endDate: new Date('2026-07-12T23:59:00Z'),
       status: BookingStatus.CONFIRMED,
       totalCost: 54000000,
+      provider: PaymentProvider.CLICK,
     },
     {
       squareId: createdIds.squares[2],
@@ -488,8 +511,10 @@ async function seedBookings() {
       endDate: new Date('2026-04-26T20:00:00Z'),
       status: BookingStatus.CONFIRMED,
       totalCost: 10000000,
+      provider: PaymentProvider.PAYME,
     },
     {
+      // PENDING: платёж создаётся со статусом PENDING, providerTxId = null
       squareId: createdIds.squares[1],
       eventId: createdIds.publishedEvents[1],
       userId: createdIds.users['organizer2@planner.ai'],
@@ -497,14 +522,15 @@ async function seedBookings() {
       endDate: new Date('2026-06-15T23:00:00Z'),
       status: BookingStatus.PENDING,
       totalCost: 7000000,
+      provider: PaymentProvider.CLICK,
     },
   ];
 
   for (const b of bookingsData) {
     const booking = await prisma.booking.create({
       data: {
-        userId: b.userId,
-        squareId: b.squareId,
+        user: { connect: { id: b.userId } },
+        square: { connect: { id: b.squareId } },
         startDate: b.startDate,
         endDate: b.endDate,
         status: b.status,
@@ -515,14 +541,29 @@ async function seedBookings() {
     if (b.status === BookingStatus.CONFIRMED) {
       await prisma.payment.create({
         data: {
-          userId: b.userId,
+          user: { connect: { id: b.userId } },
           type: PaymentType.SQUARE,
-          bookingId: booking.id,
+          booking: { connect: { id: booking.id } },
           amount: b.totalCost,
           commission: b.totalCost * 0.1,
-          provider: PaymentProvider.CLICK,
-          providerTxId: `TX-SQUARE-${Date.now()}`,
+          provider: b.provider,
+          providerTxId: makeTxId('SQUARE'), // fix: был Date.now()
           status: PaymentStatus.PAID,
+        },
+      });
+    } else if (b.status === BookingStatus.PENDING) {
+      // fix: PENDING-бронирование теперь тоже создаёт Payment
+      // providerTxId = null — платёж инициирован, но ещё не завершён
+      await prisma.payment.create({
+        data: {
+          user: { connect: { id: b.userId } },
+          type: PaymentType.SQUARE,
+          booking: { connect: { id: booking.id } },
+          amount: b.totalCost,
+          commission: b.totalCost * 0.1,
+          provider: b.provider,
+          providerTxId: null,
+          status: PaymentStatus.PENDING,
         },
       });
     }
@@ -541,8 +582,10 @@ async function seedServices() {
         priceFrom: s.priceFrom,
         city: s.city,
         imageUrls: s.imageUrls,
-        vendorId: createdIds.users[s.vendorKey],
-        categoryId: createdIds.serviceCategories[s.categoryName],
+        vendor: { connect: { id: createdIds.users[s.vendorKey] } },
+        category: {
+          connect: { id: createdIds.serviceCategories[s.categoryName] },
+        },
       },
     });
     createdIds.services.push(created.id);
@@ -617,20 +660,34 @@ async function seedEventServices() {
   ];
 
   for (const l of links) {
+    const eventId = createdIds.publishedEvents[l.eventIdx];
+
+    // fix: получаем реального организатора ивента, а не хардкодим одного
+    const event = await prisma.event.findUnique({
+      where: { id: eventId },
+      select: { organizerId: true },
+    });
+    if (!event) {
+      console.warn(`⚠️  Event not found for eventIdx=${l.eventIdx}, skipping`);
+      continue;
+    }
+
+    const organizerId = event.organizerId;
+
     const es = await prisma.eventService.create({
       data: {
-        eventId: createdIds.publishedEvents[l.eventIdx],
-        serviceId: createdIds.services[l.serviceIdx],
+        event: { connect: { id: eventId } },
+        service: { connect: { id: createdIds.services[l.serviceIdx] } },
         agreedPrice: l.agreedPrice,
-        status: l.status
+        status: l.status,
       },
     });
 
     if (l.status === BookingStatus.CONFIRMED) {
       const booking = await prisma.booking.create({
         data: {
-          userId: createdIds.users['organizer@planner.ai'],
-          eventServiceId: es.id,
+          user: { connect: { id: organizerId } },
+          eventService: { connect: { id: es.id } },
           status: BookingStatus.CONFIRMED,
           totalCost: l.agreedPrice,
         },
@@ -638,14 +695,37 @@ async function seedEventServices() {
 
       await prisma.payment.create({
         data: {
-          userId: createdIds.users['organizer@planner.ai'],
+          user: { connect: { id: organizerId } },
           type: PaymentType.SERVICE,
-          bookingId: booking.id,
+          booking: { connect: { id: booking.id } },
           amount: l.agreedPrice,
           commission: l.agreedPrice * 0.1,
           provider: PaymentProvider.PAYME,
-          providerTxId: `TX-SERVICE-${Date.now()}-${l.serviceIdx}`,
+          providerTxId: makeTxId('SERVICE'), // fix: был Date.now()
           status: PaymentStatus.PAID,
+        },
+      });
+    } else if (l.status === BookingStatus.PENDING) {
+      // fix: PENDING EventService тоже создаёт Payment со статусом PENDING
+      const booking = await prisma.booking.create({
+        data: {
+          user: { connect: { id: organizerId } },
+          eventService: { connect: { id: es.id } },
+          status: BookingStatus.PENDING,
+          totalCost: l.agreedPrice,
+        },
+      });
+
+      await prisma.payment.create({
+        data: {
+          user: { connect: { id: organizerId } },
+          type: PaymentType.SERVICE,
+          booking: { connect: { id: booking.id } },
+          amount: l.agreedPrice,
+          commission: l.agreedPrice * 0.1,
+          provider: PaymentProvider.PAYME,
+          providerTxId: null, // платёж не завершён
+          status: PaymentStatus.PENDING,
         },
       });
     }
@@ -722,9 +802,9 @@ async function seedVolunteers() {
   for (const a of apps) {
     await prisma.volunteer.create({
       data: {
-        userId: createdIds.users[a.userKey],
-        eventId: createdIds.publishedEvents[a.eventIdx],
-        skillId: createdIds.volunteerSkills[a.skillName],
+        user: { connect: { id: createdIds.users[a.userKey] } },
+        event: { connect: { id: createdIds.publishedEvents[a.eventIdx] } },
+        skill: { connect: { id: createdIds.volunteerSkills[a.skillName] } },
         status: a.status,
       },
     });
@@ -738,8 +818,8 @@ async function seedReviews() {
   for (const r of SQUARE_REVIEWS) {
     await prisma.review.create({
       data: {
-        authorId: createdIds.users[r.userKey],
-        squareId: createdIds.squares[r.squareIdx],
+        author: { connect: { id: createdIds.users[r.userKey] } },
+        square: { connect: { id: createdIds.squares[r.squareIdx] } },
         rating: r.rating,
         comment: r.comment,
       },
@@ -749,8 +829,8 @@ async function seedReviews() {
   for (const r of SERVICE_REVIEWS) {
     await prisma.review.create({
       data: {
-        authorId: createdIds.users[r.userKey],
-        serviceId: createdIds.services[r.serviceIdx],
+        author: { connect: { id: createdIds.users[r.userKey] } },
+        service: { connect: { id: createdIds.services[r.serviceIdx] } },
         rating: r.rating,
         comment: r.comment,
       },
@@ -760,8 +840,8 @@ async function seedReviews() {
   for (const r of EVENT_REVIEWS) {
     await prisma.review.create({
       data: {
-        authorId: createdIds.users[r.userKey],
-        eventId: createdIds.publishedEvents[r.eventIdx],
+        author: { connect: { id: createdIds.users[r.userKey] } },
+        event: { connect: { id: createdIds.publishedEvents[r.eventIdx] } },
         rating: r.rating,
         comment: r.comment,
       },
@@ -788,7 +868,7 @@ async function seedRatingStats() {
     if (!reviews.length) continue;
     await prisma.ratingStats.create({
       data: {
-        squareId,
+        square: { connect: { id: squareId } },
         ...compute(reviews.map((r) => r.rating)),
         updatedAt: new Date(),
       },
@@ -800,7 +880,7 @@ async function seedRatingStats() {
     if (!reviews.length) continue;
     await prisma.ratingStats.create({
       data: {
-        serviceId,
+        service: { connect: { id: serviceId } },
         ...compute(reviews.map((r) => r.rating)),
         updatedAt: new Date(),
       },
@@ -814,7 +894,7 @@ async function seedRatingStats() {
 async function up() {
   await seedCategories();
   await seedVolunteerSkills();
-  await seedSquareCharecteristics();
+  await seedSquareCharacteristics();
   await seedUsers();
   await seedSquares();
   await seedEvents();
@@ -825,7 +905,6 @@ async function up() {
   await seedEventServices();
   await seedVolunteers();
   await seedReviews();
-  await seedRatingStats();
   console.log('✅ Done');
 }
 
