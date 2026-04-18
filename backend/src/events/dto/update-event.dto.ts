@@ -40,7 +40,7 @@ export class UpdateEventDto {
   @ApiPropertyOptional()
   @IsOptional()
   @IsString()
-  eventType?: string;
+  categoryId?: string;
 
   @ApiPropertyOptional()
   @IsOptional()

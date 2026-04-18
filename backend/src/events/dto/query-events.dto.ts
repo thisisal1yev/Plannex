@@ -18,7 +18,7 @@ export class QueryEventsDto extends PaginationDto {
   @ApiPropertyOptional()
   @IsOptional()
   @IsString()
-  eventType?: string;
+  categoryId?: string;
 
   @ApiPropertyOptional()
   @IsOptional()

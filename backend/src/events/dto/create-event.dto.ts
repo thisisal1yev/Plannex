@@ -56,9 +56,9 @@ export class CreateEventDto {
   @IsDateString()
   endDate: string;
 
-  @ApiProperty({ example: 'Conference' })
+  @ApiProperty({ example: 'uuid-of-the-category' })
   @IsString()
-  eventType: string;
+  categoryId: string;
 
   @ApiProperty({ example: 300 })
   @IsInt()
