@@ -247,8 +247,8 @@ export function EventServicesPage() {
               </div>
 
               {/* Status badge */}
-              <Badge color={BOOKING_STATUS_COLOR[es.status] ?? 'gray'}>
-                {STATUS_LABELS[es.status] ?? es.status}
+              <Badge color={BOOKING_STATUS_COLOR[es.status ?? 'PENDING'] ?? 'gray'}>
+                {STATUS_LABELS[es.status ?? ''] ?? es.status}
               </Badge>
 
               {/* Action buttons (visible on hover) */}

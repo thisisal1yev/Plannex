@@ -41,9 +41,9 @@ export function ServiceCard({
   index = 0,
 }: ServiceCardProps) {
   const fadeDelay = `svc-d${(index % 12) + 1}`;
-  const glyph = CATEGORY_GLYPH[service.category] ?? "✦";
-  const catBg = CATEGORY_BG[service.category] ?? "from-[#0f1925] to-[#080f19]";
-  const label = CATEGORY_LABEL[service.category] ?? service.category;
+  const glyph = CATEGORY_GLYPH[service.category?.name ?? ''] ?? "✦";
+  const catBg = CATEGORY_BG[service.category?.name ?? ''] ?? "from-[#0f1925] to-[#080f19]";
+  const label = CATEGORY_LABEL[service.category?.name ?? ''] ?? service.category?.name;
 
   return (
     <Link
