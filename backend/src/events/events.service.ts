@@ -45,7 +45,7 @@ export class EventsService {
     const where: Prisma.EventWhereInput = {};
 
     if (query.status) where.status = query.status;
-    if (query.eventType) where.eventType = query.eventType;
+    if (query.categoryId) where.categoryId = query.categoryId;
     if (query.city) where.square = { city: query.city };
     if (query.organizerId) where.organizerId = query.organizerId;
     if (query.title) where.title = { contains: query.title, mode: 'insensitive' };
@@ -66,6 +66,7 @@ export class EventsService {
           organizer: { select: { id: true, firstName: true, lastName: true } },
           square: { select: { id: true, name: true, city: true } },
           ticketTiers: true,
+          category: { select: { id: true, name: true } },
         },
       }),
       this.prisma.event.count({ where }),
@@ -89,6 +90,7 @@ export class EventsService {
         },
         square: true,
         ticketTiers: true,
+        category: { select: { id: true, name: true } },
         eventServices: { include: { service: true } },
       },
     });
