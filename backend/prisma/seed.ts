@@ -17,6 +17,7 @@ import {
   SQUARES,
   SQUARE_CATEGORIES,
   SERVICE_CATEGORIES,
+  EVENT_CATEGORIES,
   PUBLISHED_EVENTS,
   DRAFT_EVENTS,
   COMPLETED_EVENTS,
@@ -37,6 +38,7 @@ const createdIds = {
   users: {} as Record<string, string>,
   squareCategories: {} as Record<string, string>,
   serviceCategories: {} as Record<string, string>,
+  eventCategories: {} as Record<string, string>,
   volunteerSkills: {} as Record<string, string>,
   squareCharacteristics: {} as Record<string, string>,
 
@@ -64,6 +66,11 @@ async function seedCategories() {
   for (const name of SERVICE_CATEGORIES) {
     const c = await prisma.serviceCategory.create({ data: { name } });
     createdIds.serviceCategories[name] = c.id;
+  }
+
+  for (const name of EVENT_CATEGORIES) {
+    const c = await prisma.eventCategory.create({ data: { name } });
+    createdIds.eventCategories[name] = c.id;
   }
 
   console.log('✅ Categories seeded');
@@ -151,12 +158,12 @@ async function seedEvents() {
         description: e.description,
         startDate: e.startDate,
         endDate: e.endDate,
-        eventType: e.eventType,
+        category: { connect: { id: createdIds.eventCategories[e.categoryName] } },
         capacity: e.capacity,
         bannerUrl: e.bannerUrl,
         status: EventStatus.PUBLISHED,
         organizer: { connect: { id: createdIds.users[e.organizerKey] } },
-        square: { connect: { id: createdIds.squares[e.squareIndex] } },
+        square: { connect: { id: createdIds.squares[e.squareIndex!] } },
       },
     });
     createdIds.publishedEvents.push(created.id);
@@ -169,12 +176,12 @@ async function seedEvents() {
         description: e.description,
         startDate: e.startDate,
         endDate: e.endDate,
-        eventType: e.eventType,
+        category: { connect: { id: createdIds.eventCategories[e.categoryName] } },
         capacity: e.capacity,
         bannerUrl: e.bannerUrl,
         status: EventStatus.COMPLETED,
         organizer: { connect: { id: createdIds.users[e.organizerKey] } },
-        square: { connect: { id: createdIds.squares[e.squareIndex] } },
+        square: { connect: { id: createdIds.squares[e.squareIndex!] } },
       },
     });
     createdIds.completedEvents.push(created.id);
@@ -187,7 +194,7 @@ async function seedEvents() {
         description: e.description,
         startDate: e.startDate,
         endDate: e.endDate,
-        eventType: e.eventType,
+        category: { connect: { id: createdIds.eventCategories[e.categoryName] } },
         capacity: e.capacity,
         bannerUrl: e.bannerUrl,
         status: EventStatus.DRAFT,
@@ -203,7 +210,7 @@ async function seedEvents() {
         description: e.description,
         startDate: e.startDate,
         endDate: e.endDate,
-        eventType: e.eventType,
+        category: { connect: { id: createdIds.eventCategories[e.categoryName] } },
         capacity: e.capacity,
         bannerUrl: e.bannerUrl,
         status: EventStatus.CANCELLED,
@@ -926,6 +933,7 @@ async function down() {
       "Ticket",
       "TicketTier",
       "Event",
+      "EventCategory",
       "Square",
       "Service",
       "SquareCategory",
