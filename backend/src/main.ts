@@ -12,7 +12,7 @@ async function bootstrap() {
 
   // CORS
   const configService = app.get(ConfigService);
-  const corsOrigin = configService.get<string>('CORS_FRONTEND_URL', 'http://localhost:5173');
+  const corsOrigin = configService.get<string>('CORS_URL', 'http://localhost:5173');
   
   app.enableCors({
     origin: corsOrigin, 
