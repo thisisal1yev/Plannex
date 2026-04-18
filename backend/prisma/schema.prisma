@@ -60,18 +60,20 @@ enum BadgeStatus {
 }
 
 model User {
-  id           String   @id @default(uuid())
-  email        String   @unique
-  phone        String?  @unique
+  id           String    @id @default(uuid())
+  email        String    @unique
+  phone        String?   @unique
   passwordHash String
   firstName    String
   lastName     String
-  role         Role     @default(PARTICIPANT)
+  role         Role      @default(PARTICIPANT)
   avatarUrl    String?
-  isVerified   Boolean  @default(false)
+  isVerified   Boolean   @default(false)
+  isActive     Boolean   @default(true)
+  deletedAt    DateTime?
   refreshToken String?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
 
   events        Event[]
   tickets       Ticket[]
@@ -86,7 +88,7 @@ model User {
 model Event {
   id          String      @id @default(uuid())
   organizerId String
-  organizer   User        @relation(fields: [organizerId], references: [id])
+  organizer   User        @relation(fields: [organizerId], references: [id], onDelete: Restrict)
   title       String
   description String?
   bannerUrl   String[]
@@ -105,6 +107,14 @@ model Event {
   eventServices EventService[]
   reviews       Review[]
   volunteers    Volunteer[]
+
+  @@index([status, startDate])
+  // Фильтр по типу: WHERE status='PUBLISHED' AND eventType=? ORDER BY startDate
+  @@index([status, eventType, startDate])
+  // Мои события организатора: WHERE organizerId=? ORDER BY createdAt DESC
+  @@index([organizerId, createdAt(sort: Desc)])
+  // FK на square — для "события в этой площадке"
+  @@index([squareId])
 }
 
 model TicketTier {
@@ -115,6 +125,7 @@ model TicketTier {
   price     Decimal  @db.Decimal(12, 2)
   quantity  Int
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   tickets Ticket[]
 }
@@ -122,16 +133,24 @@ model TicketTier {
 model Ticket {
   id        String     @id @default(uuid())
   userId    String
-  user      User       @relation(fields: [userId], references: [id])
+  user      User       @relation(fields: [userId], references: [id], onDelete: Restrict)
   eventId   String
   event     Event      @relation(fields: [eventId], references: [id])
   tierId    String
   tier      TicketTier @relation(fields: [tierId], references: [id])
+  pricePaid Decimal    @db.Decimal(12, 2)
   qrCode    String     @unique
   isUsed    Boolean    @default(false)
+  usedAt    DateTime?
   createdAt DateTime   @default(now())
 
   payment Payment?
+
+  @@index([userId, createdAt(sort: Desc)])
+  // Активные билеты: WHERE userId=? AND isUsed=false
+  @@index([userId, isUsed])
+  // Аналитика продаж по событию
+  @@index([eventId, tierId])
 }
 
 model SquareCategory {
@@ -151,33 +170,40 @@ model SquareCharacteristics {
 }
 
 model Square {
-  id              String                  @id @default(uuid())
-  ownerId         String
-  owner           User                    @relation("SquareOwner", fields: [ownerId], references: [id])
+  id      String @id @default(uuid())
+  ownerId String
+  owner   User   @relation("SquareOwner", fields: [ownerId], references: [id], onDelete: Restrict)
 
-  categoryId      String
-  category        SquareCategory          @relation(fields: [categoryId], references: [id])
+  categoryId String
+  category   SquareCategory @relation(fields: [categoryId], references: [id])
 
-  name            String
-  description     String?
-  address         String
-  city            String
-  latitude        Float?
-  longitude       Float?
-  capacity        Int
+  name        String
+  description String?
+  address     String
+  city        String
+  latitude    Float?
+  longitude   Float?
+  capacity    Int
 
   characteristics SquareCharacteristics[]
 
-  pricePerDay     Decimal                 @db.Decimal(12, 2)
-  imageUrls       String[]
-  createdAt       DateTime                @default(now())
+  pricePerDay Decimal  @db.Decimal(12, 2)
+  imageUrls   String[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
-  events          Event[]
-  bookings        Booking[]
-  reviews         Review[]
-  ratingStats     RatingStats?
-  boosts          Boost[]
-  badges          SquareBadge[]
+  events      Event[]
+  bookings    Booking[]
+  reviews     Review[]
+  ratingStats RatingStats?
+  boosts      Boost[]
+  badges      SquareBadge[]
+
+  @@index([city, categoryId])
+  @@index([city, capacity]) // фильтр по вместимости
+  @@index([city, pricePerDay]) // фильтр по цене/сортировка
+  // Мои площадки вендора
+  @@index([ownerId])
 }
 
 model ServiceCategory {
@@ -191,7 +217,7 @@ model ServiceCategory {
 model Service {
   id          String          @id @default(uuid())
   vendorId    String
-  vendor      User            @relation("ServiceVendor", fields: [vendorId], references: [id])
+  vendor      User            @relation("ServiceVendor", fields: [vendorId], references: [id], onDelete: Restrict)
   categoryId  String
   category    ServiceCategory @relation(fields: [categoryId], references: [id])
   name        String
@@ -200,12 +226,17 @@ model Service {
   imageUrls   String[]
   city        String
   createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
 
   eventServices EventService[]
   reviews       Review[]
   ratingStats   RatingStats?
   boosts        Boost[]
   badges        ServiceBadge[]
+
+  @@index([city, categoryId])
+  @@index([city, priceFrom])
+  @@index([vendorId])
 }
 
 model EventService {
@@ -217,6 +248,7 @@ model EventService {
   agreedPrice Decimal       @db.Decimal(12, 2)
   status      BookingStatus @default(PENDING)
   createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
 
   booking Booking?
 
@@ -226,7 +258,7 @@ model EventService {
 model Booking {
   id             String        @id @default(uuid())
   userId         String
-  user           User          @relation(fields: [userId], references: [id])
+  user           User          @relation(fields: [userId], references: [id], onDelete: Restrict)
   squareId       String?
   square         Square?       @relation(fields: [squareId], references: [id])
   eventServiceId String?       @unique
@@ -236,14 +268,20 @@ model Booking {
   status         BookingStatus @default(PENDING)
   totalCost      Decimal       @db.Decimal(12, 2)
   createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
 
   payment Payment?
+
+  @@index([userId, status, createdAt(sort: Desc)])
+  // КРИТИЧЕСКИЙ: проверка доступности площадки
+  // WHERE squareId=? AND status='CONFIRMED' AND (startDate, endDate) overlaps (?, ?)
+  @@index([squareId, status, startDate, endDate])
 }
 
 model Payment {
   id           String          @id @default(uuid())
   userId       String
-  user         User            @relation(fields: [userId], references: [id])
+  user         User            @relation(fields: [userId], references: [id], onDelete: Restrict)
   type         PaymentType
   ticketId     String?         @unique
   ticket       Ticket?         @relation(fields: [ticketId], references: [id])
@@ -255,8 +293,12 @@ model Payment {
   providerTxId String?
   status       PaymentStatus   @default(PENDING)
   createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+  boost        Boost?
 
-  boost Boost?
+  @@index([userId, createdAt(sort: Desc)])
+  // Админка: реконсиляция по статусам
+  @@index([status, createdAt])
 }
 
 model Boost {
@@ -270,6 +312,7 @@ model Boost {
   startTime DateTime
   endTime   DateTime
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Badge {
@@ -277,6 +320,7 @@ model Badge {
   name        String   @unique
   description String?
   createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   squareBadges  SquareBadge[]
   serviceBadges ServiceBadge[]
@@ -290,6 +334,7 @@ model SquareBadge {
   badge     Badge       @relation(fields: [badgeId], references: [id])
   status    BadgeStatus @default(PENDING)
   createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
 
   @@unique([squareId, badgeId])
 }
@@ -302,6 +347,7 @@ model ServiceBadge {
   badge     Badge       @relation(fields: [badgeId], references: [id])
   status    BadgeStatus @default(PENDING)
   createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
 
   @@unique([serviceId, badgeId])
 }
@@ -325,7 +371,7 @@ model RatingStats {
 model Review {
   id        String   @id @default(uuid())
   authorId  String
-  author    User     @relation(fields: [authorId], references: [id])
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Restrict)
   eventId   String?
   event     Event?   @relation(fields: [eventId], references: [id])
   squareId  String?
@@ -335,10 +381,11 @@ model Review {
   rating    Int
   comment   String?
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  @@unique([authorId, eventId])
-  @@unique([authorId, squareId])
-  @@unique([authorId, serviceId])
+  @@index([squareId, createdAt(sort: Desc)])
+  @@index([serviceId, createdAt(sort: Desc)])
+  @@index([eventId, createdAt(sort: Desc)])
 }
 
 model VolunteerSkills {
@@ -352,13 +399,16 @@ model VolunteerSkills {
 model Volunteer {
   id        String                 @id @default(uuid())
   userId    String
-  user      User                   @relation(fields: [userId], references: [id])
+  user      User                   @relation(fields: [userId], references: [id], onDelete: Restrict)
   eventId   String
   event     Event                  @relation(fields: [eventId], references: [id])
   skillId   String
   skill     VolunteerSkills        @relation(fields: [skillId], references: [id])
   status    VolunteerRequestStatus @default(PENDING)
   createdAt DateTime               @default(now())
+  updatedAt DateTime               @updatedAt
 
   @@unique([userId, eventId])
+  @@index([userId, status])
+  @@index([eventId, status])
 }
