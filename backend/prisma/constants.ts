@@ -15,6 +15,16 @@ export const SERVICE_CATEGORIES = [
   'Xavfsizlik',
 ];
 
+// ─── Event Categories ─────────────────────────────────────────────────────────
+export const EVENT_CATEGORIES = [
+  'Konferensiya',
+  'Mitap',
+  'Festival',
+  'Trening',
+  "Ko'rgazma",
+  'Kecha',
+];
+
 // ─── Volunteer Skills ─────────────────────────────────────────────────────────
 export const VOLUNTEER_SKILLS = [
   'registration',
@@ -47,8 +57,8 @@ export const SQUARE_CHARACTERISTICS = [
   'Yopiq zal',
   'Ochiq maydon',
   'Sahna',
-  'Ovoz dinamikalari'
-]
+  'Ovoz dinamikalari',
+];
 
 // ─── Users ───────────────────────────────────────────────────────────────────
 export const USERS = [
@@ -259,7 +269,7 @@ export const PUBLISHED_EVENTS = [
       'Toshkentda sanoat yetakchilarining ishtirokidagi yillik marketing konferensiyasi.',
     startDate: new Date('2026-05-20T10:00:00Z'),
     endDate: new Date('2026-05-20T18:00:00Z'),
-    eventType: 'Konferensiya',
+    categoryName: 'Konferensiya',
     capacity: 300,
     bannerUrl: [
       'https://images.unsplash.com/photo-1505373877841-8d25f7d46678?w=1400&auto=format&fit=crop&q=80',
@@ -274,7 +284,7 @@ export const PUBLISHED_EVENTS = [
       'Texnologiya tadbirkorlari va investorlar uchun networking uchrashuvi.',
     startDate: new Date('2026-06-15T18:00:00Z'),
     endDate: new Date('2026-06-15T22:00:00Z'),
-    eventType: 'Mitap',
+    categoryName: 'Mitap',
     capacity: 100,
     bannerUrl: [
       'https://images.unsplash.com/photo-1591115765373-5207764f72e7?w=1400&auto=format&fit=crop&q=80',
@@ -289,7 +299,7 @@ export const PUBLISHED_EVENTS = [
       "Ochiq havoda o'tkaziladigan yillik jazz festivali. 15 ta guruh, uch sahna.",
     startDate: new Date('2026-07-10T17:00:00Z'),
     endDate: new Date('2026-07-12T23:00:00Z'),
-    eventType: 'Festival',
+    categoryName: 'Festival',
     capacity: 500,
     bannerUrl: [
       'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=1400&auto=format&fit=crop&q=80',
@@ -304,7 +314,7 @@ export const PUBLISHED_EVENTS = [
       "Mahsulot dizayni bo'yicha ikki kunlik amaliy workshop. Figma, prototiplash.",
     startDate: new Date('2026-04-25T09:00:00Z'),
     endDate: new Date('2026-04-26T18:00:00Z'),
-    eventType: 'Trening',
+    categoryName: 'Trening',
     capacity: 50,
     bannerUrl: [
       'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=1400&auto=format&fit=crop&q=80',
@@ -319,7 +329,7 @@ export const PUBLISHED_EVENTS = [
       "Markaziy Osiyo mamlakatlaridan 30 ta rassomning guruh ko'rgazmasi.",
     startDate: new Date('2026-05-01T10:00:00Z'),
     endDate: new Date('2026-05-15T20:00:00Z'),
-    eventType: "Ko'rgazma",
+    categoryName: "Ko'rgazma",
     capacity: 200,
     bannerUrl: [
       'https://images.unsplash.com/photo-1518998053901-5348d3961a04?w=1400&auto=format&fit=crop&q=80',
@@ -338,7 +348,7 @@ export const DRAFT_EVENTS = [
       "Sun'iy intellekt va ma'lumotlar tahlili bo'yicha xalqaro konferensiya.",
     startDate: new Date('2026-09-10T09:00:00Z'),
     endDate: new Date('2026-09-11T18:00:00Z'),
-    eventType: 'Konferensiya',
+    categoryName: 'Konferensiya',
     capacity: 400,
     bannerUrl: [
       'https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=1400&auto=format&fit=crop&q=80',
@@ -352,7 +362,7 @@ export const DRAFT_EVENTS = [
       "20 ta jamoa o'z mahsulotlari va biznes-modellarini investorlar oldida taqdim etadi.",
     startDate: new Date('2026-08-05T10:00:00Z'),
     endDate: new Date('2026-08-05T19:00:00Z'),
-    eventType: 'Mitap',
+    categoryName: 'Mitap',
     capacity: 150,
     bannerUrl: [
       'https://images.unsplash.com/photo-1556761175-4b46a572b786?w=1400&auto=format&fit=crop&q=80',
@@ -370,7 +380,7 @@ export const COMPLETED_EVENTS = [
       'Toshkent IT-hamjamiyatining bayram kechasi. DJ set va networking.',
     startDate: new Date('2025-12-27T20:00:00Z'),
     endDate: new Date('2025-12-28T03:00:00Z'),
-    eventType: 'Kecha',
+    categoryName: 'Kecha',
     capacity: 200,
     bannerUrl: [
       'https://images.unsplash.com/photo-1467810563316-b5476525c0f9?w=1400&auto=format&fit=crop&q=80',
@@ -385,7 +395,7 @@ export const COMPLETED_EVENTS = [
       'Markaziy Osiyo milliy oshxonalarining gastro-yarmarkasi. 50 ta restoran.',
     startDate: new Date('2026-01-15T11:00:00Z'),
     endDate: new Date('2026-01-17T21:00:00Z'),
-    eventType: 'Festival',
+    categoryName: 'Festival',
     capacity: 800,
     bannerUrl: [
       'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=1400&auto=format&fit=crop&q=80',
@@ -404,7 +414,7 @@ export const CANCELLED_EVENTS = [
       'Qishki musiqa festivali — ob-havo sharoiti tufayli bekor qilindi.',
     startDate: new Date('2026-02-10T17:00:00Z'),
     endDate: new Date('2026-02-10T23:00:00Z'),
-    eventType: 'Festival',
+    categoryName: 'Festival',
     capacity: 300,
     bannerUrl: [
       'https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=1400&auto=format&fit=crop&q=80',
@@ -543,65 +553,63 @@ export const SQUARE_REVIEWS = [
     squareIdx: 0,
     rating: 5,
     comment:
-      'Otlichnaya ploshchadka v centre goroda, vse oborudovanie rabotaet idealno.',
+      'Shahar markazidagi ajoyib maydon, barcha jihozlar mukammal ishlaydi.',
   },
   {
     userKey: 'participant2@planner.ai',
     squareIdx: 0,
     rating: 4,
     comment:
-      'Xoroshee mesto, personal professionalnyy. Nebolshie problemy s parkovkoy.',
+      'Yaxshi joy, xodimlar professional. Avtomobil turar joyi bilan kichik muammolar bor.',
   },
   {
     userKey: 'participant3@planner.ai',
     squareIdx: 1,
     rating: 5,
-    comment:
-      'Nezabyvaemaya atmosfera Samarkanda. Luchshaya otkrytaya ploshchadka.',
+    comment: 'Samarqandning unutilmas muhiti. Eng yaxshi ochiq maydon.',
   },
   {
     userKey: 'participant4@planner.ai',
     squareIdx: 2,
     rating: 4,
-    comment: 'Uyutnyy konferens-zal, xoroshaya akustika i stabilnyy Wi-Fi.',
+    comment: 'Qulay konferens-zal, akustika yaxshi va Wi-Fi barqaror ishlaydi.',
   },
   {
     userKey: 'participant5@planner.ai',
     squareIdx: 3,
     rating: 5,
-    comment: 'Dvorets — eto chto-to neveroyatnoe. Gosti v vostorge.',
+    comment: 'Saroy — bu haqiqatan ham ajoyib joy. Mehmonlar hayratda qoldi.',
   },
   {
     userKey: 'participant@planner.ai',
     squareIdx: 4,
     rating: 4,
-    comment: 'Prostornyy vystavochnyy tsentr, udobnaya logistika.',
+    comment: "Keng ko'rgazma markazi, logistika qulay tashkil etilgan.",
   },
   {
     userKey: 'participant2@planner.ai',
     squareIdx: 1,
     rating: 4,
-    comment: 'Krasivyy vid na Registan, no vecherom nemnogo proxladno.',
+    comment: "Registonga chiroyli ko'rinish, lekin kechqurun biroz sovuq.",
   },
   {
     userKey: 'participant5@planner.ai',
     squareIdx: 0,
     rating: 5,
-    comment: 'Zal prevzoshel ozhidaniya. Zvuk i svet na vysshem urovne.',
+    comment:
+      "Zal kutilganidan ham yaxshi chiqdi. Ovoz va yorug'lik eng yuqori darajada.",
   },
   {
     userKey: 'participant@planner.ai',
     squareIdx: 2,
     rating: 5,
-    comment:
-      'Kamernaya atmosfera Bukhary idealno podoshla dlya nashey konferentsii.',
+    comment: 'Buxoroning kamtar muhiti konferensiyamiz uchun juda mos keldi.',
   },
   {
     userKey: 'participant3@planner.ai',
     squareIdx: 3,
     rating: 4,
-    comment:
-      'Roskoshnyy zal, no tsena kusaetsya. Dlya osobogo sluchaya — stoit.',
+    comment: 'Hashamatli zal, lekin narxi qimmat. Maxsus tadbir uchun arziydi.',
   },
 ];
 
@@ -611,64 +619,65 @@ export const SERVICE_REVIEWS = [
     userKey: 'participant@planner.ai',
     serviceIdx: 0,
     rating: 5,
-    comment: 'Keytering na vysshem urovne! Eda byla voskhititelnoy.',
+    comment: 'Katering eng yuqori darajada! Taomlar juda mazali edi.',
   },
   {
     userKey: 'participant2@planner.ai',
     serviceIdx: 1,
     rating: 4,
-    comment: 'Otlichnoe zvukovoe oborudovanie, texnik byl vsegda ryadom.',
+    comment: 'Ovoz jihozlari ajoyib, texnik doimo yonimizda edi.',
   },
   {
     userKey: 'participant3@planner.ai',
     serviceIdx: 2,
     rating: 5,
-    comment: 'Fotografy rabotali nezametno, a rezultat prevzoshel ozhidaniya.',
+    comment:
+      'Fotograflar sezdirmay ishlashdi, natija esa kutilganidan ham yaxshi.',
   },
   {
     userKey: 'participant4@planner.ai',
     serviceIdx: 3,
     rating: 5,
-    comment:
-      'Dekor byl stilnym i elegantnym, tochno v ramkax nashey kontseptsii.',
+    comment: "Dekor zamonaviy va nafis edi, konsepsiyamizga to'liq mos keldi.",
   },
   {
     userKey: 'participant5@planner.ai',
     serviceIdx: 4,
     rating: 3,
-    comment: 'Oxrana vyglyadela professionalno, no reagirovala medlenno.',
+    comment:
+      "Qo'riqchilar professional ko'rinardi, lekin sekin javob berishdi.",
   },
   {
     userKey: 'participant@planner.ai',
     serviceIdx: 5,
     rating: 5,
     comment:
-      'Samsiboy i plov byli prosto velikolepny. Gosti byli v shoke ot kachestva!',
+      "Somsa va palov juda mazali bo'ldi. Mehmonlar sifatdan hayratda qoldi!",
   },
   {
     userKey: 'participant2@planner.ai',
     serviceIdx: 0,
     rating: 5,
     comment:
-      'Banket proshel bezuprechno. Menyu raznoobraznoe, podacha kak v restorane.',
+      "Banket benuqson o'tdi. Menyu xilma-xil, taqdimot restoran darajasida.",
   },
   {
     userKey: 'participant4@planner.ai',
     serviceIdx: 2,
     rating: 4,
-    comment: 'Fotografii poluchilis zhivymi. Dron-semka — otdelnyy plyus!',
+    comment: 'Suratlar jonli chiqdi. Dron suratga olish alohida plyus!',
   },
   {
     userKey: 'participant3@planner.ai',
     serviceIdx: 3,
     rating: 5,
-    comment: 'Tsvetochnye arki — imenno to, chto my xoteli. Spasibo komande!',
+    comment: "Gul arklar — aynan biz xohlagandek bo'ldi. Jamoaga rahmat!",
   },
   {
     userKey: 'participant5@planner.ai',
     serviceIdx: 1,
     rating: 5,
-    comment: 'Zvuk byl chistym dazhe pri polnoy zapolnennosti zala.',
+    comment: "Zal to'liq to'lganda ham ovoz toza va aniq eshitildi.",
   },
 ];
 
@@ -678,48 +687,51 @@ export const EVENT_REVIEWS = [
     userKey: 'participant@planner.ai',
     eventIdx: 0,
     rating: 5,
-    comment: 'Luchshaya marketingovaya konferentsiya. Spikery — top-urovnya.',
+    comment: 'Eng yaxshi marketing konferensiyasi. Spikerlar top darajada.',
   },
   {
     userKey: 'participant2@planner.ai',
     eventIdx: 0,
     rating: 4,
-    comment: 'Ochen informativno, poleznye kontakty. Budu uchastvovat snova.',
+    comment: "Juda ma'lumotli, foydali aloqalar. Yana qatnashaman.",
   },
   {
     userKey: 'participant3@planner.ai',
     eventIdx: 1,
     rating: 5,
-    comment: 'Mitap organizovan na otlichno: pitch-sessii zhivye.',
+    comment:
+      "Mitap a'lo darajada tashkil etilgan: pitch-sessiyalar jonli o'tdi.",
   },
   {
     userKey: 'participant4@planner.ai',
     eventIdx: 2,
     rating: 5,
-    comment: 'Nezabyvayemyy festival! Tri dnya dzhaza, food-zona i art.',
+    comment: 'Unutilmas festival! Uch kunlik jaz, food-zona va art.',
   },
   {
     userKey: 'participant5@planner.ai',
     eventIdx: 3,
     rating: 4,
-    comment: 'Vorkshop dal realnye navyki. Keysy aktualnye.',
+    comment: "Vorkshop amaliy ko'nikmalar berdi. Keyslar dolzarb.",
   },
   {
     userKey: 'participant3@planner.ai',
     eventIdx: 4,
     rating: 5,
-    comment: 'Vystavka vpechatlyaet — raboty khudozhnikov iz raznyx stran.',
+    comment: "Ko'rgazma ta'sirli — turli mamlakatlardan rassomlar asarlari.",
   },
   {
     userKey: 'participant5@planner.ai',
     eventIdx: 0,
     rating: 5,
-    comment: 'Networking-sessiya stoila vsego bileta! Nashel dvux klientov.',
+    comment:
+      'Networking sessiyasi butun bilet narxiga arzidi! Ikkita mijoz topdim.',
   },
   {
     userKey: 'participant4@planner.ai',
     eventIdx: 1,
     rating: 4,
-    comment: 'Pitch-sessii poleznye, no xotelosb bolshe vremeni na Q&A.',
+    comment:
+      "Pitch-sessiyalar foydali, lekin Q&A uchun ko'proq vaqt kerak edi.",
   },
 ];
