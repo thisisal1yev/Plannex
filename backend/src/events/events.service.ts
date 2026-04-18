@@ -18,20 +18,19 @@ export class EventsService {
    * Creates a new event with optional ticket tiers (organizer only)
    */
   async create(organizerId: string, dto: CreateEventDto) {
-    const { ticketTiers, ...eventData } = dto;
+    const { ticketTiers, categoryId, startDate, endDate, ...rest } = dto;
 
-    const event = await this.prisma.event.create({
+    return this.prisma.event.create({
       data: {
-        ...eventData,
-        startDate: new Date(dto.startDate),
-        endDate: new Date(dto.endDate),
+        ...rest,
+        startDate: new Date(startDate),
+        endDate: new Date(endDate),
         organizerId,
+        category: { connect: { id: categoryId } },
         ticketTiers: ticketTiers ? { create: ticketTiers } : undefined,
       },
-      include: { ticketTiers: true, square: true },
+      include: { ticketTiers: true, square: true, category: { select: { id: true, name: true } } },
     });
-
-    return event;
   }
 
   /**
@@ -109,16 +108,14 @@ export class EventsService {
     if (event.organizerId !== userId)
       throw new ForbiddenException('Only the event owner can update it');
 
-    const data: Prisma.EventUpdateInput = {
-      ...(dto as Prisma.EventUpdateInput),
-    };
+    const data: Prisma.EventUncheckedUpdateInput = { ...dto };
     if (dto.startDate) data.startDate = new Date(dto.startDate);
     if (dto.endDate) data.endDate = new Date(dto.endDate);
 
     return this.prisma.event.update({
       where: { id: eventId },
       data,
-      include: { ticketTiers: true, square: true },
+      include: { ticketTiers: true, square: true, category: { select: { id: true, name: true } } },
     });
   }
 
