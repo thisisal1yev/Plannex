@@ -13,6 +13,7 @@ export interface CreateServiceDto {
 
 export interface UpdateServiceDto {
   name?: string
+  categoryId?: string
   description?: string
   priceFrom?: number
   city?: string
