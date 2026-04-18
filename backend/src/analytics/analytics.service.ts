@@ -46,7 +46,7 @@ export class AnalyticsService {
         this.prisma.user.count(),
         this.prisma.event.count(),
         this.prisma.event.count({ where: { status: EventStatus.DRAFT } }),
-        this.prisma.ticketPayment.aggregate({
+        this.prisma.payment.aggregate({
           where: { status: PaymentStatus.PAID },
           _sum: { amount: true },
         }),
@@ -63,8 +63,9 @@ export class AnalyticsService {
 
     const monthlyRevenue = await Promise.all(
       months.map(async ({ label, start, end }) => {
-        const agg = await this.prisma.ticketPayment.aggregate({
+        const agg = await this.prisma.payment.aggregate({
           where: {
+            type: 'TICKET',
             status: PaymentStatus.PAID,
             createdAt: { gte: start, lte: end },
           },
@@ -122,7 +123,7 @@ export class AnalyticsService {
     const soldMap = new Map(soldByTier.map((r) => [r.tierId, r._count.id]));
 
     // Revenue from ticket payments for this event
-    const revenueAgg = await this.prisma.ticketPayment.aggregate({
+    const revenueAgg = await this.prisma.payment.aggregate({
       where: { ticket: { eventId }, status: PaymentStatus.PAID },
       _sum: { amount: true, commission: true },
     });
@@ -181,8 +182,9 @@ export class AnalyticsService {
       where: { event: { organizerId: userId } },
     });
 
-    const paymentAgg = await this.prisma.ticketPayment.aggregate({
+    const paymentAgg = await this.prisma.payment.aggregate({
       where: {
+        type: 'TICKET',
         ticket: { event: { organizerId: userId } },
         status: PaymentStatus.PAID,
       },

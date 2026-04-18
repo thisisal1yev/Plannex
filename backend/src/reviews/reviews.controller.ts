@@ -28,11 +28,11 @@ export class ReviewsController {
     return this.reviewsService.create(userId, dto);
   }
 
-  @Get('venues/:id/reviews')
+  @Get('squares/:id/reviews')
   @Public()
-  @ApiOperation({ summary: 'Get reviews for a venue' })
-  getVenueReviews(@Param('id') id: string, @Query() query: QueryReviewsDto) {
-    return this.reviewsService.getVenueReviews(id, query);
+  @ApiOperation({ summary: 'Get reviews for a square' })
+  getSquareReviews(@Param('id') id: string, @Query() query: QueryReviewsDto) {
+    return this.reviewsService.getSquareReviews(id, query);
   }
 
   @Get('services/:id/reviews')

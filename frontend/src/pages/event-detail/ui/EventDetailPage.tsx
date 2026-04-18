@@ -108,8 +108,12 @@ export function EventDetailPage() {
 
   const start = formatDateTime(event.startDate)
   const end = formatDateTime(event.endDate)
-  const avgRating = event.ratingStats?.avg ?? null
-  const reviewCount = event.ratingStats?.count ?? 0
+  const reviewList = reviews?.data ?? []
+  const reviewCount = reviewList.length
+  const avgRating =
+    reviewCount > 0
+      ? reviewList.reduce((sum, r) => sum + r.rating, 0) / reviewCount
+      : null
 
   return (
     <div className="flex flex-col pb-16">
@@ -141,7 +145,7 @@ export function EventDetailPage() {
 
         {/* Back button */}
         <div className="absolute top-5 left-5 z-10">
-          <Link to="/venues">
+          <Link to="/events">
             <Button
               variant="ghost"
               size="sm"
@@ -149,7 +153,7 @@ export function EventDetailPage() {
             >
               <ArrowLeft size={24} className="transition-transform group-hover:-translate-x-0.5" />
               <span className="text-[10px] tracking-[0.15em] text-white/80 uppercase hover:text-white">
-                Barcha maydonlar
+                Barcha tadbirlar
               </span>
             </Button>
           </Link>
@@ -225,7 +229,7 @@ export function EventDetailPage() {
             <h2 className="text-muted-foreground/35 mb-5 text-[10px] font-semibold tracking-[0.22em] uppercase">
               Jadval
             </h2>
-            <div className="bg-border/30 grid grid-cols-2 gap-px overflow-hidden rounded-xl">
+            <div className="bg-border/30 grid grid-cols-3 gap-px overflow-hidden rounded-xl">
               <div className="bg-card/50 flex flex-col gap-2.5 px-6 py-5">
                 <div className="flex items-center gap-2">
                   <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-400" />
@@ -248,8 +252,44 @@ export function EventDetailPage() {
                   {end}
                 </p>
               </div>
+              <div className="bg-card/50 flex flex-col gap-2.5 px-6 py-5">
+                <div className="flex items-center gap-2">
+                  <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-blue-400" />
+                  <span className="text-muted-foreground/35 text-[10px] tracking-[0.18em] uppercase">
+                    Sig'im
+                  </span>
+                </div>
+                <p className="text-foreground/85 font-mono text-[17px] font-semibold tracking-tight">
+                  {event.capacity} o'rin
+                </p>
+              </div>
             </div>
           </section>
+
+          {/* Organizer */}
+          {event.organizer && (
+            <section>
+              <h2 className="text-muted-foreground/35 mb-4 text-[10px] font-semibold tracking-[0.22em] uppercase">
+                Tashkilotchi
+              </h2>
+              <div className="border-border/50 hover:border-gold/25 bg-card/35 relative overflow-hidden rounded-xl border transition-all duration-300">
+                <div className="from-gold/60 via-gold/25 absolute top-0 bottom-0 left-0 w-[2px] bg-linear-to-b to-transparent" />
+                <div className="flex items-center gap-4 p-5 pl-7">
+                  <div className="bg-gold/8 border-gold/12 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border">
+                    <Users className="text-gold/55 size-4" />
+                  </div>
+                  <div>
+                    <p className="text-foreground/85 text-[14px] font-semibold">
+                      {event.organizer.firstName} {event.organizer.lastName}
+                    </p>
+                    <p className="text-muted-foreground/45 mt-0.5 text-[12px]">
+                      {event.organizer.email}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </section>
+          )}
 
           {/* Venue */}
           {event.venue && (
@@ -278,6 +318,38 @@ export function EventDetailPage() {
                   </div>
                 </div>
               </Link>
+            </section>
+          )}
+
+          {/* Services */}
+          {event.eventServices && event.eventServices.length > 0 && (
+            <section>
+              <h2 className="text-muted-foreground/35 mb-4 text-[10px] font-semibold tracking-[0.22em] uppercase">
+                Xizmatlar
+              </h2>
+              <div className="flex flex-col gap-2.5">
+                {event.eventServices.map((es) => (
+                  <div
+                    key={es.id}
+                    className="border-border/50 hover:border-gold/25 bg-card/35 relative overflow-hidden rounded-xl border transition-all duration-300"
+                  >
+                    <div className="from-gold/60 via-gold/25 absolute top-0 bottom-0 left-0 w-[2px] bg-linear-to-b to-transparent" />
+                    <div className="flex items-center justify-between gap-3 p-5 pl-7">
+                      <div className="flex flex-col">
+                        <p className="text-foreground/85 text-[14px] font-semibold">
+                          {es.service?.name}
+                        </p>
+                        <p className="text-muted-foreground/45 mt-0.5 text-[12px]">
+                          {es.service?.category?.name}
+                        </p>
+                      </div>
+                      <p className="text-gold/60 text-[13px] font-semibold whitespace-nowrap">
+                        {es.agreedPrice.toLocaleString('uz-UZ')} so'm
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </section>
           )}
 

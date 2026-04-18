@@ -13,15 +13,15 @@ export class ReviewsService {
    * Automatically recalculates the target's RatingStats.
    */
   async create(authorId: string, dto: CreateReviewDto) {
-    if (!dto.venueId && !dto.serviceId && !dto.eventId)
+    if (!dto.squareId && !dto.serviceId && !dto.eventId)
       throw new BadRequestException(
-        'Provide at least one of: venueId, serviceId, eventId',
+        'Provide at least one of: squareId, serviceId, eventId',
       );
 
     const review = await this.prisma.review.create({
       data: {
         authorId,
-        venueId: dto.venueId,
+        squareId: dto.squareId,
         serviceId: dto.serviceId,
         eventId: dto.eventId,
         rating: dto.rating,
@@ -29,7 +29,7 @@ export class ReviewsService {
       },
     });
 
-    if (dto.venueId) await this.recalculateVenueRating(dto.venueId);
+    if (dto.squareId) await this.recalculateSquareRating(dto.squareId);
     if (dto.serviceId) await this.recalculateServiceRating(dto.serviceId);
 
     return review;
@@ -38,12 +38,12 @@ export class ReviewsService {
   /**
    * Returns reviews for a venue with pagination
    */
-  async getVenueReviews(venueId: string, query: QueryReviewsDto) {
+  async getSquareReviews(squareId: string, query: QueryReviewsDto) {
     const page = query.page ?? 1;
     const limit = query.limit ?? 20;
     const skip = (page - 1) * limit;
 
-    const where: Prisma.ReviewWhereInput = { venueId };
+    const where: Prisma.ReviewWhereInput = { squareId };
     if (query.minRating) where.rating = { gte: query.minRating };
 
     const [items, total] = await this.prisma.$transaction([
@@ -142,8 +142,8 @@ export class ReviewsService {
   /**
    * Recalculates RatingStats for a venue based on all its reviews
    */
-  private async recalculateVenueRating(venueId: string) {
-    const reviews = await this.prisma.review.findMany({ where: { venueId } });
+  private async recalculateSquareRating(squareId: string) {
+    const reviews = await this.prisma.review.findMany({ where: { squareId } });
     const count = reviews.length;
     if (count === 0) return;
 
@@ -159,9 +159,9 @@ export class ReviewsService {
     };
 
     await this.prisma.ratingStats.upsert({
-      where: { venueId },
+      where: { squareId },
       update: stats,
-      create: { venueId, ...stats },
+      create: { squareId, ...stats },
     });
   }
 

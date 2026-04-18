@@ -5,7 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { Prisma } from '../../generated/prisma/client';
-import { PaymentStatus } from '../../generated/prisma/enums';
+import { PaymentStatus, PaymentType } from '../../generated/prisma/enums';
 const { Decimal } = Prisma;
 import { generateQRCode, validateQRCode } from '../common/utils/qr.util';
 import { PrismaService } from '../prisma/prisma.service';
@@ -51,10 +51,11 @@ export class TicketsService {
         },
       });
 
-      const payment = await tx.ticketPayment.create({
+      const payment = await tx.payment.create({
         data: {
           userId,
           ticketId: ticket.id,
+          type: PaymentType.TICKET,
           amount,
           commission,
           provider: dto.provider,

@@ -1,155 +1,193 @@
-import { useState } from "react";
-import { useParams, Link } from "react-router";
-import { useQuery } from "@tanstack/react-query";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay, Navigation } from "swiper/modules";
-import { ArrowLeft, MapPin, ChevronLeft, ChevronRight } from "lucide-react";
-import type { Swiper as SwiperInstance } from "swiper";
+import { useState } from 'react'
+import { useParams, Link } from 'react-router'
+import { useQuery } from '@tanstack/react-query'
+import {
+  ArrowLeft,
+  MapPin,
+  Star,
+  Users,
+  ChevronLeft,
+  ChevronRight,
+} from 'lucide-react'
+import { Swiper, SwiperSlide } from 'swiper/react'
+import { Autoplay, Navigation } from 'swiper/modules'
+import type { Swiper as SwiperInstance } from 'swiper'
 
-import { servicesApi } from "@entities/service";
-import { reviewsApi } from "@entities/review";
-import { ReviewCard } from "@entities/review";
-import { CreateReviewForm } from "@features/review-create";
-import { StarRating } from "@shared/ui/StarRating";
-import { Button } from "@shared/ui/Button";
-import { Modal } from "@shared/ui/Modal";
-import { Spinner } from "@shared/ui/Spinner";
-import { useAuthStore } from "@shared/model/auth.store";
-import { serviceKeys } from "@shared/api/queryKeys";
-import { formatUZS } from "@shared/lib/dateUtils";
+import { servicesApi } from '@entities/service'
+import { reviewsApi } from '@entities/review'
+import { ReviewCard } from '@entities/review'
+import { CreateReviewForm } from '@features/review-create'
+import { StarRating } from '@shared/ui/StarRating'
+import { Modal } from '@shared/ui/Modal'
+import { useAuthStore } from '@shared/model/auth.store'
+import { serviceKeys } from '@shared/api/queryKeys'
+import { formatUZS } from '@shared/lib/dateUtils'
+import { Skeleton } from '@/shared/ui/primitives/skeleton'
+import { Separator } from '@/shared/ui/primitives/separator'
+import { CardContent, CardHeader, CardTitle, CardDescription } from '@/shared/ui/primitives/card'
+import { Button } from '@/shared/ui/primitives/button'
 
-import "swiper/swiper.css";
+import 'swiper/swiper.css'
 
-const CATEGORY_LABEL: Record<string, string> = {
-  CATERING: "Katering",
-  DECORATION: "Bezak",
-  SOUND: "Ovoz",
-  PHOTO: "Foto",
-  SECURITY: "Xavfsizlik",
-};
+function DetailSkeleton() {
+  return (
+    <div className="flex flex-col gap-0 pb-16">
+      <Skeleton className="mb-8 h-4 w-24" />
+
+      <div className="mb-8 flex flex-col gap-3">
+        <Skeleton className="h-3 w-16" />
+        <Skeleton className="h-14 w-3/4" />
+        <Skeleton className="h-14 w-1/2" />
+        <div className="mt-1 flex items-center gap-3">
+          <Skeleton className="h-4 w-24" />
+          <Skeleton className="h-4 w-px" />
+          <Skeleton className="h-4 w-16" />
+        </div>
+      </div>
+
+      <Skeleton className="h-[460px] rounded-2xl" />
+
+      <div className="mt-10 grid grid-cols-1 gap-8 lg:grid-cols-12">
+        <div className="flex flex-col gap-6 lg:col-span-7">
+          <Skeleton className="h-12 rounded-xl" />
+          <div className="border-border/20 flex flex-col gap-3 border-l pl-5">
+            <Skeleton className="h-3.5 w-full" />
+            <Skeleton className="h-3.5 w-full" />
+            <Skeleton className="h-3.5 w-2/3" />
+          </div>
+        </div>
+        <div className="lg:col-span-5">
+          <Skeleton className="h-72 rounded-xl" />
+        </div>
+      </div>
+    </div>
+  )
+}
 
 export function ServiceDetailPage() {
-  const { id } = useParams<{ id: string }>();
-  const user = useAuthStore((s) => s.user);
-  const [imgIndex, setImgIndex] = useState(0);
-  const [reviewModal, setReviewModal] = useState(false);
-  const [swiper, setSwiper] = useState<SwiperInstance | null>(null);
+  const { id } = useParams<{ id: string }>()
+  const user = useAuthStore((s) => s.user)
+  const [imgIndex, setImgIndex] = useState(0)
+  const [swiper, setSwiper] = useState<SwiperInstance | null>(null)
+  const [reviewModal, setReviewModal] = useState(false)
 
   const { data: service, isLoading } = useQuery({
     queryKey: serviceKeys.detail(id!),
     queryFn: () => servicesApi.get(id!),
     enabled: !!id,
-  });
+  })
 
   const { data: reviews } = useQuery({
     queryKey: serviceKeys.reviews(id!),
     queryFn: () => reviewsApi.forService(id!),
     enabled: !!id,
-  });
+  })
 
-  if (isLoading)
+  if (isLoading) return <DetailSkeleton />
+
+  if (!service) {
     return (
-      <div className="flex justify-center py-20">
-        <Spinner />
+      <div className="flex flex-col items-center justify-center gap-5 py-24">
+        <div className="bg-card border-border/60 flex h-16 w-16 items-center justify-center rounded-2xl border">
+          <Star className="text-muted-foreground/20 size-7" />
+        </div>
+
+        <div className="text-center">
+          <p className="text-foreground text-[15px] font-semibold">Xizmat topilmadi</p>
+          <p className="text-muted-foreground/50 mt-1 text-[13px]">
+            Bu xizmat mavjud emas yoki o'chirilgan
+          </p>
+        </div>
+
+        <Link
+          to="/services"
+          className="border-border text-muted-foreground hover:text-foreground hover:border-gold/30 flex h-8 items-center rounded-lg border px-4 text-xs transition-colors"
+        >
+          Barcha xizmatlar
+        </Link>
       </div>
-    );
-  if (!service)
-    return (
-      <div className="flex flex-col items-center py-20 gap-2">
-        <p className="lp-serif text-2xl text-muted-foreground/40">
-          Xizmat topilmadi
-        </p>
-      </div>
-    );
+    )
+  }
+
+  const avgRating = service.ratingStats?.avg ?? null
 
   return (
-    <div className="flex flex-col">
-      {/* Cinematic hero */}
-      <div className="relative w-full h-[58vh] min-h-[380px] max-h-[560px] overflow-hidden rounded-2xl">
+    <div className="flex flex-col gap-0 pb-16">
+      {/* Hero */}
+      <div className="relative h-[58vh] max-h-[560px] min-h-[380px] w-full overflow-hidden rounded-2xl">
         {service.imageUrls.length > 0 ? (
           <Swiper
             modules={[Autoplay]}
             autoplay={{ delay: 2500, disableOnInteraction: false }}
             loop
-            className="w-full h-full"
-            onSwiper={(s) => {
-              setSwiper(s);
-            }}
+            className="h-full w-full"
+            onSwiper={(s) => setSwiper(s)}
             onSlideChange={(s) => setImgIndex(s.realIndex)}
           >
             {service.imageUrls.map((img, i) => (
               <SwiperSlide key={i}>
-                <img
-                  src={img}
-                  alt={service.name}
-                  className="w-full h-full object-cover"
-                />
+                <img src={img} alt={service.name} className="h-full w-full object-cover" />
               </SwiperSlide>
             ))}
           </Swiper>
         ) : (
-          <div className="absolute inset-0 bg-linear-to-br from-navy to-navy-2 z-0" />
+          <div className="from-navy to-navy-2 absolute inset-0 z-0 bg-linear-to-br" />
         )}
 
-        {/* Gradient overlay */}
-        <div className="absolute inset-0 bg-linear-to-t from-black/85 via-black/25 to-black/10 z-10" />
+        <div className="absolute inset-0 z-10 bg-linear-to-t from-black/85 via-black/25 to-black/10" />
 
-        {/* Back button */}
         <div className="absolute top-5 left-5 z-10">
           <Link to="/services">
             <Button
               variant="ghost"
               size="sm"
-              className="text-white/80 hover:text-white hover:bg-white/10 border border-white/20 backdrop-blur-sm flex items-center gap-2 group"
+              className="group flex items-center gap-2 border border-white/20 text-white/80 backdrop-blur-sm hover:bg-white/10 hover:text-white"
             >
-              <ArrowLeft
-                size={24}
-                className="transition-transform group-hover:-translate-x-0.5"
-              />
-              <span className="text-[10px] tracking-[0.15em] uppercase text-white/80 hover:text-white">
+              <ArrowLeft size={24} className="transition-transform group-hover:-translate-x-0.5" />
+              <span className="text-[10px] tracking-[0.15em] text-white/80 uppercase hover:text-white">
                 Barcha xizmatlar
               </span>
             </Button>
           </Link>
         </div>
 
-        {/* Title overlay */}
-        <div className="absolute inset-x-0 bottom-0 px-6 pb-8 mx-auto z-10">
-          <span className="inline-flex items-center text-xs font-medium uppercase tracking-[0.18em] text-gold-light/90 mb-3 bg-black/45 backdrop-blur-sm px-3 py-1.5 rounded-full border border-gold/20">
-            {CATEGORY_LABEL[service.category]}
+        <div className="absolute inset-x-0 bottom-0 z-10 mx-auto px-6 pb-8">
+          <span className="text-gold-light/90 border-gold/20 mb-3 inline-flex items-center rounded-full border bg-black/45 px-3 py-1.5 text-xs font-medium tracking-[0.18em] uppercase backdrop-blur-sm">
+            {service.category?.name ?? '—'}
           </span>
-          <h1 className="lp-serif text-4xl md:text-5xl font-bold text-white leading-tight mb-3 max-w-2xl drop-shadow-lg">
+          <h1 className="lp-serif mb-3 max-w-2xl text-4xl leading-tight font-bold text-white drop-shadow-lg md:text-5xl">
             {service.name}
           </h1>
-          <div className="flex items-center gap-4 text-white/80 text-sm flex-wrap">
+          <div className="flex flex-wrap items-center gap-4 text-sm text-white/80">
             <div className="flex items-center gap-1.5">
-              <StarRating rating={service.ratingStats?.avg ?? 0} />
+              <StarRating rating={avgRating ?? 0} />
               <span className="text-gold-light font-medium">
-                {parseFloat((service.ratingStats?.avg ?? 0).toFixed(1))}
+                {parseFloat((avgRating ?? 0).toFixed(1))}
               </span>
             </div>
+
             <span className="text-white/25">•</span>
+
             <div className="flex items-center gap-1">
-              <MapPin className="h-3.5 w-3.5 text-gold/60" />
+              <MapPin className="text-gold/60 h-3.5 w-3.5" />
               {service.city}
             </div>
           </div>
         </div>
 
-        {/* Thumbnail strip */}
         {service.imageUrls.length > 1 && (
-          <div className="absolute bottom-6 right-6 flex gap-1.5 z-10">
+          <div className="absolute right-6 bottom-6 z-10 flex gap-1.5">
             {service.imageUrls.map((url, i) => (
               <button
                 key={i}
                 onClick={() => {
-                  swiper?.slideTo(i);
-                  setImgIndex(i);
+                  swiper?.slideTo(i)
+                  setImgIndex(i)
                 }}
-                className={`h-12 w-16 rounded-lg overflow-hidden border-2 transition-all duration-200 cursor-pointer ${
+                className={`h-12 w-16 cursor-pointer overflow-hidden rounded-lg border-2 transition-all duration-200 ${
                   i === imgIndex
-                    ? "border-gold shadow-[0_0_14px_rgba(76,140,167,0.5)]"
-                    : "border-white/20 opacity-55 hover:opacity-100"
+                    ? 'border-gold shadow-[0_0_14px_rgba(76,140,167,0.5)]'
+                    : 'border-white/20 opacity-55 hover:opacity-100'
                 }`}
               >
                 <img src={url} alt="" className="h-full w-full object-cover" />
@@ -159,165 +197,186 @@ export function ServiceDetailPage() {
         )}
       </div>
 
-       {/* ── Main layout ── */}
-       <div className="mt-10 grid grid-cols-1 lg:grid-cols-12 gap-10">
-          {/* Left: description + reviews */}
-          <div className="lg:col-span-7 flex flex-col gap-8">
-            {service.description && (
-              <div>
-                <div className="flex items-center gap-3 mb-4">
-                  <h2 className="lp-serif text-2xl font-semibold text-foreground whitespace-nowrap">
-                    Xizmat haqida
-                  </h2>
-                  
-                  <div className="flex-1 h-px bg-linear-to-r from-border to-transparent" />
+      {/* Main content */}
+      <div className="mt-10 grid grid-cols-1 gap-8 lg:grid-cols-12">
+        {/* Left column */}
+        <div className="flex flex-col gap-5 lg:col-span-7">
+          {/* Vendor block */}
+          {service.vendor && (
+            <div className="border-border/50 bg-card/35 relative overflow-hidden rounded-xl border">
+              <div className="from-gold/60 via-gold/25 absolute top-0 bottom-0 left-0 w-[2px] bg-linear-to-b to-transparent" />
+              <div className="flex items-center gap-4 p-5 pl-7">
+                <div className="bg-gold/8 border-gold/12 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border">
+                  <Users className="text-gold/55 size-4" />
                 </div>
-
-                <p className="text-muted-foreground leading-relaxed text-[15px]">
-                  {service.description}
-                </p>
+                <div>
+                  <p className="text-muted-foreground/35 text-[10px] tracking-[0.18em] uppercase">
+                    Xizmat ko'rsatuvchi
+                  </p>
+                  <p className="text-foreground/85 text-[14px] font-semibold">
+                    {service.vendor.firstName} {service.vendor.lastName}
+                  </p>
+                </div>
               </div>
-            )}
+            </div>
+          )}
 
-            {/* Reviews */}
-            <div>
-              <div className="flex items-center gap-3 mb-4">
-                <h2 className="lp-serif text-2xl font-semibold text-foreground whitespace-nowrap">
+          {/* Description */}
+          {service.description && (
+            <div className="border-gold/18 border-l pl-5">
+              <p className="text-muted-foreground/72 text-[15px] leading-[1.8]">
+                {service.description}
+              </p>
+            </div>
+          )}
+
+          {/* Reviews */}
+          <div>
+            <div className="mb-5 flex items-start justify-between">
+              <div>
+                <h2 className="text-muted-foreground/35 text-[10px] font-semibold tracking-[0.22em] uppercase">
                   Sharhlar
                 </h2>
 
-                <div className="flex-1 h-px bg-linear-to-r from-border to-transparent" />
-
-                {user && (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setReviewModal(true)}
-                    className="border-gold/40 text-gold hover:bg-gold/5 hover:border-gold/60 shrink-0"
-                  >
-                    + Sharh yozish
-                  </Button>
+                {avgRating ? (
+                  <div className="mt-2.5 flex items-center gap-2">
+                    <StarRating rating={avgRating} />
+                    <span className="text-foreground/80 text-[13px] font-semibold">
+                      {avgRating.toFixed(1)}
+                    </span>
+                    <span className="text-muted-foreground/35 text-[11px]">
+                      — {service.ratingStats?.count ?? 0} ta sharh
+                    </span>
+                  </div>
+                ) : (
+                  <p className="text-muted-foreground/30 mt-1.5 text-[11px]">Hali sharh yo'q</p>
                 )}
               </div>
 
-              {reviews?.data.length === 0 ? (
-                <div className="py-10 text-center">
-                  <p className="lp-serif text-xl text-muted-foreground/35">
-                    Hozircha sharhlar yo'q
-                  </p>
-                  <p className="text-sm text-muted-foreground/25 mt-1">
-                    Birinchi bo'ling!
-                  </p>
-                </div>
-              ) : (
-                <Swiper
-                  modules={[Autoplay, Navigation]}
-                  autoplay={{ delay: 3500 }}
-                  loop={(reviews?.data.length ?? 0) >= 2}
-                  spaceBetween={12}
-                  slidesPerView={1}
-                  navigation={(reviews?.data.length ?? 0) >= 2 ? { prevEl: ".prev", nextEl: ".next" } : false}
+              {user && (
+                <button
+                  onClick={() => setReviewModal(true)}
+                  className="border-gold/18 text-gold/60 hover:bg-gold/7 hover:text-gold hover:border-gold/35 h-8 rounded-lg border px-4 text-[10px] font-medium tracking-[0.12em] uppercase transition-all duration-200"
                 >
-                  {(reviews?.data.length ?? 0) >= 2 && (
-                    <div className="flex items-center mt-2 space-x-1">
-                      <button
-                        type="button"
-                        className="prev ml-auto w-9 h-9 rounded-full bg-card/90 backdrop-blur-sm border border-border/50 flex items-center justify-center text-foreground/60 hover:text-foreground hover:border-gold/30 hover:bg-card transition-all duration-200 shadow-sm"
-                      >
-                        <ChevronLeft className="size-5" />
-                      </button>
-
-                      <button
-                        type="button"
-                        className="next w-9 h-9 rounded-full bg-card/90 backdrop-blur-sm border border-border/50 flex items-center justify-center text-foreground/60 hover:text-foreground hover:border-gold/30 hover:bg-card transition-all duration-200 shadow-sm"
-                      >
-                        <ChevronRight className="size-5" />
-                      </button>
-                    </div>
-                  )}
-
-                  {reviews?.data.map((review) => (
-                    <SwiperSlide key={review.id} className="!w-full">
-                      <ReviewCard review={review} />
-                    </SwiperSlide>
-                  ))}
-                </Swiper>
+                  Sharh yozish
+                </button>
               )}
             </div>
-          </div>
 
-          {/* Right: pricing card */}
-          <div className="lg:col-span-5">
-            <div className="sticky top-20 bg-card rounded-2xl border border-border overflow-hidden">
-              {/* Gold top accent */}
-              <div className="h-[3px] bg-linear-to-r from-gold-dark via-gold to-gold-light" />
-
-              <div className="p-6">
-                <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground/50 mb-1">
-                  Narxdan boshlab
+            {!reviews?.data.length ? (
+              <div className="border-border/35 flex flex-col items-center justify-center gap-3 rounded-xl border border-dashed py-10">
+                <Star className="text-muted-foreground/12 size-6" />
+                <p className="text-muted-foreground/35 text-[12px] tracking-wide">
+                  Hozircha sharhlar yo'q
                 </p>
-
-                <p className="lp-serif text-3xl font-bold text-gold leading-none mb-5">
-                  {formatUZS(service.priceFrom)}
-                </p>
-
-                <div className="flex flex-col mb-6">
-                  <div className="flex justify-between items-center py-2.5 border-b border-border/50">
-                    <span className="text-sm text-muted-foreground">
-                      Turkum
-                    </span>
-
-                    <span className="text-sm font-medium text-foreground">
-                      {CATEGORY_LABEL[service.category]}
-                    </span>
-                  </div>
-                  
-                  <div className="flex justify-between items-center py-2.5 border-b border-border/50">
-                    <span className="text-sm text-muted-foreground">
-                      Shahar
-                    </span>
-
-                    <span className="text-sm font-medium text-foreground">
-                      {service.city}
-                    </span>
-                  </div>
-
-                  <div className="flex justify-between items-center py-2.5">
-                    <span className="text-sm text-muted-foreground">
-                      Reyting
-                    </span>
-
-                    <div className="flex items-center gap-1.5">
-                      <StarRating rating={service.ratingStats?.avg ?? 0} />
-
-                      <span className="text-sm font-medium text-foreground">
-                        {parseFloat((service.ratingStats?.avg ?? 0).toFixed(1))}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                {user ? (
-                  <p className="text-xs text-muted-foreground/55 text-center leading-relaxed">
-                    "Mening tadbirlarim" bo'limida tadbirga ulang
-                  </p>
-                ) : (
-                  <Link to="/login">
-                    <button className="lp-btn-gold w-full text-center">
-                      Bog'lanish uchun kiring
-                    </button>
-                  </Link>
+                {user && (
+                  <button
+                    onClick={() => setReviewModal(true)}
+                    className="text-gold/50 hover:text-gold text-[10px] tracking-[0.12em] uppercase transition-colors"
+                  >
+                    Birinchi bo'lib sharh yozing
+                  </button>
                 )}
               </div>
-            </div>
+            ) : (
+              <Swiper
+                modules={[Autoplay, Navigation]}
+                autoplay={{ delay: 3500, disableOnInteraction: false }}
+                loop={reviews.data.length >= 2}
+                spaceBetween={12}
+                slidesPerView={1}
+                navigation={reviews.data.length >= 2 ? { prevEl: '.prev', nextEl: '.next' } : false}
+              >
+                {reviews.data.length >= 2 && (
+                  <div className="mt-2 flex items-center space-x-1">
+                    <button
+                      type="button"
+                      className="prev bg-card/90 border-border/50 text-foreground/60 hover:text-foreground hover:border-gold/30 hover:bg-card ml-auto flex h-9 w-9 items-center justify-center rounded-full border shadow-sm backdrop-blur-sm transition-all duration-200"
+                    >
+                      <ChevronLeft className="size-5" />
+                    </button>
+                    <button
+                      type="button"
+                      className="next bg-card/90 border-border/50 text-foreground/60 hover:text-foreground hover:border-gold/30 hover:bg-card flex h-9 w-9 items-center justify-center rounded-full border shadow-sm backdrop-blur-sm transition-all duration-200"
+                    >
+                      <ChevronRight className="size-5" />
+                    </button>
+                  </div>
+                )}
+
+                {reviews.data.map((review) => (
+                  <SwiperSlide key={review.id} className="!w-full">
+                    <ReviewCard review={review} />
+                  </SwiperSlide>
+                ))}
+              </Swiper>
+            )}
           </div>
+        </div>
+
+        {/* Right column: booking card */}
+        <div className="lg:col-span-5">
+          <div className="bg-card top-20 overflow-hidden rounded-2xl">
+            <div className="from-gold-dark via-gold to-gold-light h-[3px] bg-linear-to-r" />
+
+            <CardHeader className="pt-5 pb-5">
+              <div className="text-gold text-[34px] leading-none font-bold tracking-tight">
+                {formatUZS(service.priceFrom)}
+              </div>
+
+              <CardTitle className="text-muted-foreground/45 mt-1.5 text-[12px] font-normal">
+                dan boshlab
+              </CardTitle>
+
+              <CardDescription className="text-muted-foreground/35 mt-0 text-[12px]">
+                {service.city} • {service.category?.name ?? '—'}
+              </CardDescription>
+            </CardHeader>
+
+            <CardContent className="flex flex-col gap-0 pt-0 pb-5">
+              <Separator className="mb-4 opacity-8" />
+
+              <div className="flex flex-col divide-y divide-white/5">
+                <div className="flex items-center justify-between py-3">
+                  <span className="text-muted-foreground/50 text-[13px]">Turkum</span>
+                  <span className="text-cream/82 text-[13px] font-semibold">
+                    {service.category?.name ?? '—'}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between py-3">
+                  <span className="text-muted-foreground/50 text-[13px]">Shahar</span>
+                  <span className="text-cream/82 text-[13px] font-semibold">{service.city}</span>
+                </div>
+                <div className="flex items-center justify-between py-3">
+                  <span className="text-muted-foreground/50 text-[13px]">Reyting</span>
+                  <div className="flex items-center gap-1.5">
+                    <StarRating rating={avgRating ?? 0} />
+                    <span className="text-cream/82 text-[13px] font-semibold">
+                      {avgRating != null ? parseFloat(avgRating.toFixed(1)) : 0}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <Separator className="my-4 opacity-8" />
+
+              {user ? (
+                <div className="bg-gold/5 border-gold/10 text-gold/55 rounded-xl border px-4 py-3.5 text-center text-[12px] leading-relaxed">
+                  "Mening tadbirlarim" bo'limida tadbirga ulang
+                </div>
+              ) : (
+                <Link to="/login" className="block">
+                  <button className="bg-gold text-background hover:bg-gold/88 h-10 w-full cursor-pointer rounded-xl text-[13px] font-semibold transition-colors">
+                    Bog'lanish uchun kiring
+                  </button>
+                </Link>
+              )}
+            </CardContent>
+          </div>
+        </div>
       </div>
 
-      <Modal
-        open={reviewModal}
-        onClose={() => setReviewModal(false)}
-        title="Sharh yozish"
-      >
+      <Modal open={reviewModal} onClose={() => setReviewModal(false)} title="Sharh yozish">
         <CreateReviewForm
           serviceId={service.id}
           queryKey={serviceKeys.reviews(id!)}
@@ -325,5 +384,5 @@ export function ServiceDetailPage() {
         />
       </Modal>
     </div>
-  );
+  )
 }

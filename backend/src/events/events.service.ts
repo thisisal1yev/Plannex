@@ -28,7 +28,7 @@ export class EventsService {
         organizerId,
         ticketTiers: ticketTiers ? { create: ticketTiers } : undefined,
       },
-      include: { ticketTiers: true, venue: true },
+      include: { ticketTiers: true, square: true },
     });
 
     return event;
@@ -46,7 +46,9 @@ export class EventsService {
 
     if (query.status) where.status = query.status;
     if (query.eventType) where.eventType = query.eventType;
-    if (query.city) where.venue = { city: query.city };
+    if (query.city) where.square = { city: query.city };
+    if (query.organizerId) where.organizerId = query.organizerId;
+    if (query.title) where.title = { contains: query.title, mode: 'insensitive' };
 
     if (query.dateFrom || query.dateTo) {
       where.startDate = {};
@@ -62,9 +64,8 @@ export class EventsService {
         orderBy: { startDate: 'asc' },
         include: {
           organizer: { select: { id: true, firstName: true, lastName: true } },
-          venue: { select: { id: true, name: true, city: true } },
+          square: { select: { id: true, name: true, city: true } },
           ticketTiers: true,
-          ratingStats: true,
         },
       }),
       this.prisma.event.count({ where }),
@@ -86,10 +87,9 @@ export class EventsService {
         organizer: {
           select: { id: true, firstName: true, lastName: true, email: true },
         },
-        venue: true,
+        square: true,
         ticketTiers: true,
-        services: { include: { service: true } },
-        ratingStats: true,
+        eventServices: { include: { service: true } },
       },
     });
 
@@ -116,7 +116,7 @@ export class EventsService {
     return this.prisma.event.update({
       where: { id: eventId },
       data,
-      include: { ticketTiers: true, venue: true },
+      include: { ticketTiers: true, square: true },
     });
   }
 

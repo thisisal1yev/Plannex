@@ -134,7 +134,7 @@ function UserMenu({ className }: { className?: string }) {
   const switchRoleMutation = useMutation({
     mutationFn: (role: Role) => usersApi.switchRole(role),
     onSuccess: (updatedUser) => {
-      const newRoleLinks = ROLE_LINKS[updatedUser.activeRole] ?? []
+      const newRoleLinks = ROLE_LINKS[updatedUser.role] ?? []
       const currentPageAllowed = newRoleLinks.some(
         (l) => pathname === l.to || pathname.startsWith(l.to + '/')
       )
@@ -201,7 +201,7 @@ function UserMenu({ className }: { className?: string }) {
             <div className="px-0.5 pt-0.5">
               <div className="flex items-center gap-1 rounded-lg bg-muted/40 p-1">
                 {ROLES.map((role) => {
-                  const isActive = user?.activeRole === role
+                  const isActive = user?.role === role
                   const label =
                     role === 'ORGANIZER'
                       ? 'Tashkilotchi'
@@ -271,7 +271,7 @@ function UserMenu({ className }: { className?: string }) {
 export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const { user, setUser } = useAuthStore()
-  const roleLinks = user ? (ROLE_LINKS[user.activeRole] ?? []) : []
+  const roleLinks = user ? (ROLE_LINKS[user.role] ?? []) : []
 
   const closeMobile = () => setMobileOpen(false)
 
@@ -356,7 +356,7 @@ export function Header() {
                 <div className="bg-border/40 my-1.5 h-px" />
                 <div className="flex items-center gap-1 rounded-lg bg-muted/40 p-1">
                   {ROLES.map((role) => {
-                    const isActive = user.activeRole === role
+                    const isActive = user.role === role
                     const label =
                       role === 'ORGANIZER'
                         ? 'Tashkilotchi'

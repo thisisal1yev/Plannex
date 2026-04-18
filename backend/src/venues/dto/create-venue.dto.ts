@@ -10,6 +10,10 @@ import {
 } from 'class-validator';
 
 export class CreateVenueDto {
+  @ApiProperty({ example: 'uuid-of-category' })
+  @IsString()
+  categoryId: string;
+
   @ApiProperty({ example: 'Tashkent City Hall' })
   @IsString()
   name: string;

@@ -83,18 +83,6 @@ export class ServicesController {
     return this.servicesService.getEventServices(eventId);
   }
 
-  @Patch('events/:eventId/services/:eventServiceId')
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
-  @ApiOperation({ summary: 'Update event service booking status (organizer)' })
-  updateEventService(
-    @Param('eventServiceId') eventServiceId: string,
-    @Body('status') status: string,
-    @CurrentUser('id') userId: string,
-  ) {
-    return this.servicesService.updateEventService(eventServiceId, status, userId);
-  }
-
   @Delete('events/:eventId/services/:eventServiceId')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()

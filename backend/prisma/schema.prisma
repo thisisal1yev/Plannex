@@ -1,7 +1,7 @@
 generator client {
+  moduleFormat = "cjs"
   provider     = "prisma-client"
   output       = "../generated/prisma"
-  moduleFormat = "cjs"
 }
 
 datasource db {
@@ -9,11 +9,11 @@ datasource db {
 }
 
 enum Role {
-  ORGANIZER
-  PARTICIPANT
   ADMIN
+  ORGANIZER
   VENDOR
   VOLUNTEER
+  PARTICIPANT
 }
 
 enum EventStatus {
@@ -30,30 +30,33 @@ enum PaymentStatus {
   REFUNDED
 }
 
+enum PaymentType {
+  TICKET
+  SQUARE
+  SERVICE
+  BOOST
+}
+
 enum BookingStatus {
   PENDING
   CONFIRMED
   CANCELLED
 }
 
-enum ServiceCategory {
-  CATERING
-  DECORATION
-  SOUND
-  PHOTO
-  SECURITY
-}
-
 enum PaymentProvider {
   CLICK
   PAYME
-  STRIPE
 }
 
-enum VolunteerStatus {
+enum VolunteerRequestStatus {
   PENDING
   ACCEPTED
   REJECTED
+}
+
+enum BadgeStatus {
+  PENDING
+  APPROVED
 }
 
 model User {
@@ -63,24 +66,21 @@ model User {
   passwordHash String
   firstName    String
   lastName     String
-  roles        Role[]   @default([PARTICIPANT])
-  activeRole   Role     @default(PARTICIPANT)
+  role         Role     @default(PARTICIPANT)
   avatarUrl    String?
   isVerified   Boolean  @default(false)
   refreshToken String?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  events          Event[]
-  tickets         Ticket[]
-  reviews         Review[]
-  volunteerApps   VolunteerApplication[]
-  ownedVenues     Venue[]              @relation("VenueOwner")
-  ownedServices   Service[]            @relation("ServiceVendor")
-  venueBookings   VenueBooking[]
-  ticketPayments  TicketPayment[]
-  venuePayments   VenueBookingPayment[]
-  servicePayments ServicePayment[]
+  events        Event[]
+  tickets       Ticket[]
+  reviews       Review[]
+  volunteers    Volunteer[]
+  ownedSquares  Square[]    @relation("SquareOwner")
+  ownedServices Service[]   @relation("ServiceVendor")
+  bookings      Booking[]
+  payments      Payment[]
 }
 
 model Event {
@@ -95,18 +95,16 @@ model Event {
   eventType   String
   capacity    Int
   status      EventStatus @default(DRAFT)
-  venueId     String?
-  venue       Venue?      @relation(fields: [venueId], references: [id])
+  squareId    String?
+  square      Square?     @relation(fields: [squareId], references: [id])
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
 
   tickets       Ticket[]
   ticketTiers   TicketTier[]
-  services      EventService[]
+  eventServices EventService[]
   reviews       Review[]
-  volunteerApps VolunteerApplication[]
-  venueBooking  VenueBooking?
-  ratingStats   RatingStats?
+  volunteers    Volunteer[]
 }
 
 model TicketTier {
@@ -133,58 +131,70 @@ model Ticket {
   isUsed    Boolean    @default(false)
   createdAt DateTime   @default(now())
 
-  payment TicketPayment?
+  payment Payment?
 }
 
-model Venue {
-  id          String   @id @default(uuid())
-  ownerId     String
-  owner       User     @relation("VenueOwner", fields: [ownerId], references: [id])
-  name        String
-  description String?
-  address     String
-  city        String
-  latitude    Float?
-  longitude   Float?
-  capacity    Int
-  pricePerDay Decimal  @db.Decimal(12, 2)
-  isIndoor    Boolean  @default(true)
-  hasWifi     Boolean  @default(false)
-  hasParking  Boolean  @default(false)
-  hasSound    Boolean  @default(false)
-  hasStage    Boolean  @default(false)
-  imageUrls   String[]
-  createdAt   DateTime @default(now())
+model SquareCategory {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  createdAt DateTime @default(now())
 
-  events      Event[]
-  bookings    VenueBooking[]
-  reviews     Review[]
-  ratingStats RatingStats?
+  squares Square[]
 }
 
-model VenueBooking {
-  id        String        @id @default(uuid())
-  venueId   String
-  venue     Venue         @relation(fields: [venueId], references: [id])
-  eventId   String        @unique
-  event     Event         @relation(fields: [eventId], references: [id])
-  userId    String
-  user      User          @relation(fields: [userId], references: [id])
-  startDate DateTime
-  endDate   DateTime
-  status    BookingStatus @default(PENDING)
-  totalCost Decimal       @db.Decimal(12, 2)
-  createdAt DateTime      @default(now())
+model SquareCharacteristics {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  createdAt DateTime @default(now())
 
-  payment VenueBookingPayment?
+  squares Square[]
+}
+
+model Square {
+  id              String                  @id @default(uuid())
+  ownerId         String
+  owner           User                    @relation("SquareOwner", fields: [ownerId], references: [id])
+
+  categoryId      String
+  category        SquareCategory          @relation(fields: [categoryId], references: [id])
+
+  name            String
+  description     String?
+  address         String
+  city            String
+  latitude        Float?
+  longitude       Float?
+  capacity        Int
+
+  characteristics SquareCharacteristics[]
+
+  pricePerDay     Decimal                 @db.Decimal(12, 2)
+  imageUrls       String[]
+  createdAt       DateTime                @default(now())
+
+  events          Event[]
+  bookings        Booking[]
+  reviews         Review[]
+  ratingStats     RatingStats?
+  boosts          Boost[]
+  badges          SquareBadge[]
+}
+
+model ServiceCategory {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  createdAt DateTime @default(now())
+
+  services Service[]
 }
 
 model Service {
   id          String          @id @default(uuid())
   vendorId    String
   vendor      User            @relation("ServiceVendor", fields: [vendorId], references: [id])
+  categoryId  String
+  category    ServiceCategory @relation(fields: [categoryId], references: [id])
   name        String
-  category    ServiceCategory
   description String?
   priceFrom   Decimal         @db.Decimal(12, 2)
   imageUrls   String[]
@@ -194,6 +204,8 @@ model Service {
   eventServices EventService[]
   reviews       Review[]
   ratingStats   RatingStats?
+  boosts        Boost[]
+  badges        ServiceBadge[]
 }
 
 model EventService {
@@ -202,69 +214,104 @@ model EventService {
   event       Event         @relation(fields: [eventId], references: [id])
   serviceId   String
   service     Service       @relation(fields: [serviceId], references: [id])
-  status      BookingStatus @default(PENDING)
   agreedPrice Decimal       @db.Decimal(12, 2)
+  status      BookingStatus @default(PENDING)
   createdAt   DateTime      @default(now())
 
-  payment ServicePayment?
+  booking Booking?
 
   @@unique([eventId, serviceId])
 }
 
-model TicketPayment {
+model Booking {
+  id             String        @id @default(uuid())
+  userId         String
+  user           User          @relation(fields: [userId], references: [id])
+  squareId       String?
+  square         Square?       @relation(fields: [squareId], references: [id])
+  eventServiceId String?       @unique
+  eventService   EventService? @relation(fields: [eventServiceId], references: [id])
+  startDate      DateTime?
+  endDate        DateTime?
+  status         BookingStatus @default(PENDING)
+  totalCost      Decimal       @db.Decimal(12, 2)
+  createdAt      DateTime      @default(now())
+
+  payment Payment?
+}
+
+model Payment {
   id           String          @id @default(uuid())
   userId       String
   user         User            @relation(fields: [userId], references: [id])
-  ticketId     String          @unique
-  ticket       Ticket          @relation(fields: [ticketId], references: [id])
+  type         PaymentType
+  ticketId     String?         @unique
+  ticket       Ticket?         @relation(fields: [ticketId], references: [id])
+  bookingId    String?         @unique
+  booking      Booking?        @relation(fields: [bookingId], references: [id])
   amount       Decimal         @db.Decimal(12, 2)
   commission   Decimal         @db.Decimal(12, 2)
   provider     PaymentProvider
   providerTxId String?
   status       PaymentStatus   @default(PENDING)
   createdAt    DateTime        @default(now())
+
+  boost Boost?
 }
 
-model VenueBookingPayment {
-  id             String          @id @default(uuid())
-  userId         String
-  user           User            @relation(fields: [userId], references: [id])
-  venueBookingId String          @unique
-  venueBooking   VenueBooking    @relation(fields: [venueBookingId], references: [id])
-  amount         Decimal         @db.Decimal(12, 2)
-  commission     Decimal         @db.Decimal(12, 2)
-  provider       PaymentProvider
-  providerTxId   String?
-  status         PaymentStatus   @default(PENDING)
-  createdAt      DateTime        @default(now())
+model Boost {
+  id        String   @id @default(uuid())
+  paymentId String   @unique
+  payment   Payment  @relation(fields: [paymentId], references: [id])
+  squareId  String?
+  square    Square?  @relation(fields: [squareId], references: [id])
+  serviceId String?
+  service   Service? @relation(fields: [serviceId], references: [id])
+  startTime DateTime
+  endTime   DateTime
+  createdAt DateTime @default(now())
 }
 
-model ServicePayment {
-  id             String          @id @default(uuid())
-  userId         String
-  user           User            @relation(fields: [userId], references: [id])
-  eventServiceId String          @unique
-  eventService   EventService    @relation(fields: [eventServiceId], references: [id])
-  amount         Decimal         @db.Decimal(12, 2)
-  commission     Decimal         @db.Decimal(12, 2)
-  provider       PaymentProvider
-  providerTxId   String?
-  status         PaymentStatus   @default(PENDING)
-  createdAt      DateTime        @default(now())
+model Badge {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  description String?
+  createdAt   DateTime @default(now())
+
+  squareBadges  SquareBadge[]
+  serviceBadges ServiceBadge[]
+}
+
+model SquareBadge {
+  id        String      @id @default(uuid())
+  squareId  String
+  square    Square      @relation(fields: [squareId], references: [id])
+  badgeId   String
+  badge     Badge       @relation(fields: [badgeId], references: [id])
+  status    BadgeStatus @default(PENDING)
+  createdAt DateTime    @default(now())
+
+  @@unique([squareId, badgeId])
+}
+
+model ServiceBadge {
+  id        String      @id @default(uuid())
+  serviceId String
+  service   Service     @relation(fields: [serviceId], references: [id])
+  badgeId   String
+  badge     Badge       @relation(fields: [badgeId], references: [id])
+  status    BadgeStatus @default(PENDING)
+  createdAt DateTime    @default(now())
+
+  @@unique([serviceId, badgeId])
 }
 
 model RatingStats {
   id        String   @id @default(uuid())
-
-  venueId   String?  @unique
-  venue     Venue?   @relation(fields: [venueId], references: [id])
-
+  squareId  String?  @unique
+  square    Square?  @relation(fields: [squareId], references: [id])
   serviceId String?  @unique
   service   Service? @relation(fields: [serviceId], references: [id])
-
-  eventId   String?  @unique
-  event     Event?   @relation(fields: [eventId], references: [id])
-
   avg       Float    @default(0)
   count     Int      @default(0)
   one       Int      @default(0)
@@ -272,21 +319,7 @@ model RatingStats {
   three     Int      @default(0)
   four      Int      @default(0)
   five      Int      @default(0)
-
   updatedAt DateTime @updatedAt
-}
-
-model VolunteerApplication {
-  id        String          @id @default(uuid())
-  userId    String
-  user      User            @relation(fields: [userId], references: [id])
-  eventId   String
-  event     Event           @relation(fields: [eventId], references: [id])
-  skills    String[]
-  status    VolunteerStatus @default(PENDING)
-  createdAt DateTime        @default(now())
-
-  @@unique([userId, eventId])
 }
 
 model Review {
@@ -295,8 +328,8 @@ model Review {
   author    User     @relation(fields: [authorId], references: [id])
   eventId   String?
   event     Event?   @relation(fields: [eventId], references: [id])
-  venueId   String?
-  venue     Venue?   @relation(fields: [venueId], references: [id])
+  squareId  String?
+  square    Square?  @relation(fields: [squareId], references: [id])
   serviceId String?
   service   Service? @relation(fields: [serviceId], references: [id])
   rating    Int
@@ -304,6 +337,28 @@ model Review {
   createdAt DateTime @default(now())
 
   @@unique([authorId, eventId])
-  @@unique([authorId, venueId])
+  @@unique([authorId, squareId])
   @@unique([authorId, serviceId])
+}
+
+model VolunteerSkills {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  createdAt DateTime @default(now())
+
+  volunteers Volunteer[]
+}
+
+model Volunteer {
+  id        String                 @id @default(uuid())
+  userId    String
+  user      User                   @relation(fields: [userId], references: [id])
+  eventId   String
+  event     Event                  @relation(fields: [eventId], references: [id])
+  skillId   String
+  skill     VolunteerSkills        @relation(fields: [skillId], references: [id])
+  status    VolunteerRequestStatus @default(PENDING)
+  createdAt DateTime               @default(now())
+
+  @@unique([userId, eventId])
 }

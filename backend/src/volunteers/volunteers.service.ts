@@ -21,13 +21,13 @@ export class VolunteersService {
     });
     if (!event) throw new NotFoundException('Event not found');
 
-    const existing = await this.prisma.volunteerApplication.findUnique({
+    const existing = await this.prisma.volunteer.findUnique({
       where: { userId_eventId: { userId, eventId } },
     });
     if (existing) throw new ConflictException('Already applied as volunteer');
 
-    return this.prisma.volunteerApplication.create({
-      data: { userId, eventId, skills: dto.skills },
+    return this.prisma.volunteer.create({
+      data: { userId, eventId, skillId: dto.skillId },
     });
   }
 
@@ -42,7 +42,7 @@ export class VolunteersService {
     if (event.organizerId !== userId)
       throw new ForbiddenException('Only the organizer can view applications');
 
-    return this.prisma.volunteerApplication.findMany({
+    return this.prisma.volunteer.findMany({
       where: { eventId },
       include: {
         user: {
@@ -70,12 +70,12 @@ export class VolunteersService {
         'Only the organizer can update applications',
       );
 
-    const application = await this.prisma.volunteerApplication.findUnique({
+    const application = await this.prisma.volunteer.findUnique({
       where: { id: applicationId },
     });
     if (!application) throw new NotFoundException('Application not found');
 
-    return this.prisma.volunteerApplication.update({
+    return this.prisma.volunteer.update({
       where: { id: applicationId },
       data: { status: dto.status },
     });
@@ -85,7 +85,7 @@ export class VolunteersService {
    * Returns all volunteer applications for the current user
    */
   async getMyApplications(userId: string) {
-    return this.prisma.volunteerApplication.findMany({
+    return this.prisma.volunteer.findMany({
       where: { userId },
       include: {
         event: { select: { id: true, title: true, startDate: true } },

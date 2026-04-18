@@ -1,44 +1,89 @@
 import 'dotenv/config';
 import { hashSync } from 'bcrypt';
+import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from '../generated/prisma/client';
 import {
   BookingStatus,
   EventStatus,
   PaymentProvider,
   PaymentStatus,
-  VolunteerStatus,
+  PaymentType,
+  Role,
+  VolunteerRequestStatus,
 } from '../generated/prisma/enums';
 import {
   USERS,
-  VENUES,
+  SQUARES,
+  SQUARE_CATEGORIES,
+  SERVICE_CATEGORIES,
   PUBLISHED_EVENTS,
   DRAFT_EVENTS,
   COMPLETED_EVENTS,
   CANCELLED_EVENTS,
   TICKET_TIERS_BY_EVENT,
   SERVICES,
-  VENUE_REVIEWS,
+  SQUARE_REVIEWS,
   SERVICE_REVIEWS,
   EVENT_REVIEWS,
+  VOLUNTEER_SKILLS,
+  SQUARE_CHARACTERISTICS,
 } from './constants';
-import { PrismaPg } from '@prisma/adapter-pg';
 
 const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! });
 const prisma = new PrismaClient({ adapter });
 
 const createdIds = {
   users: {} as Record<string, string>,
-  venues: [] as string[],
+  squareCategories: {} as Record<string, string>,
+  serviceCategories: {} as Record<string, string>,
+  volunteerSkills: {} as Record<string, string>,
+  squareCharacteristics: {} as Record<string, string>,
+
+  squares: [] as string[],
   publishedEvents: [] as string[],
   completedEvents: [] as string[],
   services: [] as string[],
-  // tierIds[eventGlobalIndex][tierLocalIndex] = tierId
   tiers: [] as string[][],
-};
+}
 
 const hashPassword = (pw: string) => hashSync(pw, 10);
 
-// ─── Users ───────────────────────────────────────────────────────────────────
+// ─── Categories ───────────────────────────────────────────────────────────────
+async function seedCategories() {
+  for (const name of SQUARE_CATEGORIES) {
+    const c = await prisma.squareCategory.create({ data: { name } });
+    createdIds.squareCategories[name] = c.id;
+  }
+
+  for (const name of SERVICE_CATEGORIES) {
+    const c = await prisma.serviceCategory.create({ data: { name } });
+    createdIds.serviceCategories[name] = c.id;
+  }
+
+  console.log('✅ Categories seeded');
+}
+
+// ─── Volunteer Skills ─────────────────────────────────────────────────────────
+async function seedVolunteerSkills() {
+  for (const name of VOLUNTEER_SKILLS) {
+    const s = await prisma.volunteerSkills.create({ data: { name } });
+    createdIds.volunteerSkills[name] = s.id;
+  }
+
+  console.log('✅ Volunteer skills seeded');
+}
+
+// ─── Square Charecteristics ─────────────────────────────────────────────────────────
+async function seedSquareCharecteristics() {
+  for (const name of SQUARE_CHARACTERISTICS) {
+    const s = await prisma.squareCharacteristics.create({ data: { name } });
+    createdIds.squareCharacteristics[name] = s.id;
+  }
+
+  console.log('✅ Square charecteristics seeded');
+}
+
+// ─── Users ────────────────────────────────────────────────────────────────────
 async function seedUsers() {
   for (const u of USERS) {
     const created = await prisma.user.create({
@@ -46,8 +91,7 @@ async function seedUsers() {
         email: u.email,
         firstName: u.firstName,
         lastName: u.lastName,
-        roles: [u.activeRole as any],
-        activeRole: u.activeRole as any,
+        role: u.role as Role,
         passwordHash: hashPassword('12345678'),
         isVerified: true,
         avatarUrl: u.avatarUrl,
@@ -57,26 +101,41 @@ async function seedUsers() {
     createdIds.users[u.email] = created.id;
   }
 
-  console.log('Users seeded');
+  console.log('✅ Users seeded');
 }
 
-// ─── Venues ──────────────────────────────────────────────────────────────────
-async function seedVenues() {
-  for (const v of VENUES) {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { vendorKey: _, ...venueData } = v;
-    const created = await prisma.venue.create({
-      data: { ...venueData, ownerId: createdIds.users[v.vendorKey] },
+// ─── Squares ──────────────────────────────────────────────────────────────────
+async function seedSquares() {
+  for (const s of SQUARES) {
+    const created = await prisma.square.create({
+      data: {
+        name: s.name,
+        description: s.description,
+        address: s.address,
+        city: s.city,
+        latitude: s.latitude,
+        longitude: s.longitude,
+        capacity: s.capacity,
+        pricePerDay: s.pricePerDay,
+        imageUrls: s.imageUrls,
+        ownerId: createdIds.users[s.vendorKey],
+        categoryId: createdIds.squareCategories[s.categoryName],
+        characteristics: {
+          connect: Object.values(createdIds.squareCharacteristics)
+          .slice(0, SQUARE_CHARACTERISTICS.length)
+          .map(id => ({ id })),
+        },
+      },
     });
-    createdIds.venues.push(created.id);
+
+    createdIds.squares.push(created.id);
   }
 
-  console.log('Venues seeded');
+  console.log('✅ Squares seeded');
 }
 
 // ─── Events ───────────────────────────────────────────────────────────────────
 async function seedEvents() {
-  // Published
   for (const e of PUBLISHED_EVENTS) {
     const created = await prisma.event.create({
       data: {
@@ -89,13 +148,12 @@ async function seedEvents() {
         bannerUrl: e.bannerUrl,
         status: EventStatus.PUBLISHED,
         organizerId: createdIds.users[e.organizerKey],
-        venueId: createdIds.venues[e.venueIndex],
+        squareId: createdIds.squares[e.squareIndex],
       },
     });
     createdIds.publishedEvents.push(created.id);
   }
 
-  // Completed
   for (const e of COMPLETED_EVENTS) {
     const created = await prisma.event.create({
       data: {
@@ -108,79 +166,66 @@ async function seedEvents() {
         bannerUrl: e.bannerUrl,
         status: EventStatus.COMPLETED,
         organizerId: createdIds.users[e.organizerKey],
-        venueId: createdIds.venues[e.venueIndex],
+        squareId: createdIds.squares[e.squareIndex],
       },
     });
     createdIds.completedEvents.push(created.id);
   }
 
-  // Draft
-  for (const e of DRAFT_EVENTS) {
-    await prisma.event.createMany({
-      data: {
-        title: e.title,
-        description: e.description,
-        startDate: e.startDate,
-        endDate: e.endDate,
-        eventType: e.eventType,
-        capacity: e.capacity,
-        bannerUrl: e.bannerUrl,
-        status: EventStatus.DRAFT,
-        organizerId: createdIds.users[e.organizerKey],
-      },
-    });
-  }
+  await prisma.event.createMany({
+    data: DRAFT_EVENTS.map((e) => ({
+      title: e.title,
+      description: e.description,
+      startDate: e.startDate,
+      endDate: e.endDate,
+      eventType: e.eventType,
+      capacity: e.capacity,
+      bannerUrl: e.bannerUrl,
+      status: EventStatus.DRAFT,
+      organizerId: createdIds.users[e.organizerKey],
+    })),
+  });
 
-  // Cancelled
-  for (const e of CANCELLED_EVENTS) {
-    await prisma.event.createMany({
-      data: {
-        title: e.title,
-        description: e.description,
-        startDate: e.startDate,
-        endDate: e.endDate,
-        eventType: e.eventType,
-        capacity: e.capacity,
-        bannerUrl: e.bannerUrl,
-        status: EventStatus.CANCELLED,
-        organizerId: createdIds.users[e.organizerKey],
-      },
-    });
-  }
+  await prisma.event.createMany({
+    data: CANCELLED_EVENTS.map((e) => ({
+      title: e.title,
+      description: e.description,
+      startDate: e.startDate,
+      endDate: e.endDate,
+      eventType: e.eventType,
+      capacity: e.capacity,
+      bannerUrl: e.bannerUrl,
+      status: EventStatus.CANCELLED,
+      organizerId: createdIds.users[e.organizerKey],
+    })),
+  });
 
-  console.log('Events seeded');
+  console.log('✅ Events seeded');
 }
 
 // ─── Ticket Tiers ─────────────────────────────────────────────────────────────
-// TICKET_TIERS_BY_EVENT[0..4] → published events
-// TICKET_TIERS_BY_EVENT[5..6] → completed events
 async function seedTicketTiers() {
   const allEventIds = [
-    ...createdIds.publishedEvents, // indices 0-4
-    ...createdIds.completedEvents, // indices 5-6
+    ...createdIds.publishedEvents,
+    ...createdIds.completedEvents,
   ];
 
   for (let i = 0; i < TICKET_TIERS_BY_EVENT.length; i++) {
     const eventId = allEventIds[i];
     const tierIds: string[] = [];
-
     for (const t of TICKET_TIERS_BY_EVENT[i]) {
       const created = await prisma.ticketTier.create({
         data: { ...t, eventId },
       });
       tierIds.push(created.id);
     }
-
     createdIds.tiers.push(tierIds);
   }
 
-  console.log('Ticket tiers seeded');
+  console.log('✅ Ticket tiers seeded');
 }
 
 // ─── Tickets & Payments ───────────────────────────────────────────────────────
-// Purchase plan (spread across Dec 2025 – Mar 2026 for revenue chart):
-//  eventIdx = index in [publishedEvents(0-4), completedEvents(5-6)]
-//  tierIdx  = tier index within that event's tiers
 async function seedTicketsAndPayments() {
   const allEventIds = [
     ...createdIds.publishedEvents,
@@ -194,36 +239,181 @@ async function seedTicketsAndPayments() {
     date: Date;
     provider: PaymentProvider;
   }> = [
-    // ── December 2025 ──
-    { participantKey: 'participant@planner.ai',  eventIdx: 0, tierIdx: 1, date: new Date('2025-12-08T10:00:00Z'), provider: PaymentProvider.CLICK },
-    { participantKey: 'participant2@planner.ai', eventIdx: 0, tierIdx: 1, date: new Date('2025-12-14T11:00:00Z'), provider: PaymentProvider.PAYME },
-    { participantKey: 'participant3@planner.ai', eventIdx: 5, tierIdx: 0, date: new Date('2025-12-20T14:00:00Z'), provider: PaymentProvider.CLICK },
-    // ── January 2026 ──
-    { participantKey: 'participant4@planner.ai', eventIdx: 0, tierIdx: 2, date: new Date('2026-01-05T09:00:00Z'), provider: PaymentProvider.PAYME },
-    { participantKey: 'participant5@planner.ai', eventIdx: 2, tierIdx: 0, date: new Date('2026-01-10T10:00:00Z'), provider: PaymentProvider.CLICK },
-    { participantKey: 'participant@planner.ai',  eventIdx: 1, tierIdx: 0, date: new Date('2026-01-16T13:00:00Z'), provider: PaymentProvider.CLICK },
-    { participantKey: 'participant2@planner.ai', eventIdx: 2, tierIdx: 1, date: new Date('2026-01-21T11:00:00Z'), provider: PaymentProvider.PAYME },
-    { participantKey: 'participant3@planner.ai', eventIdx: 3, tierIdx: 0, date: new Date('2026-01-28T15:00:00Z'), provider: PaymentProvider.CLICK },
-    // ── February 2026 ──
-    { participantKey: 'participant4@planner.ai', eventIdx: 4, tierIdx: 0, date: new Date('2026-02-06T10:00:00Z'), provider: PaymentProvider.PAYME },
-    { participantKey: 'participant5@planner.ai', eventIdx: 3, tierIdx: 1, date: new Date('2026-02-12T12:00:00Z'), provider: PaymentProvider.CLICK },
-    { participantKey: 'participant@planner.ai',  eventIdx: 6, tierIdx: 1, date: new Date('2026-02-18T14:00:00Z'), provider: PaymentProvider.PAYME },
-    { participantKey: 'participant2@planner.ai', eventIdx: 2, tierIdx: 2, date: new Date('2026-02-24T11:00:00Z'), provider: PaymentProvider.CLICK },
-    // ── March 2026 ──
-    { participantKey: 'participant3@planner.ai', eventIdx: 4, tierIdx: 1, date: new Date('2026-03-02T09:00:00Z'), provider: PaymentProvider.PAYME },
-    { participantKey: 'participant4@planner.ai', eventIdx: 0, tierIdx: 0, date: new Date('2026-03-07T10:00:00Z'), provider: PaymentProvider.CLICK },
-    { participantKey: 'participant5@planner.ai', eventIdx: 5, tierIdx: 0, date: new Date('2026-03-12T13:00:00Z'), provider: PaymentProvider.PAYME },
-    // ── Additional tickets so every participant has at least 3 ──
-    { participantKey: 'participant@planner.ai',  eventIdx: 2, tierIdx: 0, date: new Date('2026-03-14T10:00:00Z'), provider: PaymentProvider.CLICK },
-    { participantKey: 'participant@planner.ai',  eventIdx: 4, tierIdx: 0, date: new Date('2026-03-16T11:00:00Z'), provider: PaymentProvider.PAYME },
-    { participantKey: 'participant2@planner.ai', eventIdx: 1, tierIdx: 0, date: new Date('2026-03-14T12:00:00Z'), provider: PaymentProvider.CLICK },
-    { participantKey: 'participant2@planner.ai', eventIdx: 6, tierIdx: 0, date: new Date('2026-03-17T09:00:00Z'), provider: PaymentProvider.PAYME },
-    { participantKey: 'participant3@planner.ai', eventIdx: 0, tierIdx: 0, date: new Date('2026-03-15T10:00:00Z'), provider: PaymentProvider.CLICK },
-    { participantKey: 'participant3@planner.ai', eventIdx: 2, tierIdx: 1, date: new Date('2026-03-18T14:00:00Z'), provider: PaymentProvider.PAYME },
-    { participantKey: 'participant4@planner.ai', eventIdx: 1, tierIdx: 0, date: new Date('2026-03-15T11:00:00Z'), provider: PaymentProvider.CLICK },
-    { participantKey: 'participant4@planner.ai', eventIdx: 2, tierIdx: 0, date: new Date('2026-03-19T09:00:00Z'), provider: PaymentProvider.PAYME },
-    { participantKey: 'participant5@planner.ai', eventIdx: 0, tierIdx: 0, date: new Date('2026-03-16T10:00:00Z'), provider: PaymentProvider.CLICK },
-    { participantKey: 'participant5@planner.ai', eventIdx: 4, tierIdx: 1, date: new Date('2026-03-20T14:00:00Z'), provider: PaymentProvider.PAYME },
+    {
+      participantKey: 'participant@planner.ai',
+      eventIdx: 0,
+      tierIdx: 1,
+      date: new Date('2025-12-08T10:00:00Z'),
+      provider: PaymentProvider.CLICK,
+    },
+    {
+      participantKey: 'participant2@planner.ai',
+      eventIdx: 0,
+      tierIdx: 1,
+      date: new Date('2025-12-14T11:00:00Z'),
+      provider: PaymentProvider.PAYME,
+    },
+    {
+      participantKey: 'participant3@planner.ai',
+      eventIdx: 5,
+      tierIdx: 0,
+      date: new Date('2025-12-20T14:00:00Z'),
+      provider: PaymentProvider.CLICK,
+    },
+    {
+      participantKey: 'participant4@planner.ai',
+      eventIdx: 0,
+      tierIdx: 2,
+      date: new Date('2026-01-05T09:00:00Z'),
+      provider: PaymentProvider.PAYME,
+    },
+    {
+      participantKey: 'participant5@planner.ai',
+      eventIdx: 2,
+      tierIdx: 0,
+      date: new Date('2026-01-10T10:00:00Z'),
+      provider: PaymentProvider.CLICK,
+    },
+    {
+      participantKey: 'participant@planner.ai',
+      eventIdx: 1,
+      tierIdx: 0,
+      date: new Date('2026-01-16T13:00:00Z'),
+      provider: PaymentProvider.CLICK,
+    },
+    {
+      participantKey: 'participant2@planner.ai',
+      eventIdx: 2,
+      tierIdx: 1,
+      date: new Date('2026-01-21T11:00:00Z'),
+      provider: PaymentProvider.PAYME,
+    },
+    {
+      participantKey: 'participant3@planner.ai',
+      eventIdx: 3,
+      tierIdx: 0,
+      date: new Date('2026-01-28T15:00:00Z'),
+      provider: PaymentProvider.CLICK,
+    },
+    {
+      participantKey: 'participant4@planner.ai',
+      eventIdx: 4,
+      tierIdx: 0,
+      date: new Date('2026-02-06T10:00:00Z'),
+      provider: PaymentProvider.PAYME,
+    },
+    {
+      participantKey: 'participant5@planner.ai',
+      eventIdx: 3,
+      tierIdx: 1,
+      date: new Date('2026-02-12T12:00:00Z'),
+      provider: PaymentProvider.CLICK,
+    },
+    {
+      participantKey: 'participant@planner.ai',
+      eventIdx: 6,
+      tierIdx: 1,
+      date: new Date('2026-02-18T14:00:00Z'),
+      provider: PaymentProvider.PAYME,
+    },
+    {
+      participantKey: 'participant2@planner.ai',
+      eventIdx: 2,
+      tierIdx: 2,
+      date: new Date('2026-02-24T11:00:00Z'),
+      provider: PaymentProvider.CLICK,
+    },
+    {
+      participantKey: 'participant3@planner.ai',
+      eventIdx: 4,
+      tierIdx: 1,
+      date: new Date('2026-03-02T09:00:00Z'),
+      provider: PaymentProvider.PAYME,
+    },
+    {
+      participantKey: 'participant4@planner.ai',
+      eventIdx: 0,
+      tierIdx: 0,
+      date: new Date('2026-03-07T10:00:00Z'),
+      provider: PaymentProvider.CLICK,
+    },
+    {
+      participantKey: 'participant5@planner.ai',
+      eventIdx: 5,
+      tierIdx: 0,
+      date: new Date('2026-03-12T13:00:00Z'),
+      provider: PaymentProvider.PAYME,
+    },
+    {
+      participantKey: 'participant@planner.ai',
+      eventIdx: 2,
+      tierIdx: 0,
+      date: new Date('2026-03-14T10:00:00Z'),
+      provider: PaymentProvider.CLICK,
+    },
+    {
+      participantKey: 'participant@planner.ai',
+      eventIdx: 4,
+      tierIdx: 0,
+      date: new Date('2026-03-16T11:00:00Z'),
+      provider: PaymentProvider.PAYME,
+    },
+    {
+      participantKey: 'participant2@planner.ai',
+      eventIdx: 1,
+      tierIdx: 0,
+      date: new Date('2026-03-14T12:00:00Z'),
+      provider: PaymentProvider.CLICK,
+    },
+    {
+      participantKey: 'participant2@planner.ai',
+      eventIdx: 6,
+      tierIdx: 0,
+      date: new Date('2026-03-17T09:00:00Z'),
+      provider: PaymentProvider.PAYME,
+    },
+    {
+      participantKey: 'participant3@planner.ai',
+      eventIdx: 0,
+      tierIdx: 0,
+      date: new Date('2026-03-15T10:00:00Z'),
+      provider: PaymentProvider.CLICK,
+    },
+    {
+      participantKey: 'participant3@planner.ai',
+      eventIdx: 2,
+      tierIdx: 1,
+      date: new Date('2026-03-18T14:00:00Z'),
+      provider: PaymentProvider.PAYME,
+    },
+    {
+      participantKey: 'participant4@planner.ai',
+      eventIdx: 1,
+      tierIdx: 0,
+      date: new Date('2026-03-15T11:00:00Z'),
+      provider: PaymentProvider.CLICK,
+    },
+    {
+      participantKey: 'participant4@planner.ai',
+      eventIdx: 2,
+      tierIdx: 0,
+      date: new Date('2026-03-19T09:00:00Z'),
+      provider: PaymentProvider.PAYME,
+    },
+    {
+      participantKey: 'participant5@planner.ai',
+      eventIdx: 0,
+      tierIdx: 0,
+      date: new Date('2026-03-16T10:00:00Z'),
+      provider: PaymentProvider.CLICK,
+    },
+    {
+      participantKey: 'participant5@planner.ai',
+      eventIdx: 4,
+      tierIdx: 1,
+      date: new Date('2026-03-20T14:00:00Z'),
+      provider: PaymentProvider.PAYME,
+    },
   ];
 
   const COMMISSION_RATE = 0.1;
@@ -246,14 +436,15 @@ async function seedTicketsAndPayments() {
         eventId,
         tierId,
         qrCode: `QR-${p.date.getFullYear()}${String(p.date.getMonth() + 1).padStart(2, '0')}-${qrSeq++}`,
-        isUsed: p.eventIdx >= 5, // completed events → ticket already used
+        isUsed: p.eventIdx >= 5,
         createdAt: p.date,
       },
     });
 
-    await prisma.ticketPayment.create({
+    await prisma.payment.create({
       data: {
         userId,
+        type: PaymentType.TICKET,
         ticketId: ticket.id,
         amount,
         commission,
@@ -265,15 +456,15 @@ async function seedTicketsAndPayments() {
     });
   }
 
-  console.log('Tickets and payments seeded');
+  console.log('✅ Tickets and payments seeded');
 }
 
-// ─── Venue Bookings ───────────────────────────────────────────────────────────
-async function seedVenueBookings() {
-  const bookings = [
+// ─── Bookings (squares) ───────────────────────────────────────────────────────
+async function seedBookings() {
+  const bookingsData = [
     {
-      venueId: createdIds.venues[0],
-      eventId: createdIds.publishedEvents[0],   // Marketing Forum → City Hall
+      squareId: createdIds.squares[0],
+      eventId: createdIds.publishedEvents[0],
       userId: createdIds.users['organizer@planner.ai'],
       startDate: new Date('2026-05-20T08:00:00Z'),
       endDate: new Date('2026-05-20T20:00:00Z'),
@@ -281,8 +472,8 @@ async function seedVenueBookings() {
       totalCost: 10000000,
     },
     {
-      venueId: createdIds.venues[3],
-      eventId: createdIds.publishedEvents[2],   // Jazz Festival → Navoi Palace
+      squareId: createdIds.squares[3],
+      eventId: createdIds.publishedEvents[2],
       userId: createdIds.users['organizer@planner.ai'],
       startDate: new Date('2026-07-10T15:00:00Z'),
       endDate: new Date('2026-07-12T23:59:00Z'),
@@ -290,8 +481,8 @@ async function seedVenueBookings() {
       totalCost: 54000000,
     },
     {
-      venueId: createdIds.venues[2],
-      eventId: createdIds.publishedEvents[3],   // UX Workshop → Bukhara Hall
+      squareId: createdIds.squares[2],
+      eventId: createdIds.publishedEvents[3],
       userId: createdIds.users['organizer2@planner.ai'],
       startDate: new Date('2026-04-25T08:00:00Z'),
       endDate: new Date('2026-04-26T20:00:00Z'),
@@ -299,8 +490,8 @@ async function seedVenueBookings() {
       totalCost: 10000000,
     },
     {
-      venueId: createdIds.venues[1],
-      eventId: createdIds.publishedEvents[1],   // Startup Meetup → Samarkand Garden
+      squareId: createdIds.squares[1],
+      eventId: createdIds.publishedEvents[1],
       userId: createdIds.users['organizer2@planner.ai'],
       startDate: new Date('2026-06-15T16:00:00Z'),
       endDate: new Date('2026-06-15T23:00:00Z'),
@@ -309,148 +500,246 @@ async function seedVenueBookings() {
     },
   ];
 
-  for (const b of bookings) {
-    await prisma.venueBooking.create({ data: b });
+  for (const b of bookingsData) {
+    const booking = await prisma.booking.create({
+      data: {
+        userId: b.userId,
+        squareId: b.squareId,
+        startDate: b.startDate,
+        endDate: b.endDate,
+        status: b.status,
+        totalCost: b.totalCost,
+      },
+    });
+
+    if (b.status === BookingStatus.CONFIRMED) {
+      await prisma.payment.create({
+        data: {
+          userId: b.userId,
+          type: PaymentType.SQUARE,
+          bookingId: booking.id,
+          amount: b.totalCost,
+          commission: b.totalCost * 0.1,
+          provider: PaymentProvider.CLICK,
+          providerTxId: `TX-SQUARE-${Date.now()}`,
+          status: PaymentStatus.PAID,
+        },
+      });
+    }
   }
 
-  console.log('Venue bookings seeded');
+  console.log('✅ Bookings seeded');
 }
 
-// ─── Services ────────────────────────────────────────────────────────────────
+// ─── Services ─────────────────────────────────────────────────────────────────
 async function seedServices() {
   for (const s of SERVICES) {
     const created = await prisma.service.create({
       data: {
         name: s.name,
-        category: s.category,
         description: s.description,
         priceFrom: s.priceFrom,
         city: s.city,
         imageUrls: s.imageUrls,
         vendorId: createdIds.users[s.vendorKey],
+        categoryId: createdIds.serviceCategories[s.categoryName],
       },
     });
     createdIds.services.push(created.id);
   }
 
-  console.log('Services seeded');
+  console.log('✅ Services seeded');
 }
 
 // ─── Event Services ───────────────────────────────────────────────────────────
 async function seedEventServices() {
   const links = [
-    { eventIdx: 0, serviceIdx: 0, agreedPrice: 12000000, status: BookingStatus.CONFIRMED }, // Forum ← Catering
-    { eventIdx: 0, serviceIdx: 1, agreedPrice: 7000000,  status: BookingStatus.CONFIRMED }, // Forum ← Sound
-    { eventIdx: 0, serviceIdx: 2, agreedPrice: 3000000,  status: BookingStatus.CONFIRMED }, // Forum ← Photo
-    { eventIdx: 2, serviceIdx: 1, agreedPrice: 8000000,  status: BookingStatus.CONFIRMED }, // Jazz  ← Sound
-    { eventIdx: 2, serviceIdx: 2, agreedPrice: 3500000,  status: BookingStatus.CONFIRMED }, // Jazz  ← Photo
-    { eventIdx: 2, serviceIdx: 4, agreedPrice: 2000000,  status: BookingStatus.CONFIRMED }, // Jazz  ← Security
-    { eventIdx: 3, serviceIdx: 3, agreedPrice: 4000000,  status: BookingStatus.CONFIRMED }, // UX    ← Decor
-    { eventIdx: 4, serviceIdx: 4, agreedPrice: 1500000,  status: BookingStatus.PENDING   }, // Art   ← Security
-    { eventIdx: 4, serviceIdx: 3, agreedPrice: 5000000,  status: BookingStatus.CONFIRMED }, // Art   ← Decor
-    { eventIdx: 1, serviceIdx: 0, agreedPrice: 6000000,  status: BookingStatus.PENDING   }, // Startup ← Catering
+    {
+      eventIdx: 0,
+      serviceIdx: 0,
+      agreedPrice: 12000000,
+      status: BookingStatus.CONFIRMED,
+    },
+    {
+      eventIdx: 0,
+      serviceIdx: 1,
+      agreedPrice: 7000000,
+      status: BookingStatus.CONFIRMED,
+    },
+    {
+      eventIdx: 0,
+      serviceIdx: 2,
+      agreedPrice: 3000000,
+      status: BookingStatus.CONFIRMED,
+    },
+    {
+      eventIdx: 2,
+      serviceIdx: 1,
+      agreedPrice: 8000000,
+      status: BookingStatus.CONFIRMED,
+    },
+    {
+      eventIdx: 2,
+      serviceIdx: 2,
+      agreedPrice: 3500000,
+      status: BookingStatus.CONFIRMED,
+    },
+    {
+      eventIdx: 2,
+      serviceIdx: 4,
+      agreedPrice: 2000000,
+      status: BookingStatus.CONFIRMED,
+    },
+    {
+      eventIdx: 3,
+      serviceIdx: 3,
+      agreedPrice: 4000000,
+      status: BookingStatus.CONFIRMED,
+    },
+    {
+      eventIdx: 4,
+      serviceIdx: 4,
+      agreedPrice: 1500000,
+      status: BookingStatus.PENDING,
+    },
+    {
+      eventIdx: 4,
+      serviceIdx: 3,
+      agreedPrice: 5000000,
+      status: BookingStatus.CONFIRMED,
+    },
+    {
+      eventIdx: 1,
+      serviceIdx: 0,
+      agreedPrice: 6000000,
+      status: BookingStatus.PENDING,
+    },
   ];
 
   for (const l of links) {
-    await prisma.eventService.create({
+    const es = await prisma.eventService.create({
       data: {
         eventId: createdIds.publishedEvents[l.eventIdx],
         serviceId: createdIds.services[l.serviceIdx],
         agreedPrice: l.agreedPrice,
-        status: l.status,
+        status: l.status
       },
     });
+
+    if (l.status === BookingStatus.CONFIRMED) {
+      const booking = await prisma.booking.create({
+        data: {
+          userId: createdIds.users['organizer@planner.ai'],
+          eventServiceId: es.id,
+          status: BookingStatus.CONFIRMED,
+          totalCost: l.agreedPrice,
+        },
+      });
+
+      await prisma.payment.create({
+        data: {
+          userId: createdIds.users['organizer@planner.ai'],
+          type: PaymentType.SERVICE,
+          bookingId: booking.id,
+          amount: l.agreedPrice,
+          commission: l.agreedPrice * 0.1,
+          provider: PaymentProvider.PAYME,
+          providerTxId: `TX-SERVICE-${Date.now()}-${l.serviceIdx}`,
+          status: PaymentStatus.PAID,
+        },
+      });
+    }
   }
 
-  console.log('Event services seeded');
+  console.log('✅ Event services seeded');
 }
 
-// ─── Volunteer Applications ────────────────────────────────────────────────────
-async function seedVolunteerApplications() {
+// ─── Volunteers ───────────────────────────────────────────────────────────────
+async function seedVolunteers() {
   const apps = [
     {
       userKey: 'volunteer@planner.ai',
       eventIdx: 0,
-      skills: ['registration', 'guest greeting', 'info desk'],
-      status: VolunteerStatus.ACCEPTED,
+      skillName: 'registration',
+      status: VolunteerRequestStatus.ACCEPTED,
     },
     {
       userKey: 'volunteer2@planner.ai',
       eventIdx: 0,
-      skills: ['translation', 'badge scanning', 'crowd control'],
-      status: VolunteerStatus.ACCEPTED,
+      skillName: 'translation',
+      status: VolunteerRequestStatus.ACCEPTED,
     },
     {
       userKey: 'volunteer@planner.ai',
       eventIdx: 1,
-      skills: ['tech support', 'live streaming'],
-      status: VolunteerStatus.PENDING,
+      skillName: 'tech support',
+      status: VolunteerRequestStatus.PENDING,
     },
     {
       userKey: 'volunteer2@planner.ai',
       eventIdx: 1,
-      skills: ['registration', 'speaker coordination'],
-      status: VolunteerStatus.REJECTED,
+      skillName: 'registration',
+      status: VolunteerRequestStatus.REJECTED,
     },
     {
       userKey: 'volunteer@planner.ai',
       eventIdx: 2,
-      skills: ['stage management', 'artist coordination'],
-      status: VolunteerStatus.ACCEPTED,
+      skillName: 'stage management',
+      status: VolunteerRequestStatus.ACCEPTED,
     },
     {
       userKey: 'volunteer2@planner.ai',
       eventIdx: 2,
-      skills: ['audio monitoring', 'lighting assistance'],
-      status: VolunteerStatus.PENDING,
+      skillName: 'audio monitoring',
+      status: VolunteerRequestStatus.PENDING,
     },
     {
       userKey: 'volunteer@planner.ai',
       eventIdx: 3,
-      skills: ['coordination', 'scheduling'],
-      status: VolunteerStatus.REJECTED,
+      skillName: 'coordination',
+      status: VolunteerRequestStatus.REJECTED,
     },
     {
       userKey: 'volunteer2@planner.ai',
       eventIdx: 3,
-      skills: ['design review', 'feedback collection'],
-      status: VolunteerStatus.ACCEPTED,
+      skillName: 'design review',
+      status: VolunteerRequestStatus.ACCEPTED,
     },
     {
       userKey: 'volunteer@planner.ai',
       eventIdx: 4,
-      skills: ['art installation', 'visitor guidance'],
-      status: VolunteerStatus.PENDING,
+      skillName: 'art installation',
+      status: VolunteerRequestStatus.PENDING,
     },
     {
       userKey: 'volunteer2@planner.ai',
       eventIdx: 4,
-      skills: ['art curation', 'visitor guidance', 'multilingual support'],
-      status: VolunteerStatus.ACCEPTED,
+      skillName: 'art curation',
+      status: VolunteerRequestStatus.ACCEPTED,
     },
   ];
 
   for (const a of apps) {
-    await prisma.volunteerApplication.create({
+    await prisma.volunteer.create({
       data: {
         userId: createdIds.users[a.userKey],
         eventId: createdIds.publishedEvents[a.eventIdx],
-        skills: a.skills,
+        skillId: createdIds.volunteerSkills[a.skillName],
         status: a.status,
       },
     });
   }
 
-  console.log('Volunteer applications seeded');
+  console.log('✅ Volunteers seeded');
 }
 
 // ─── Reviews ──────────────────────────────────────────────────────────────────
 async function seedReviews() {
-  for (const r of VENUE_REVIEWS) {
+  for (const r of SQUARE_REVIEWS) {
     await prisma.review.create({
       data: {
         authorId: createdIds.users[r.userKey],
-        venueId: createdIds.venues[r.venueIdx],
+        squareId: createdIds.squares[r.squareIdx],
         rating: r.rating,
         comment: r.comment,
       },
@@ -479,32 +768,28 @@ async function seedReviews() {
     });
   }
 
-  console.log('Reviews seeded');
+  console.log('✅ Reviews seeded');
 }
 
 // ─── Rating Stats ─────────────────────────────────────────────────────────────
 async function seedRatingStats() {
-  const computeStats = (ratings: number[]) => {
-    const count = ratings.length;
-    const avg = ratings.reduce((s, r) => s + r, 0) / count;
-    return {
-      avg,
-      count,
-      one:   ratings.filter(r => r === 1).length,
-      two:   ratings.filter(r => r === 2).length,
-      three: ratings.filter(r => r === 3).length,
-      four:  ratings.filter(r => r === 4).length,
-      five:  ratings.filter(r => r === 5).length,
-    };
-  };
+  const compute = (ratings: number[]) => ({
+    avg: ratings.reduce((s, r) => s + r, 0) / ratings.length,
+    count: ratings.length,
+    one: ratings.filter((r) => r === 1).length,
+    two: ratings.filter((r) => r === 2).length,
+    three: ratings.filter((r) => r === 3).length,
+    four: ratings.filter((r) => r === 4).length,
+    five: ratings.filter((r) => r === 5).length,
+  });
 
-  for (const venueId of createdIds.venues) {
-    const reviews = await prisma.review.findMany({ where: { venueId } });
+  for (const squareId of createdIds.squares) {
+    const reviews = await prisma.review.findMany({ where: { squareId } });
     if (!reviews.length) continue;
     await prisma.ratingStats.create({
       data: {
-        venueId,
-        ...computeStats(reviews.map(r => r.rating)),
+        squareId,
+        ...compute(reviews.map((r) => r.rating)),
         updatedAt: new Date(),
       },
     });
@@ -516,26 +801,29 @@ async function seedRatingStats() {
     await prisma.ratingStats.create({
       data: {
         serviceId,
-        ...computeStats(reviews.map(r => r.rating)),
+        ...compute(reviews.map((r) => r.rating)),
         updatedAt: new Date(),
       },
     });
   }
 
-  console.log('Rating stats seeded');
+  console.log('✅ Rating stats seeded');
 }
 
 // ─── Main ─────────────────────────────────────────────────────────────────────
 async function up() {
+  await seedCategories();
+  await seedVolunteerSkills();
+  await seedSquareCharecteristics();
   await seedUsers();
-  await seedVenues();
+  await seedSquares();
   await seedEvents();
   await seedTicketTiers();
   await seedTicketsAndPayments();
-  await seedVenueBookings();
+  await seedBookings();
   await seedServices();
   await seedEventServices();
-  await seedVolunteerApplications();
+  await seedVolunteers();
   await seedReviews();
   await seedRatingStats();
   console.log('✅ Done');
@@ -546,17 +834,23 @@ async function down() {
     TRUNCATE TABLE
       "RatingStats",
       "Review",
-      "VolunteerApplication",
-      "ServicePayment",
-      "VenueBookingPayment",
-      "TicketPayment",
+      "Volunteer",
+      "VolunteerSkills",
+      "SquareCharacteristics",
+      "ServiceBadge",
+      "SquareBadge",
+      "Badge",
+      "Boost",
+      "Payment",
+      "Booking",
       "EventService",
-      "VenueBooking",
       "Ticket",
       "TicketTier",
       "Event",
-      "Venue",
+      "Square",
       "Service",
+      "SquareCategory",
+      "ServiceCategory",
       "User"
     RESTART IDENTITY CASCADE
   `);
@@ -564,7 +858,6 @@ async function down() {
 
 async function main() {
   const args = process.argv.slice(2);
-
   try {
     if (args.includes('--down') || args.includes('-d')) {
       await down();

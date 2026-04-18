@@ -34,4 +34,14 @@ export class QueryEventsDto extends PaginationDto {
   @IsOptional()
   @IsEnum(EventStatusFilter)
   status?: EventStatusFilter;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  organizerId?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  title?: string;
 }

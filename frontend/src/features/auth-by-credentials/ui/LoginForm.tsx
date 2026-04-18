@@ -27,9 +27,9 @@ export function LoginForm() {
       return user
     },
     onSuccess: (user) => {
-      if (user.activeRole === 'ADMIN') navigate('/admin/dashboard')
-      else if (user.activeRole === 'ORGANIZER') navigate('/dashboard')
-      else if (user.activeRole === 'VENDOR') navigate('/my-venues')
+      if (user.role === 'ADMIN') navigate('/admin/dashboard')
+      else if (user.role === 'ORGANIZER') navigate('/dashboard')
+      else if (user.role === 'VENDOR') navigate('/my-venues')
       else navigate('/events')
     },
     onError: () => {

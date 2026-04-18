@@ -160,12 +160,12 @@ export function AppSidebar() {
     },
   });
 
-  const extraLinks = user ? (roleLinks[user.activeRole] ?? []) : [];
+  const extraLinks = user ? (roleLinks[user.role] ?? []) : [];
   const initials = getInitials(user?.firstName, user?.lastName, user?.email);
   const displayName = user
     ? `${user.firstName} ${user.lastName}`.trim() || user.email
     : "";
-  const isAdmin = user?.activeRole === "ADMIN";
+  const isAdmin = user?.role === "ADMIN";
 
   return (
     <Sidebar className="border-r border-gold/8">
@@ -209,7 +209,7 @@ export function AppSidebar() {
                 </>
               ) : (
                 <span className="text-muted-foreground/50">
-                  {user ? roleLabels[user.activeRole] : ""}
+                  {user ? roleLabels[user.role] : ""}
                 </span>
               )}
             </SidebarGroupLabel>

@@ -1,22 +1,21 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsArray,
-  IsEnum,
   IsNumber,
   IsOptional,
   IsString,
+  IsUUID,
   Min,
 } from 'class-validator';
-import { ServiceCategory } from '../../../generated/prisma/enums';
 
 export class CreateServiceDto {
   @ApiProperty({ example: 'Premium Catering Service' })
   @IsString()
   name: string;
 
-  @ApiProperty({ enum: ServiceCategory })
-  @IsEnum(ServiceCategory)
-  category: ServiceCategory;
+  @ApiProperty({ example: '<uuid-of-service-category>' })
+  @IsUUID()
+  categoryId: string;
 
   @ApiPropertyOptional()
   @IsOptional()

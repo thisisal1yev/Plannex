@@ -41,12 +41,11 @@ export class AuthService {
         passwordHash,
         firstName: dto.firstName,
         lastName: dto.lastName,
-        roles: [activeRole],
-        activeRole,
+        role: activeRole,
       },
     });
 
-    const tokens = await this.generateTokens(user.id, user.email, user.activeRole);
+    const tokens = await this.generateTokens(user.id, user.email, user.role);
     await this.saveRefreshToken(user.id, tokens.refreshToken);
 
     return tokens;
@@ -68,7 +67,7 @@ export class AuthService {
     );
     if (!passwordMatch) throw new UnauthorizedException('Invalid credentials');
 
-    const tokens = await this.generateTokens(user.id, user.email, user.activeRole);
+    const tokens = await this.generateTokens(user.id, user.email, user.role);
     await this.saveRefreshToken(user.id, tokens.refreshToken);
 
     return tokens;
@@ -97,7 +96,7 @@ export class AuthService {
     const tokenMatches = await comparePassword(refreshToken, user.refreshToken);
     if (!tokenMatches) throw new UnauthorizedException('Invalid refresh token');
 
-    const tokens = await this.generateTokens(user.id, user.email, user.activeRole);
+    const tokens = await this.generateTokens(user.id, user.email, user.role);
     await this.saveRefreshToken(user.id, tokens.refreshToken);
 
     return tokens;

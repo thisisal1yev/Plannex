@@ -36,11 +36,11 @@ function UserMenu() {
 
   const initials = `${user.firstName[0]}${user.lastName[0]}`.toUpperCase()
   const dashboardHref =
-    user.activeRole === 'ADMIN'
+    user.role === 'ADMIN'
       ? '/admin/dashboard'
-      : user.activeRole === 'ORGANIZER'
+      : user.role === 'ORGANIZER'
         ? '/dashboard'
-        : user.activeRole === 'VENDOR'
+        : user.role === 'VENDOR'
           ? '/my-venues'
           : '/events'
 

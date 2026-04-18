@@ -1,9 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsString } from 'class-validator';
+import { IsString } from 'class-validator';
 
 export class ApplyVolunteerDto {
-  @ApiProperty({ type: [String], example: ['registration', 'translation'] })
-  @IsArray()
-  @IsString({ each: true })
-  skills: string[];
+  @ApiProperty({ description: 'ID of the volunteer skill', example: 'uuid' })
+  @IsString()
+  skillId: string;
 }

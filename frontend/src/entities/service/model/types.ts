@@ -1,4 +1,4 @@
-import type { BookingStatus, RatingStats } from '@shared/types'
+import type { RatingStats } from '@shared/types'
 
 export interface ServiceCategory {
   id: string
@@ -8,8 +8,9 @@ export interface ServiceCategory {
 export interface Service {
   id: string
   vendorId: string
-  categoryId: string          // UUID (was: category: ServiceCategory enum)
-  category?: ServiceCategory  // included only if backend adds include: { category: true }
+  vendor?: { id: string; firstName: string; lastName: string }
+  categoryId: string
+  category?: ServiceCategory
   name: string
   description?: string
   priceFrom: number
@@ -24,7 +25,6 @@ export interface EventService {
   eventId: string
   serviceId: string
   service?: Service
-  status: BookingStatus
   agreedPrice: number
   createdAt: string
 }

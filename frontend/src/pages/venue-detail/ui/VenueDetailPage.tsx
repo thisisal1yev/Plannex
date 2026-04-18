@@ -5,14 +5,10 @@ import {
   ArrowLeft,
   MapPin,
   Star,
-  Wifi,
-  Car,
-  Volume2,
-  Music,
   Home,
-  Sun,
   ChevronRight,
   ChevronLeft,
+  Users,
 } from 'lucide-react'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Autoplay, Navigation } from 'swiper/modules'
@@ -115,15 +111,17 @@ export function VenueDetailPage() {
         <div className="bg-card border-border/60 flex h-16 w-16 items-center justify-center rounded-2xl border">
           <Home className="text-muted-foreground/20 size-7" />
         </div>
+        
         <div className="text-center">
           <p className="text-foreground text-[15px] font-semibold">Maydon topilmadi</p>
           <p className="text-muted-foreground/50 mt-1 text-[13px]">
             Bu maydon mavjud emas yoki o'chirilgan
           </p>
         </div>
+
         <Link
           to="/venues"
-          className="border-border text-muted-foreground hover:text-foreground hover:border-gold/30 flex h-8 items-center rounded-lg border px-4 text-[12px] transition-colors"
+          className="border-border text-muted-foreground hover:text-foreground hover:border-gold/30 flex h-8 items-center rounded-lg border px-4 text-xs transition-colors"
         >
           Barcha maydonlar
         </Link>
@@ -132,15 +130,6 @@ export function VenueDetailPage() {
   }
 
   const avgRating = venue.ratingStats?.avg ?? null
-
-  const amenityItems = [
-    venue.hasWifi && { Icon: Wifi, label: 'WiFi' },
-    venue.hasParking && { Icon: Car, label: 'Parkovka' },
-    venue.hasSound && { Icon: Volume2, label: 'Ovoz tizimi' },
-    venue.hasStage && { Icon: Music, label: 'Sahna' },
-    venue.isIndoor && { Icon: Home, label: 'Yopiq zal' },
-    !venue.isIndoor && { Icon: Sun, label: 'Ochiq maydon' },
-  ].filter(Boolean) as Array<{ Icon: typeof Wifi; label: string }>
 
   return (
     <div className="flex flex-col gap-0 pb-16">
@@ -189,7 +178,7 @@ export function VenueDetailPage() {
         {/* Title overlay */}
         <div className="absolute inset-x-0 bottom-0 z-10 mx-auto px-6 pb-8">
           <span className="text-gold-light/90 border-gold/20 mb-3 inline-flex items-center rounded-full border bg-black/45 px-3 py-1.5 text-xs font-medium tracking-[0.18em] uppercase backdrop-blur-sm">
-            {venue.isIndoor ? 'Yopiq zal' : 'Ochiq maydon'}
+            {venue.category?.name}
           </span>
           <h1 className="lp-serif mb-3 max-w-2xl text-4xl leading-tight font-bold text-white drop-shadow-lg md:text-5xl">
             {venue.name}
@@ -247,6 +236,24 @@ export function VenueDetailPage() {
             </span>
           </div>
 
+          {/* Owner section */}
+          {venue.owner && (
+            <div className="border-border/50 bg-card/35 relative overflow-hidden rounded-xl border">
+              <div className="from-gold/60 via-gold/25 absolute top-0 bottom-0 left-0 w-[2px] bg-linear-to-b to-transparent" />
+              <div className="flex items-center gap-4 p-5 pl-7">
+                <div className="bg-gold/8 border-gold/12 h-10 w-10 shrink-0 flex items-center justify-center rounded-xl border">
+                  <Users className="text-gold/55 size-4" />
+                </div>
+                <div>
+                  <p className="text-muted-foreground/35 text-[10px] tracking-[0.18em] uppercase">Egasi</p>
+                  <p className="text-foreground/85 text-[14px] font-semibold">
+                    {venue.owner.firstName} {venue.owner.lastName}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Description */}
           {venue.description && (
             <div className="border-gold/18 border-l pl-5">
@@ -256,31 +263,22 @@ export function VenueDetailPage() {
             </div>
           )}
 
-          {/* Amenities — icon-only with Tooltips */}
-          {amenityItems.length > 0 && (
+          {/* Amenities — text pills */}
+          {(venue.characteristics ?? []).length > 0 && (
             <div>
               <p className="text-muted-foreground/35 mb-4 text-[10px] font-semibold tracking-[0.15em] uppercase">
                 Qulayliklar
               </p>
-              <TooltipProvider>
-                <div className="flex flex-wrap gap-2.5">
-                  {amenityItems.map(({ Icon, label }) => (
-                    <Tooltip key={label}>
-                      <TooltipTrigger asChild>
-                        <button
-                          type="button"
-                          className="hover:border-gold/30 hover:bg-gold/8 flex h-11 w-11 cursor-default items-center justify-center rounded-xl border border-white/7 bg-white/3 backdrop-blur-xs transition-all duration-200"
-                        >
-                          <Icon className="text-gold/60 size-[18px]" />
-                        </button>
-                      </TooltipTrigger>
-                      <TooltipContent side="bottom" sideOffset={6}>
-                        <p>{label}</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  ))}
-                </div>
-              </TooltipProvider>
+              <div className="flex flex-wrap gap-2.5">
+                {venue.characteristics!.map((c) => (
+                  <div
+                    key={c.id}
+                    className="border-white/7 bg-white/3 rounded-xl px-3 py-2 text-[12px] text-gold/60"
+                  >
+                    {c.name}
+                  </div>
+                ))}
+              </div>
             </div>
           )}
 
@@ -301,7 +299,7 @@ export function VenueDetailPage() {
                     </span>
 
                     <span className="text-muted-foreground/35 text-[11px]">
-                      — {} ta sharh
+                      — {venue.ratingStats?.count ?? 0} ta sharh
                     </span>
                   </div>
                 ) : (
@@ -387,7 +385,7 @@ export function VenueDetailPage() {
               </CardTitle>
 
               <CardDescription className="text-muted-foreground/35 mt-0 text-[12px]">
-                {venue.city} • {venue.isIndoor ? 'Yopiq zal' : 'Ochiq maydon'}
+                {venue.city} • {venue.category?.name ?? '—'}
               </CardDescription>
             </CardHeader>
 
@@ -406,14 +404,14 @@ export function VenueDetailPage() {
                   <span className="text-muted-foreground/50 text-[13px]">Turi</span>
 
                   <span className="text-cream/82 text-[13px] font-semibold">
-                    {venue.isIndoor ? 'Yopiq zal' : 'Ochiq maydon'}
+                    {venue.category?.name ?? '—'}
                   </span>
                 </div>
                 <div className="flex items-center justify-between py-3">
                   <span className="text-muted-foreground/50 text-[13px]">Reyting</span>
 
                   <div className="flex items-center gap-1.5">
-                    <StarRating rating={avgRating} />
+                    <StarRating rating={avgRating ?? 0} />
 
                     <span className="text-cream/82 text-[13px] font-semibold">
                       {avgRating != null ? parseFloat(avgRating.toFixed(1)) : 0}

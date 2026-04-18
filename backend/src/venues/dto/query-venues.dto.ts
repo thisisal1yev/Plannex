@@ -14,6 +14,11 @@ export class QueryVenuesDto extends PaginationDto {
   @ApiPropertyOptional()
   @IsOptional()
   @IsString()
+  ownerId?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
   city?: string;
 
   @ApiPropertyOptional()
@@ -27,22 +32,4 @@ export class QueryVenuesDto extends PaginationDto {
   @IsNumber()
   @Min(0)
   maxPrice?: number;
-
-  @ApiPropertyOptional()
-  @IsOptional()
-  @Transform(({ value }) => value === 'true')
-  @IsBoolean()
-  isIndoor?: boolean;
-
-  @ApiPropertyOptional()
-  @IsOptional()
-  @Transform(({ value }) => value === 'true')
-  @IsBoolean()
-  hasParking?: boolean;
-
-  @ApiPropertyOptional()
-  @IsOptional()
-  @Transform(({ value }) => value === 'true')
-  @IsBoolean()
-  hasWifi?: boolean;
 }

@@ -69,10 +69,12 @@ export function VenuesListPage() {
           <h1 className="lp-serif text-4xl md:text-5xl font-bold text-foreground leading-none">
             Maydonlar
           </h1>
+
           <div className="text-right shrink-0">
             <p className="lp-serif text-3xl font-semibold text-gold leading-none">
               {data?.meta.total ?? "—"}
             </p>
+            
             <p className="text-xs text-muted-foreground mt-0.5">
               maydon topildi
             </p>

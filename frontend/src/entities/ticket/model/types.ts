@@ -1,11 +1,13 @@
-import type { PaymentStatus, PaymentProvider } from '@shared/types'
+import type { PaymentStatus, PaymentProvider, PaymentType } from '@shared/types'
 import type { TicketTier, Event } from '../../event/model/types'
 import type { User } from '../../user/model/types'
 
 export interface TicketPayment {
   id: string
   userId: string
+  type: PaymentType
   ticketId: string
+  bookingId?: string
   amount: number
   commission: number
   provider: PaymentProvider

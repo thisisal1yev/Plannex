@@ -1,13 +1,17 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsEnum, IsNumber, IsOptional, IsString, Min } from 'class-validator';
+import { IsNumber, IsOptional, IsString, Min } from 'class-validator';
 import { PaginationDto } from '../../common/utils/pagination.util';
-import { ServiceCategory } from '../../../generated/prisma/enums';
 
 export class QueryServicesDto extends PaginationDto {
-  @ApiPropertyOptional({ enum: ServiceCategory })
+  @ApiPropertyOptional()
   @IsOptional()
-  @IsEnum(ServiceCategory)
-  category?: ServiceCategory;
+  @IsString()
+  vendorId?: string;
+
+  @ApiPropertyOptional({ example: 'Katering' })
+  @IsOptional()
+  @IsString()
+  category?: string;
 
   @ApiPropertyOptional()
   @IsOptional()

@@ -35,7 +35,8 @@ export class ServicesService {
 
     const where: Prisma.ServiceWhereInput = {};
 
-    if (query.category) where.category = query.category;
+    if (query.vendorId) where.vendorId = query.vendorId;
+    if (query.category) where.category = { name: { contains: query.category, mode: 'insensitive' } };
     if (query.city) where.city = { contains: query.city, mode: 'insensitive' };
     if (query.maxPrice) where.priceFrom = { lte: new Decimal(query.maxPrice) };
 
@@ -62,7 +63,11 @@ export class ServicesService {
   async findOne(id: string) {
     const service = await this.prisma.service.findUnique({
       where: { id },
-      include: { ratingStats: true },
+      include: {
+        ratingStats: true,
+        category: true,
+        vendor: { select: { id: true, firstName: true, lastName: true } },
+      },
     });
     if (!service) throw new NotFoundException('Service not found');
     return service;
@@ -112,24 +117,6 @@ export class ServicesService {
   async getEventServices(eventId: string) {
     return this.prisma.eventService.findMany({
       where: { eventId },
-      include: { service: true },
-    });
-  }
-
-  /**
-   * Updates the booking status of an event service link — only the event organizer
-   */
-  async updateEventService(eventServiceId: string, status: string, userId: string) {
-    const link = await this.prisma.eventService.findUnique({
-      where: { id: eventServiceId },
-      include: { event: true },
-    });
-    if (!link) throw new NotFoundException('Event service not found');
-    if (link.event.organizerId !== userId)
-      throw new ForbiddenException('You do not own this event');
-    return this.prisma.eventService.update({
-      where: { id: eventServiceId },
-      data: { status: status as 'PENDING' | 'CONFIRMED' | 'CANCELLED' },
       include: { service: true },
     });
   }

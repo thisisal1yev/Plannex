@@ -51,8 +51,7 @@ export class UsersService {
           phone: true,
           firstName: true,
           lastName: true,
-          roles: true,
-          activeRole: true,
+          role: true,
           avatarUrl: true,
           isVerified: true,
           createdAt: true,
@@ -79,8 +78,7 @@ export class UsersService {
         phone: true,
         firstName: true,
         lastName: true,
-        roles: true,
-        activeRole: true,
+        role: true,
         avatarUrl: true,
         isVerified: true,
         createdAt: true,
@@ -98,24 +96,25 @@ export class UsersService {
    * If activeRole is provided, validates it is in the user's roles array
    */
   async updateSelf(userId: string, dto: UpdateUserDto) {
-    const user = await this.findOne(userId);
+    await this.findOne(userId);
 
-    const newRoles =
-      dto.activeRole && !user.roles.includes(dto.activeRole)
-        ? { roles: { set: [...user.roles, dto.activeRole] } }
-        : {};
+    const { activeRole, firstName, lastName, phone } = dto;
+    const data: Record<string, unknown> = {};
+    if (firstName !== undefined) data.firstName = firstName;
+    if (lastName  !== undefined) data.lastName  = lastName;
+    if (phone     !== undefined) data.phone      = phone;
+    if (activeRole !== undefined) data.role      = activeRole;
 
     return this.prisma.user.update({
       where: { id: userId },
-      data: { ...dto, ...newRoles },
+      data,
       select: {
         id: true,
         email: true,
         phone: true,
         firstName: true,
         lastName: true,
-        roles: true,
-        activeRole: true,
+        role: true,
         avatarUrl: true,
         isVerified: true,
         updatedAt: true,

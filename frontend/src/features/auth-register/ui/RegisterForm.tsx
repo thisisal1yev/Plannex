@@ -84,7 +84,7 @@ export function RegisterForm() {
       return user
     },
     onSuccess: (user) => {
-      if (user.activeRole === 'ORGANIZER') navigate('/dashboard')
+      if (user.role === 'ORGANIZER') navigate('/dashboard')
       else navigate('/')
     },
     onError: () => {
