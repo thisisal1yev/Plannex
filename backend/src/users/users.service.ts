@@ -39,8 +39,8 @@ export class UsersService {
         }
       : {};
 
-    const [items, total] = await this.prisma.$transaction([
-      this.prisma.user.findMany({
+    const [items, total] = await this.prisma.extended.$transaction([
+      this.prisma.extended.user.findMany({
         where,
         skip,
         take: limit,
@@ -57,7 +57,7 @@ export class UsersService {
           createdAt: true,
         },
       }),
-      this.prisma.user.count({ where }),
+      this.prisma.extended.user.count({ where }),
     ]);
 
     return {
@@ -70,7 +70,7 @@ export class UsersService {
    * Returns a single user by ID
    */
   async findOne(id: string) {
-    const user = await this.prisma.user.findUnique({
+    const user = await this.prisma.extended.user.findUnique({
       where: { id },
       select: {
         id: true,
@@ -105,7 +105,7 @@ export class UsersService {
     if (phone     !== undefined) data.phone      = phone;
     if (activeRole !== undefined) data.role      = activeRole;
 
-    return this.prisma.user.update({
+    return this.prisma.extended.user.update({
       where: { id: userId },
       data,
       select: {
@@ -131,6 +131,6 @@ export class UsersService {
 
     await this.findOne(id);
 
-    return this.prisma.user.delete({ where: { id } });
+    return this.prisma.extended.user.delete({ where: { id } });
   }
 }
