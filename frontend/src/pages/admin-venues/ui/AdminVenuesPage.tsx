@@ -121,10 +121,10 @@ export function AdminVenuesPage() {
 
                       <td className="px-4 py-3 hidden xl:table-cell">
                         <div className="flex items-center gap-1 flex-wrap">
-                          <AmenityChip active={v.hasWifi}    icon={Wifi}         label="Wi-Fi" />
-                          <AmenityChip active={v.hasParking} icon={ParkingCircle} label="Parking" />
-                          <AmenityChip active={v.hasSound}   icon={Volume2}       label="Sound" />
-                          <AmenityChip active={v.hasStage}   icon={Presentation}  label="Sahna" />
+                          <AmenityChip active={!!v.hasWifi}    icon={Wifi}         label="Wi-Fi" />
+                          <AmenityChip active={!!v.hasParking} icon={ParkingCircle} label="Parking" />
+                          <AmenityChip active={!!v.hasSound}   icon={Volume2}       label="Sound" />
+                          <AmenityChip active={!!v.hasStage}   icon={Presentation}  label="Sahna" />
                           {!v.hasWifi && !v.hasParking && !v.hasSound && !v.hasStage && (
                             <span className="text-[11px] text-muted-foreground/30">—</span>
                           )}
