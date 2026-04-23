@@ -79,7 +79,7 @@ async function seedCategories() {
 // ─── Volunteer Skills ─────────────────────────────────────────────────────────
 async function seedVolunteerSkills() {
   for (const name of VOLUNTEER_SKILLS) {
-    const s = await prisma.volunteerSkill.create({ data: { name } });
+    const s = await prisma.volunteerSkills.create({ data: { name } });
     createdIds.volunteerSkills[name] = s.id;
   }
 
@@ -89,7 +89,7 @@ async function seedVolunteerSkills() {
 // ─── Square Characteristics ───────────────────────────────────────────────────
 async function seedSquareCharacteristics() {
   for (const name of SQUARE_CHARACTERISTICS) {
-    const s = await prisma.squareCharacteristic.create({ data: { name } });
+    const s = await prisma.squareCharacteristics.create({ data: { name } });
     createdIds.squareCharacteristics[name] = s.id;
   }
 
@@ -160,7 +160,7 @@ async function seedEvents() {
         endDate: e.endDate,
         category: { connect: { id: createdIds.eventCategories[e.categoryName] } },
         capacity: e.capacity,
-        bannerUrls: e.bannerUrl,
+        bannerUrl: e.bannerUrl,
         status: EventStatus.PUBLISHED,
         organizer: { connect: { id: createdIds.users[e.organizerKey] } },
         square: { connect: { id: createdIds.squares[e.squareIndex!] } },
@@ -178,7 +178,7 @@ async function seedEvents() {
         endDate: e.endDate,
         category: { connect: { id: createdIds.eventCategories[e.categoryName] } },
         capacity: e.capacity,
-        bannerUrls: e.bannerUrl,
+        bannerUrl: e.bannerUrl,
         status: EventStatus.COMPLETED,
         organizer: { connect: { id: createdIds.users[e.organizerKey] } },
         square: { connect: { id: createdIds.squares[e.squareIndex!] } },
@@ -196,7 +196,7 @@ async function seedEvents() {
         endDate: e.endDate,
         category: { connect: { id: createdIds.eventCategories[e.categoryName] } },
         capacity: e.capacity,
-        bannerUrls: e.bannerUrl,
+        bannerUrl: e.bannerUrl,
         status: EventStatus.DRAFT,
         organizer: { connect: { id: createdIds.users[e.organizerKey] } },
       },
@@ -212,7 +212,7 @@ async function seedEvents() {
         endDate: e.endDate,
         category: { connect: { id: createdIds.eventCategories[e.categoryName] } },
         capacity: e.capacity,
-        bannerUrls: e.bannerUrl,
+        bannerUrl: e.bannerUrl,
         status: EventStatus.CANCELLED,
         organizer: { connect: { id: createdIds.users[e.organizerKey] } },
       },
