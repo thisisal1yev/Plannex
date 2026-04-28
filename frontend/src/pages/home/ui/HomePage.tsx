@@ -566,10 +566,11 @@ export function HomePage() {
       <section className="bg-navy px-6 py-20">
         <div className="mx-auto max-w-[1100px]">
           <div className="lp-noise border-primary/[0.28] relative overflow-hidden rounded-3xl border bg-[radial-gradient(ellipse_80%_80%_at_50%_50%,rgba(76,140,167,0.07),transparent_70%)] px-[clamp(24px,5vw,80px)] py-[clamp(48px,8vw,88px)] text-center">
-            <div className="pointer-events-none absolute top-[-30px] right-[-30px] opacity-[0.06]">
+            <div className="pointer-events-none absolute top-[-30px] right-[-30px]">
               <Ornament size={200} op={1} />
             </div>
-            <div className="pointer-events-none absolute bottom-[-30px] left-[-30px] opacity-[0.05]">
+
+            <div className="pointer-events-none absolute bottom-[-30px] left-[-30px]">
               <Ornament size={160} op={1} />
             </div>
 
@@ -590,6 +591,7 @@ export function HomePage() {
                 <Link to="/register" className={btnPrimary}>
                   Bepul boshlash →
                 </Link>
+
                 <Link to="/events" className={btnOutline}>
                   Tadbirlarni ko'rish
                 </Link>
