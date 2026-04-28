@@ -28,7 +28,11 @@ export class EventsService {
         organizerId,
         ticketTiers: ticketTiers ? { create: ticketTiers } : undefined,
       },
-      include: { ticketTiers: { include: { _count: { select: { tickets: true } } } }, square: true, category: { select: { id: true, name: true } } },
+      include: {
+        ticketTiers: { include: { _count: { select: { tickets: true } } } },
+        square: true,
+        category: { select: { id: true, name: true } },
+      },
     });
   }
 
@@ -46,7 +50,8 @@ export class EventsService {
     if (query.categoryId) where.categoryId = query.categoryId;
     if (query.city) where.square = { city: query.city };
     if (query.organizerId) where.organizerId = query.organizerId;
-    if (query.title) where.title = { contains: query.title, mode: 'insensitive' };
+    if (query.title)
+      where.title = { contains: query.title, mode: 'insensitive' };
 
     if (query.dateFrom || query.dateTo) {
       where.startDate = {};
@@ -84,7 +89,13 @@ export class EventsService {
       where: { id },
       include: {
         organizer: {
-          select: { id: true, firstName: true, lastName: true, email: true },
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
+            avatarUrl: true,
+          },
         },
         square: true,
         ticketTiers: { include: { _count: { select: { tickets: true } } } },
@@ -114,7 +125,11 @@ export class EventsService {
     return this.prisma.event.update({
       where: { id: eventId },
       data,
-      include: { ticketTiers: { include: { _count: { select: { tickets: true } } } }, square: true, category: { select: { id: true, name: true } } },
+      include: {
+        ticketTiers: { include: { _count: { select: { tickets: true } } } },
+        square: true,
+        category: { select: { id: true, name: true } },
+      },
     });
   }
 
@@ -163,7 +178,14 @@ export class EventsService {
       where: { eventId },
       include: {
         user: {
-          select: { id: true, firstName: true, lastName: true, email: true },
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            avatarUrl: true,
+            email: true,
+            phone: true,
+          },
         },
         tier: { select: { name: true, price: true } },
       },

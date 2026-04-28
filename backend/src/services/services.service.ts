@@ -36,7 +36,10 @@ export class ServicesService {
     const where: Prisma.ServiceWhereInput = {};
 
     if (query.vendorId) where.vendorId = query.vendorId;
-    if (query.category) where.category = { name: { contains: query.category, mode: 'insensitive' } };
+    if (query.category)
+      where.category = {
+        name: { contains: query.category, mode: 'insensitive' },
+      };
     if (query.city) where.city = { contains: query.city, mode: 'insensitive' };
     if (query.maxPrice) where.priceFrom = { lte: new Decimal(query.maxPrice) };
 
@@ -45,7 +48,7 @@ export class ServicesService {
         where,
         skip,
         take: limit,
-        include: { ratingStats: true },
+        include: { ratingStats: true, category: true },
         orderBy: { createdAt: 'desc' },
       }),
       this.prisma.service.count({ where }),
@@ -89,7 +92,9 @@ export class ServicesService {
   async attachToEvent(eventId: string, dto: AttachServiceDto, userId: string) {
     await this.findOne(dto.serviceId);
 
-    const event = await this.prisma.event.findUnique({ where: { id: eventId } });
+    const event = await this.prisma.event.findUnique({
+      where: { id: eventId },
+    });
     if (!event) throw new NotFoundException('Event not found');
     if (event.organizerId !== userId)
       throw new ForbiddenException('You do not own this event');

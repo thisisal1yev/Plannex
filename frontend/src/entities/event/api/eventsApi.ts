@@ -23,6 +23,7 @@ export interface QueryEventsDto {
   page?: number
   limit?: number
   city?: string
+  categoryId?: string
   eventType?: string
   dateFrom?: string
   dateTo?: string
@@ -60,7 +61,10 @@ export const eventsApi = {
   },
   participants: async (id: string): Promise<User[]> => {
     const { data } = await apiClient.get(`/events/${id}/participants`)
-    return data.data
+    return data.data.map((t: { user: User; createdAt: string }) => ({
+      ...t.user,
+      createdAt: t.createdAt,
+    }))
   },
   services: async (id: string): Promise<EventService[]> => {
     const { data } = await apiClient.get(`/events/${id}/services`)
