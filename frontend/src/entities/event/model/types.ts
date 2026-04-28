@@ -9,7 +9,7 @@ export interface TicketTier {
   name: string
   price: number
   quantity: number
-  sold?: number
+  _count?: { tickets: number }
   createdAt: string
 }
 
@@ -20,7 +20,7 @@ export interface Event {
   organizer?: User
   title: string
   description?: string
-  bannerUrl?: string[]
+  bannerUrls?: string[]
   startDate: string
   endDate: string
   eventType: string

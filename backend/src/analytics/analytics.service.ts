@@ -83,7 +83,7 @@ export class AnalyticsService {
         id: true,
         title: true,
         category: { select: { id: true, name: true } },
-        bannerUrl: true,
+        bannerUrls: true,
         startDate: true,
         status: true,
         organizer: { select: { firstName: true, lastName: true } },

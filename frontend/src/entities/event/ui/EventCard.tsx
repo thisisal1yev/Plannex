@@ -28,17 +28,21 @@ export function EventCard({ event, className, index = 0 }: EventCardProps) {
   const start = formatDateShort(event.startDate);
   const dot = STATUS_DOT[event.status] ?? "#9CA3AF";
   const label = STATUS_LABEL[event.status] ?? event.status;
-  const banner = event.bannerUrl?.[0];
-
-  const fadeDelay = `svc-d${(index % 12) + 1}`;
+  const banner = event.bannerUrls?.[0];
 
   return (
     <Link
       to={`/events/${event.id}`}
-      className={cn(`svc-card svc-fade ${fadeDelay} group relative flex flex-col rounded-2xl overflow-hidden
-        border border-white/8 bg-card ${className}`)}
+      className={cn(
+        "animate-[svc-in_0.45s_ease-out_both] group relative flex flex-col rounded-2xl overflow-hidden",
+        "border border-white/8 bg-card",
+        "transition-[transform,box-shadow,border-color] duration-280 ease-[cubic-bezier(0.34,1.56,0.64,1)]",
+        "hover:translate-y-[-5px] hover:shadow-[0_14px_40px_rgba(0,0,0,0.14),0_0_0_1px_rgba(76,140,167,0.28)] hover:border-primary/30!",
+        className
+      )}
+      style={{ animationDelay: `${(index % 12) * 0.04}s` }}
     >
-      {/* Animated gold shimmer rule at card bottom */}
+      {/* Animated primary shimmer rule at card bottom */}
       <div
         className="absolute bottom-0 left-0 right-0 h-[2px] z-10 pointer-events-none
           origin-center scale-x-0 group-hover:scale-x-100
@@ -59,7 +63,7 @@ export function EventCard({ event, className, index = 0 }: EventCardProps) {
           />
         ) : (
           <div className="w-full h-full bg-linear-to-br from-navy-2 to-navy-dark flex items-center justify-center">
-            <span className="lp-serif text-[90px] font-bold leading-none select-none text-gold/8">
+            <span className="font-serif text-[90px] font-bold leading-none select-none text-primary/8">
               {event.title.charAt(0).toUpperCase()}
             </span>
           </div>
@@ -110,7 +114,7 @@ export function EventCard({ event, className, index = 0 }: EventCardProps) {
         <div className="absolute bottom-0 px-4">
           {/* Event type — small eyebrow above title */}
           {event.eventType && (
-            <div className="text-xs uppercase tracking-widest text-gold/60 font-medium">
+            <div className="text-xs uppercase tracking-widest text-primary/60 font-medium">
               {event.eventType}
             </div>
           )}
@@ -118,8 +122,8 @@ export function EventCard({ event, className, index = 0 }: EventCardProps) {
           {/* Title bleeds over image bottom */}
           <div className="pb-3.5">
             <h3
-              className="lp-serif text-[20px] font-bold leading- line-clamp-2 text-cream/95
-              transition-colors duration-200 group-hover:text-gold-light"
+              className="font-serif text-[20px] font-bold leading- line-clamp-2 text-cream/95
+              transition-colors duration-200 group-hover:text-primary-light"
             >
               {event.title}
             </h3>
@@ -131,21 +135,21 @@ export function EventCard({ event, className, index = 0 }: EventCardProps) {
       <div className="px-4 py-3 flex flex-col gap-2">
         <div className="flex items-center gap-1.5 text-[12px] text-cream/40">
           {/* Date */}
-          <Calendar className="w-3 h-3 shrink-0 text-gold/40" />
+          <Calendar className="w-3 h-3 shrink-0 text-primary/40" />
 
-          <span className="group-hover:text-gold transition-colors duration-200">
+          <span className="group-hover:text-primary transition-colors duration-200">
             {start}
           </span>
 
           {event.venue && (
             <>
-              <span className="text-cream/15 mx-0.5 group-hover:text-gold transition-colors duration-200">
+              <span className="text-cream/15 mx-0.5 group-hover:text-primary transition-colors duration-200">
                 •
               </span>
 
-              <MapPin className="w-3 h-3 shrink-0 text-gold/40 group-hover:text-gold transition-colors duration-200" />
+              <MapPin className="w-3 h-3 shrink-0 text-primary/40 group-hover:text-primary transition-colors duration-200" />
 
-              <span className="truncate group-hover:text-gold transition-colors duration-200">
+              <span className="truncate group-hover:text-primary transition-colors duration-200">
                 {event.venue.city}
               </span>
             </>
@@ -153,8 +157,8 @@ export function EventCard({ event, className, index = 0 }: EventCardProps) {
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-between pt-2 border-t border-white/5 group-hover:border-t-gold-dark/30 transition-colors duration-200">
-          <span className="text-[12px] text-gold/70 font-medium flex items-center gap-1 group-hover:text-gold transition-colors duration-200 ml-auto">
+        <div className="flex items-center justify-between pt-2 border-t border-white/5 group-hover:border-t-primary-dark/30 transition-colors duration-200">
+          <span className="text-[12px] text-primary/70 font-medium flex items-center gap-1 group-hover:text-primary transition-colors duration-200 ml-auto">
             Batafsil
             <ArrowRight className="w-3 h-3 transition-transform duration-200 group-hover:translate-x-0.5" />
           </span>

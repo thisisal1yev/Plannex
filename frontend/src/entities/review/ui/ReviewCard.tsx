@@ -21,10 +21,10 @@ export function ReviewCard({ review }: ReviewCardProps) {
           <img
             src={review.author.avatarUrl}
             alt={fullName}
-            className="h-10 w-10 rounded-full object-cover ring-2 ring-gold/20 shrink-0"
+            className="h-10 w-10 rounded-full object-cover ring-2 ring-primary/20 shrink-0"
           />
         ) : (
-          <div className="h-10 w-10 rounded-full bg-gold/10 border border-gold/15 flex items-center justify-center text-gold/70 font-semibold text-sm shrink-0">
+          <div className="h-10 w-10 rounded-full bg-primary/10 border border-primary/15 flex items-center justify-center text-primary/70 font-semibold text-sm shrink-0">
             {initials}
           </div>
         )}

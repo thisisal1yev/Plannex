@@ -67,7 +67,7 @@ function QrModal({ onClose }: { onClose: () => void }) {
       <div className="w-full max-w-sm bg-card border border-border rounded-2xl shadow-2xl p-5">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
-            <QrCode className="size-4 text-gold/70" />
+            <QrCode className="size-4 text-primary/70" />
             <p className="font-semibold text-[14px] text-foreground">{STRINGS.qrModalTitle}</p>
           </div>
           <button onClick={onClose} className="text-muted-foreground/50 hover:text-foreground transition-colors">
@@ -81,7 +81,7 @@ function QrModal({ onClose }: { onClose: () => void }) {
             placeholder={STRINGS.qrPlaceholder}
             value={qrCode}
             onChange={(e) => setQrCode(e.target.value)}
-            className="w-full h-9 px-3 text-[13px] bg-background border border-border rounded-lg focus:outline-none focus:border-gold/40 transition-colors placeholder:text-muted-foreground/40"
+            className="w-full h-9 px-3 text-[13px] bg-background border border-border rounded-lg focus:outline-none focus:border-primary/40 transition-colors placeholder:text-muted-foreground/40"
             onKeyDown={(e) => e.key === 'Enter' && qrCode && mutation.mutate()}
           />
 
@@ -116,7 +116,7 @@ function QrModal({ onClose }: { onClose: () => void }) {
             <button
               onClick={() => mutation.mutate()}
               disabled={!qrCode || mutation.isPending}
-              className="flex-1 h-9 rounded-lg text-[13px] font-semibold bg-gold text-navy hover:bg-gold-light disabled:opacity-40 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-1.5"
+              className="flex-1 h-9 rounded-lg text-[13px] font-semibold bg-primary text-navy hover:bg-primary-light disabled:opacity-40 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-1.5"
             >
               {mutation.isPending
                 ? <><Loader2 className="size-3.5 animate-spin" />{STRINGS.checking}</>
@@ -150,9 +150,9 @@ export function EventParticipantsPage() {
     if (!search) return true
     const q = search.toLowerCase()
     return (
-      u.firstName.toLowerCase().includes(q) ||
-      u.lastName.toLowerCase().includes(q) ||
-      u.email.toLowerCase().includes(q)
+      u.firstName?.toLowerCase().includes(q) ||
+      u.lastName?.toLowerCase().includes(q) ||
+      u.email?.toLowerCase().includes(q)
     )
   })
 
@@ -164,7 +164,7 @@ export function EventParticipantsPage() {
       {/* ── Header ── */}
       <div className="flex items-center gap-3 flex-wrap">
         <div className="flex items-center gap-2.5 flex-1 min-w-0">
-          <Users className="size-5 text-gold/70 shrink-0" />
+          <Users className="size-5 text-primary/70 shrink-0" />
           <h1 className="text-[18px] font-bold text-foreground tracking-tight">{STRINGS.title}</h1>
           <span className="text-[11px] font-medium text-muted-foreground/50 border border-border rounded-full px-2.5 py-0.5 bg-muted/20">
             {participants?.length ?? 0} ta
@@ -173,7 +173,7 @@ export function EventParticipantsPage() {
         <div className="flex items-center gap-2">
           <button
             onClick={() => setQrOpen(true)}
-            className="inline-flex items-center gap-1.5 h-8 px-3 rounded-lg text-[12px] font-medium border border-border text-muted-foreground hover:text-foreground hover:border-gold/30 transition-colors"
+            className="inline-flex items-center gap-1.5 h-8 px-3 rounded-lg text-[12px] font-medium border border-border text-muted-foreground hover:text-foreground hover:border-primary/30 transition-colors"
           >
             <QrCode className="size-3.5" />
             {STRINGS.validateQr}
@@ -181,7 +181,7 @@ export function EventParticipantsPage() {
           <button
             onClick={() => exportCsv(filtered)}
             disabled={filtered.length === 0}
-            className="inline-flex items-center gap-1.5 h-8 px-3 rounded-lg text-[12px] font-medium bg-gold/10 border border-gold/20 text-gold hover:bg-gold/15 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            className="inline-flex items-center gap-1.5 h-8 px-3 rounded-lg text-[12px] font-medium bg-primary/10 border border-primary/20 text-primary hover:bg-primary/15 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
           >
             <Download className="size-3.5" />
             {STRINGS.export}
@@ -197,7 +197,7 @@ export function EventParticipantsPage() {
           placeholder={STRINGS.search}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full h-9 pl-8 pr-3 text-[13px] bg-card border border-border rounded-lg focus:outline-none focus:border-gold/40 transition-colors placeholder:text-muted-foreground/30"
+          className="w-full h-9 pl-8 pr-3 text-[13px] bg-card border border-border rounded-lg focus:outline-none focus:border-primary/40 transition-colors placeholder:text-muted-foreground/30"
         />
         {search && (
           <button
@@ -233,8 +233,10 @@ export function EventParticipantsPage() {
                 <tr key={u.id} className="border-b border-border/30 last:border-0 hover:bg-muted/10 transition-colors">
                   <td className="px-5 py-3">
                     <div className="flex items-center gap-2.5">
-                      <div className="w-7 h-7 rounded-full bg-gold/10 border border-gold/15 flex items-center justify-center shrink-0 text-[11px] font-bold text-gold/80">
-                        {u.firstName[0]?.toUpperCase()}{u.lastName[0]?.toUpperCase()}
+                      <div className="w-7 h-7 rounded-full bg-primary/10 border border-primary/15 flex items-center justify-center shrink-0 text-[11px] font-bold text-primary/80 overflow-hidden">
+                        {u.avatarUrl
+                          ? <img src={u.avatarUrl} alt={`${u.firstName} ${u.lastName}`} className="w-full h-full object-cover" />
+                          : <>{u.firstName?.[0]?.toUpperCase()}{u.lastName?.[0]?.toUpperCase()}</>}
                       </div>
                       <div>
                         <p className="text-[13px] font-medium text-foreground leading-none">{u.firstName} {u.lastName}</p>

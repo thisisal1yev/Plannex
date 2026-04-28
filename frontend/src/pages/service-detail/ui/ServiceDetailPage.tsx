@@ -101,7 +101,7 @@ export function ServiceDetailPage() {
 
         <Link
           to="/services"
-          className="border-border text-muted-foreground hover:text-foreground hover:border-gold/30 flex h-8 items-center rounded-lg border px-4 text-xs transition-colors"
+          className="border-border text-muted-foreground hover:text-foreground hover:border-primary/30 flex h-8 items-center rounded-lg border px-4 text-xs transition-colors"
         >
           Barcha xizmatlar
         </Link>
@@ -152,16 +152,16 @@ export function ServiceDetailPage() {
         </div>
 
         <div className="absolute inset-x-0 bottom-0 z-10 mx-auto px-6 pb-8">
-          <span className="text-gold-light/90 border-gold/20 mb-3 inline-flex items-center rounded-full border bg-black/45 px-3 py-1.5 text-xs font-medium tracking-[0.18em] uppercase backdrop-blur-sm">
+          <span className="text-primary-light/90 border-primary/20 mb-3 inline-flex items-center rounded-full border bg-black/45 px-3 py-1.5 text-xs font-medium tracking-[0.18em] uppercase backdrop-blur-sm">
             {service.category?.name ?? '—'}
           </span>
-          <h1 className="lp-serif mb-3 max-w-2xl text-4xl leading-tight font-bold text-white drop-shadow-lg md:text-5xl">
+          <h1 className="font-serif mb-3 max-w-2xl text-4xl leading-tight font-bold text-white drop-shadow-lg md:text-5xl">
             {service.name}
           </h1>
           <div className="flex flex-wrap items-center gap-4 text-sm text-white/80">
             <div className="flex items-center gap-1.5">
               <StarRating rating={avgRating ?? 0} />
-              <span className="text-gold-light font-medium">
+              <span className="text-primary-light font-medium">
                 {parseFloat((avgRating ?? 0).toFixed(1))}
               </span>
             </div>
@@ -169,7 +169,7 @@ export function ServiceDetailPage() {
             <span className="text-white/25">•</span>
 
             <div className="flex items-center gap-1">
-              <MapPin className="text-gold/60 h-3.5 w-3.5" />
+              <MapPin className="text-primary/60 h-3.5 w-3.5" />
               {service.city}
             </div>
           </div>
@@ -186,7 +186,7 @@ export function ServiceDetailPage() {
                 }}
                 className={`h-12 w-16 cursor-pointer overflow-hidden rounded-lg border-2 transition-all duration-200 ${
                   i === imgIndex
-                    ? 'border-gold shadow-[0_0_14px_rgba(76,140,167,0.5)]'
+                    ? 'border-primary shadow-[0_0_14px_rgba(76,140,167,0.5)]'
                     : 'border-white/20 opacity-55 hover:opacity-100'
                 }`}
               >
@@ -204,10 +204,10 @@ export function ServiceDetailPage() {
           {/* Vendor block */}
           {service.vendor && (
             <div className="border-border/50 bg-card/35 relative overflow-hidden rounded-xl border">
-              <div className="from-gold/60 via-gold/25 absolute top-0 bottom-0 left-0 w-[2px] bg-linear-to-b to-transparent" />
+              <div className="from-primary/60 via-primary/25 absolute top-0 bottom-0 left-0 w-[2px] bg-linear-to-b to-transparent" />
               <div className="flex items-center gap-4 p-5 pl-7">
-                <div className="bg-gold/8 border-gold/12 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border">
-                  <Users className="text-gold/55 size-4" />
+                <div className="bg-primary/8 border-primary/12 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border">
+                  <Users className="text-primary/55 size-4" />
                 </div>
                 <div>
                   <p className="text-muted-foreground/35 text-[10px] tracking-[0.18em] uppercase">
@@ -223,7 +223,7 @@ export function ServiceDetailPage() {
 
           {/* Description */}
           {service.description && (
-            <div className="border-gold/18 border-l pl-5">
+            <div className="border-primary/18 border-l pl-5">
               <p className="text-muted-foreground/72 text-[15px] leading-[1.8]">
                 {service.description}
               </p>
@@ -256,7 +256,7 @@ export function ServiceDetailPage() {
               {user && (
                 <button
                   onClick={() => setReviewModal(true)}
-                  className="border-gold/18 text-gold/60 hover:bg-gold/7 hover:text-gold hover:border-gold/35 h-8 rounded-lg border px-4 text-[10px] font-medium tracking-[0.12em] uppercase transition-all duration-200"
+                  className="border-primary/18 text-primary/60 hover:bg-primary/7 hover:text-primary hover:border-primary/35 h-8 rounded-lg border px-4 text-[10px] font-medium tracking-[0.12em] uppercase transition-all duration-200"
                 >
                   Sharh yozish
                 </button>
@@ -272,7 +272,7 @@ export function ServiceDetailPage() {
                 {user && (
                   <button
                     onClick={() => setReviewModal(true)}
-                    className="text-gold/50 hover:text-gold text-[10px] tracking-[0.12em] uppercase transition-colors"
+                    className="text-primary/50 hover:text-primary text-[10px] tracking-[0.12em] uppercase transition-colors"
                   >
                     Birinchi bo'lib sharh yozing
                   </button>
@@ -291,13 +291,13 @@ export function ServiceDetailPage() {
                   <div className="mt-2 flex items-center space-x-1">
                     <button
                       type="button"
-                      className="prev bg-card/90 border-border/50 text-foreground/60 hover:text-foreground hover:border-gold/30 hover:bg-card ml-auto flex h-9 w-9 items-center justify-center rounded-full border shadow-sm backdrop-blur-sm transition-all duration-200"
+                      className="prev bg-card/90 border-border/50 text-foreground/60 hover:text-foreground hover:border-primary/30 hover:bg-card ml-auto flex h-9 w-9 items-center justify-center rounded-full border shadow-sm backdrop-blur-sm transition-all duration-200"
                     >
                       <ChevronLeft className="size-5" />
                     </button>
                     <button
                       type="button"
-                      className="next bg-card/90 border-border/50 text-foreground/60 hover:text-foreground hover:border-gold/30 hover:bg-card flex h-9 w-9 items-center justify-center rounded-full border shadow-sm backdrop-blur-sm transition-all duration-200"
+                      className="next bg-card/90 border-border/50 text-foreground/60 hover:text-foreground hover:border-primary/30 hover:bg-card flex h-9 w-9 items-center justify-center rounded-full border shadow-sm backdrop-blur-sm transition-all duration-200"
                     >
                       <ChevronRight className="size-5" />
                     </button>
@@ -317,10 +317,10 @@ export function ServiceDetailPage() {
         {/* Right column: booking card */}
         <div className="lg:col-span-5">
           <div className="bg-card top-20 overflow-hidden rounded-2xl">
-            <div className="from-gold-dark via-gold to-gold-light h-[3px] bg-linear-to-r" />
+            <div className="from-primary-dark via-primary to-primary-light h-[3px] bg-linear-to-r" />
 
             <CardHeader className="pt-5 pb-5">
-              <div className="text-gold text-[34px] leading-none font-bold tracking-tight">
+              <div className="text-primary text-[34px] leading-none font-bold tracking-tight">
                 {formatUZS(service.priceFrom)}
               </div>
 
@@ -361,12 +361,12 @@ export function ServiceDetailPage() {
               <Separator className="my-4 opacity-8" />
 
               {user ? (
-                <div className="bg-gold/5 border-gold/10 text-gold/55 rounded-xl border px-4 py-3.5 text-center text-[12px] leading-relaxed">
+                <div className="bg-primary/5 border-primary/10 text-primary/55 rounded-xl border px-4 py-3.5 text-center text-[12px] leading-relaxed">
                   "Mening tadbirlarim" bo'limida tadbirga ulang
                 </div>
               ) : (
                 <Link to="/login" className="block">
-                  <button className="bg-gold text-background hover:bg-gold/88 h-10 w-full cursor-pointer rounded-xl text-[13px] font-semibold transition-colors">
+                  <button className="bg-primary text-background hover:bg-primary/88 h-10 w-full cursor-pointer rounded-xl text-[13px] font-semibold transition-colors">
                     Bog'lanish uchun kiring
                   </button>
                 </Link>

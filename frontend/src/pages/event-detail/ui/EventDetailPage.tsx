@@ -90,7 +90,7 @@ export function EventDetailPage() {
         </div>
 
         <div className="text-center">
-          <p className="lp-serif text-foreground/60 text-[18px]">Tadbir topilmadi</p>
+          <p className="text-foreground/60 font-serif text-[18px]">Tadbir topilmadi</p>
           <p className="text-muted-foreground/40 mt-1 text-[12px]">
             Bunday tadbir mavjud emas yoki o'chirilgan
           </p>
@@ -98,7 +98,7 @@ export function EventDetailPage() {
 
         <Link
           to="/events"
-          className="text-gold/60 hover:text-gold text-[11px] tracking-[0.12em] uppercase transition-colors"
+          className="text-primary/60 hover:text-primary text-[11px] tracking-[0.12em] uppercase transition-colors"
         >
           ← Barcha tadbirlar
         </Link>
@@ -111,15 +111,13 @@ export function EventDetailPage() {
   const reviewList = reviews?.data ?? []
   const reviewCount = reviewList.length
   const avgRating =
-    reviewCount > 0
-      ? reviewList.reduce((sum, r) => sum + r.rating, 0) / reviewCount
-      : null
+    reviewCount > 0 ? reviewList.reduce((sum, r) => sum + r.rating, 0) / reviewCount : null
 
   return (
     <div className="flex flex-col pb-16">
       {/* Cinematic hero */}
       <div className="relative h-[58vh] max-h-[560px] min-h-[380px] w-full overflow-hidden rounded-2xl">
-        {event.bannerUrl && event.bannerUrl.length > 0 ? (
+        {event.bannerUrls && event.bannerUrls.length > 0 ? (
           <Swiper
             modules={[Autoplay]}
             autoplay={{ delay: 2500, disableOnInteraction: false }}
@@ -130,7 +128,7 @@ export function EventDetailPage() {
             }}
             onSlideChange={(s) => setImgIndex(s.realIndex)}
           >
-            {event.bannerUrl.map((url, idx) => (
+            {event.bannerUrls.map((url, idx) => (
               <SwiperSlide key={`${url}-${idx}`}>
                 <img src={url} alt={event.title} className="h-full w-full object-cover" />
               </SwiperSlide>
@@ -161,24 +159,24 @@ export function EventDetailPage() {
 
         {/* Title overlay */}
         <div className="absolute inset-x-0 bottom-0 z-10 mx-auto px-6 pb-8">
-          <span className="text-gold-light/90 border-gold/20 mb-3 inline-flex items-center rounded-full border bg-black/45 px-3 py-1.5 text-xs font-medium tracking-[0.18em] uppercase backdrop-blur-sm">
+          <span className="text-primary-light/90 border-primary/20 mb-3 inline-flex items-center rounded-full border bg-black/45 px-3 py-1.5 text-xs font-medium tracking-[0.18em] uppercase backdrop-blur-sm">
             {event.eventType}
           </span>
 
-          <h1 className="lp-serif mb-3 max-w-2xl text-4xl leading-tight font-bold text-white drop-shadow-lg md:text-5xl">
+          <h1 className="mb-3 max-w-2xl font-serif text-4xl leading-tight font-bold text-white drop-shadow-lg md:text-5xl">
             {event.title}
           </h1>
           <div className="flex flex-wrap items-center gap-4 text-sm text-white/80">
             <div className="flex items-center gap-1.5">
-              <StarRating rating={avgRating ?? 0}/>
+              <StarRating rating={avgRating ?? 0} />
 
-              <span className="text-gold-light font-medium">{avgRating?.toFixed(1)}</span>
+              <span className="text-primary-light font-medium">{avgRating?.toFixed(1)}</span>
             </div>
 
             <span className="text-white/25">•</span>
 
             <div className="flex items-center gap-1">
-              <MapPin className="text-gold/60 h-3.5 w-3.5" />
+              <MapPin className="text-primary/60 h-3.5 w-3.5" />
 
               <span>{event.venue?.city}</span>
             </div>
@@ -186,9 +184,9 @@ export function EventDetailPage() {
         </div>
 
         {/* Thumbnail strip */}
-        {(event?.bannerUrl?.length ?? 0) > 1 && (
+        {(event?.bannerUrls?.length ?? 0) > 1 && (
           <div className="absolute right-6 bottom-6 z-10 flex gap-1.5">
-            {event?.bannerUrl?.map((url: string, i: number) => (
+            {event?.bannerUrls?.map((url: string, i: number) => (
               <button
                 key={i}
                 onClick={() => {
@@ -197,7 +195,7 @@ export function EventDetailPage() {
                 }}
                 className={`h-12 w-16 cursor-pointer overflow-hidden rounded-lg border-2 transition-all duration-200 ${
                   i === imgIndex
-                    ? 'border-gold shadow-[0_0_14px_rgba(76,140,167,0.5)]'
+                    ? 'border-primary shadow-[0_0_14px_rgba(76,140,167,0.5)]'
                     : 'border-white/20 opacity-55 hover:opacity-100'
                 }`}
               >
@@ -214,7 +212,7 @@ export function EventDetailPage() {
         <div className="flex flex-col gap-8 lg:col-span-7">
           {/* Description */}
           {event.description && (
-            <section className="border-gold/30 border-l-2 pl-6">
+            <section className="border-primary/30 border-l-2 pl-6">
               <h2 className="text-muted-foreground/35 mb-4 text-[10px] font-semibold tracking-[0.22em] uppercase">
                 Tadbir haqida
               </h2>
@@ -272,11 +270,11 @@ export function EventDetailPage() {
               <h2 className="text-muted-foreground/35 mb-4 text-[10px] font-semibold tracking-[0.22em] uppercase">
                 Tashkilotchi
               </h2>
-              <div className="border-border/50 hover:border-gold/25 bg-card/35 relative overflow-hidden rounded-xl border transition-all duration-300">
-                <div className="from-gold/60 via-gold/25 absolute top-0 bottom-0 left-0 w-[2px] bg-linear-to-b to-transparent" />
+              <div className="border-border/50 hover:border-primary/25 bg-card/35 relative overflow-hidden rounded-xl border transition-all duration-300">
+                <div className="from-primary/60 via-primary/25 absolute top-0 bottom-0 left-0 w-[2px] bg-linear-to-b to-transparent" />
                 <div className="flex items-center gap-4 p-5 pl-7">
-                  <div className="bg-gold/8 border-gold/12 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border">
-                    <Users className="text-gold/55 size-4" />
+                  <div className="bg-primary/8 border-primary/12 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border">
+                    <Users className="text-primary/55 size-4" />
                   </div>
                   <div>
                     <p className="text-foreground/85 text-[14px] font-semibold">
@@ -298,15 +296,15 @@ export function EventDetailPage() {
                 Manzil
               </h2>
               <Link to={`/venues/${event.venue.id}`} className="group block">
-                <div className="border-border/50 hover:border-gold/25 bg-card/35 relative overflow-hidden rounded-xl border transition-all duration-300">
-                  <div className="from-gold/60 via-gold/25 absolute top-0 bottom-0 left-0 w-[2px] bg-linear-to-b to-transparent" />
+                <div className="border-border/50 hover:border-primary/25 bg-card/35 relative overflow-hidden rounded-xl border transition-all duration-300">
+                  <div className="from-primary/60 via-primary/25 absolute top-0 bottom-0 left-0 w-[2px] bg-linear-to-b to-transparent" />
                   <div className="flex items-center justify-between gap-3 p-5 pl-7">
                     <div className="flex items-center gap-4">
-                      <div className="bg-gold/8 border-gold/12 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border">
-                        <MapPin className="text-gold/55 size-4" />
+                      <div className="bg-primary/8 border-primary/12 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border">
+                        <MapPin className="text-primary/55 size-4" />
                       </div>
                       <div>
-                        <p className="text-foreground/85 group-hover:text-gold text-[14px] font-semibold transition-colors duration-200">
+                        <p className="text-foreground/85 group-hover:text-primary text-[14px] font-semibold transition-colors duration-200">
                           {event.venue.name}
                         </p>
                         <p className="text-muted-foreground/45 mt-0.5 text-[12px]">
@@ -314,7 +312,7 @@ export function EventDetailPage() {
                         </p>
                       </div>
                     </div>
-                    <ChevronRight className="text-muted-foreground/20 group-hover:text-gold size-4 shrink-0 transition-all duration-200 group-hover:translate-x-0.5" />
+                    <ChevronRight className="text-muted-foreground/20 group-hover:text-primary size-4 shrink-0 transition-all duration-200 group-hover:translate-x-0.5" />
                   </div>
                 </div>
               </Link>
@@ -331,9 +329,9 @@ export function EventDetailPage() {
                 {event.eventServices.map((es) => (
                   <div
                     key={es.id}
-                    className="border-border/50 hover:border-gold/25 bg-card/35 relative overflow-hidden rounded-xl border transition-all duration-300"
+                    className="border-border/50 hover:border-primary/25 bg-card/35 relative overflow-hidden rounded-xl border transition-all duration-300"
                   >
-                    <div className="from-gold/60 via-gold/25 absolute top-0 bottom-0 left-0 w-[2px] bg-linear-to-b to-transparent" />
+                    <div className="from-primary/60 via-primary/25 absolute top-0 bottom-0 left-0 w-[2px] bg-linear-to-b to-transparent" />
                     <div className="flex items-center justify-between gap-3 p-5 pl-7">
                       <div className="flex flex-col">
                         <p className="text-foreground/85 text-[14px] font-semibold">
@@ -343,7 +341,7 @@ export function EventDetailPage() {
                           {es.service?.category?.name}
                         </p>
                       </div>
-                      <p className="text-gold/60 text-[13px] font-semibold whitespace-nowrap">
+                      <p className="text-primary/60 text-[13px] font-semibold whitespace-nowrap">
                         {es.agreedPrice.toLocaleString('uz-UZ')} so'm
                       </p>
                     </div>
@@ -369,7 +367,9 @@ export function EventDetailPage() {
                       {avgRating.toFixed(1)}
                     </span>
 
-                    <span className="text-muted-foreground/35 text-[11px]">— {reviewCount} ta sharh</span>
+                    <span className="text-muted-foreground/35 text-[11px]">
+                      — {reviewCount} ta sharh
+                    </span>
                   </div>
                 ) : (
                   <p className="text-muted-foreground/30 mt-1.5 text-[11px]">Hali sharh yo'q</p>
@@ -379,7 +379,7 @@ export function EventDetailPage() {
               {user && (
                 <button
                   onClick={() => setReviewModal(true)}
-                  className="border-gold/18 text-gold/60 hover:bg-gold/7 hover:text-gold hover:border-gold/35 h-8 rounded-lg border px-4 text-[10px] font-medium tracking-[0.12em] uppercase transition-all duration-200"
+                  className="border-primary/18 text-primary/60 hover:bg-primary/7 hover:text-primary hover:border-primary/35 h-8 rounded-lg border px-4 text-[10px] font-medium tracking-[0.12em] uppercase transition-all duration-200"
                 >
                   Sharh yozish
                 </button>
@@ -397,7 +397,7 @@ export function EventDetailPage() {
                 {user && (
                   <button
                     onClick={() => setReviewModal(true)}
-                    className="text-gold/50 hover:text-gold mt-3 text-[10px] tracking-[0.12em] uppercase transition-colors"
+                    className="text-primary/50 hover:text-primary mt-3 text-[10px] tracking-[0.12em] uppercase transition-colors"
                   >
                     Birinchi bo'lib sharh yozing
                   </button>
@@ -418,14 +418,14 @@ export function EventDetailPage() {
                 <div className="mt-2 flex items-center space-x-1">
                   <button
                     type="button"
-                    className="prev bg-card/90 border-border/50 text-foreground/60 hover:text-foreground hover:border-gold/30 hover:bg-card ml-auto flex h-9 w-9 items-center justify-center rounded-full border shadow-sm backdrop-blur-sm transition-all duration-200"
+                    className="prev bg-card/90 border-border/50 text-foreground/60 hover:text-foreground hover:border-primary/30 hover:bg-card ml-auto flex h-9 w-9 items-center justify-center rounded-full border shadow-sm backdrop-blur-sm transition-all duration-200"
                   >
                     <ChevronLeft className="size-5" />
                   </button>
 
                   <button
                     type="button"
-                    className="next bg-card/90 border-border/50 text-foreground/60 hover:text-foreground hover:border-gold/30 hover:bg-card flex h-9 w-9 items-center justify-center rounded-full border shadow-sm backdrop-blur-sm transition-all duration-200"
+                    className="next bg-card/90 border-border/50 text-foreground/60 hover:text-foreground hover:border-primary/30 hover:bg-card flex h-9 w-9 items-center justify-center rounded-full border shadow-sm backdrop-blur-sm transition-all duration-200"
                   >
                     <ChevronRight className="size-5" />
                   </button>
@@ -446,27 +446,27 @@ export function EventDetailPage() {
           <div className="flex flex-col gap-4 lg:sticky lg:top-20">
             {/* Ticket purchase — premium ticket stub */}
             {event.status === 'PUBLISHED' && event.ticketTiers && event.ticketTiers.length > 0 && (
-              <div className="border-gold/18 bg-card relative overflow-hidden rounded-xl border">
+              <div className="border-primary/18 bg-card relative overflow-hidden rounded-xl border">
                 {/* Stub header */}
-                <div className="from-gold/9 border-gold/12 relative border-b bg-linear-to-r to-transparent px-5 py-4">
+                <div className="from-primary/9 border-primary/12 relative border-b bg-linear-to-r to-transparent px-5 py-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-gold/45 mb-1 text-[9px] font-medium tracking-[0.25em] uppercase">
+                      <p className="text-primary/45 mb-1 text-[9px] font-medium tracking-[0.25em] uppercase">
                         Event Ticket
                       </p>
 
-                      <p className="lp-serif text-foreground/90 text-[18px] font-bold">
+                      <p className="text-foreground/90 font-serif text-[18px] font-bold">
                         Chipta sotib olish
                       </p>
                     </div>
 
-                    <span className="text-gold/55 bg-gold/8 border-gold/15 rounded border px-2.5 py-1.5 text-[9px] tracking-[0.12em] uppercase">
+                    <span className="text-primary/55 bg-primary/8 border-primary/15 rounded border px-2.5 py-1.5 text-[9px] tracking-[0.12em] uppercase">
                       {event.ticketTiers.length} xil
                     </span>
                   </div>
                   {/* Corner accent marks */}
-                  <span className="border-gold/18 absolute top-2.5 right-2.5 h-3 w-3 border-t border-r" />
-                  <span className="border-gold/18 absolute bottom-2.5 left-2.5 h-3 w-3 border-b border-l" />
+                  <span className="border-primary/18 absolute top-2.5 right-2.5 h-3 w-3 border-t border-r" />
+                  <span className="border-primary/18 absolute bottom-2.5 left-2.5 h-3 w-3 border-b border-l" />
                 </div>
 
                 <div className="p-5 pt-4">
@@ -474,8 +474,8 @@ export function EventDetailPage() {
                     <PurchaseTicketForm eventId={event.id} tiers={event.ticketTiers} />
                   ) : (
                     <div className="py-2.5 text-center">
-                      <div className="bg-gold/7 border-gold/12 mx-auto mb-3 flex h-11 w-11 items-center justify-center rounded-xl border">
-                        <Users className="text-gold/50 size-5" />
+                      <div className="bg-primary/7 border-primary/12 mx-auto mb-3 flex h-11 w-11 items-center justify-center rounded-xl border">
+                        <Users className="text-primary/50 size-5" />
                       </div>
 
                       <p className="text-muted-foreground/45 mb-5 text-[12px] leading-relaxed">
@@ -486,7 +486,7 @@ export function EventDetailPage() {
 
                       <Link
                         to="/login"
-                        className="bg-gold text-navy hover:bg-gold-light flex h-9 w-full items-center justify-center rounded-lg text-[12px] font-semibold tracking-wide transition-colors"
+                        className="bg-primary text-navy hover:bg-primary-light flex h-9 w-full items-center justify-center rounded-lg text-[12px] font-semibold tracking-wide transition-colors"
                       >
                         Kirish
                       </Link>

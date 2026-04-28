@@ -1,0 +1,111 @@
+import { CuratedUserKey, CuratedSquareKey, type SquareSeed } from '../types';
+
+export const CURATED_SQUARES: SquareSeed[] = [
+  {
+    key: CuratedSquareKey.TASHKENT_CITY_HALL,
+    name: 'Tashkent City Hall',
+    description:
+      "Toshkentning markazida zamonaviy jihozlangan premium maydon. 500 kishigacha sig'imi mavjud.",
+    address: "Amir Temur shoh ko'chasi, 1",
+    city: 'Toshkent',
+    latitude: 41.3115,
+    longitude: 69.2401,
+    capacity: 500,
+    pricePerDay: 10000000,
+    imageUrls: [
+      'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?w=1200&auto=format&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1497366216548-37526070297c?w=1200&auto=format&fit=crop&q=80',
+    ],
+    ownerKey: CuratedUserKey.VENDOR_1,
+    categoryName: 'Konferens-zal',
+    characteristicNames: [
+      'Wifi',
+      'Avtomobil turar joy',
+      'Yopiq zal',
+      'Sahna',
+      'Ovoz dinamikalari',
+    ],
+  },
+  {
+    key: CuratedSquareKey.SAMARKAND_GARDEN,
+    name: 'Samarkand Garden',
+    description:
+      'Samarqandning tarixiy yodgorliklariga qarab turadigan manzarali ochiq maydon.',
+    address: "Registon ko'chasi, 15",
+    city: 'Samarqand',
+    latitude: 39.627,
+    longitude: 66.975,
+    capacity: 300,
+    pricePerDay: 7000000,
+    imageUrls: [
+      'https://images.unsplash.com/photo-1464207687429-7505649dae38?w=1200&auto=format&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=1200&auto=format&fit=crop&q=80',
+    ],
+    ownerKey: CuratedUserKey.VENDOR_1,
+    categoryName: 'Ochiq maydon',
+    characteristicNames: ['Wifi', 'Ochiq maydon', 'Sahna'],
+  },
+  {
+    key: CuratedSquareKey.BUKHARA_CONFERENCE,
+    name: 'Bukhara Conference Hall',
+    description:
+      "Buxoroning tarixiy markazida an'anaviy me'morchilik uslubidagi zamonaviy konferens-markaz.",
+    address: "Po-i-Kalon ko'chasi, 8",
+    city: 'Buxoro',
+    latitude: 39.7747,
+    longitude: 64.4286,
+    capacity: 200,
+    pricePerDay: 5000000,
+    imageUrls: [
+      'https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=1200&auto=format&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1561489396-888724a1543d?w=1200&auto=format&fit=crop&q=80',
+    ],
+    ownerKey: CuratedUserKey.VENDOR_1,
+    categoryName: 'Konferens-zal',
+    characteristicNames: ['Wifi', 'Yopiq zal', 'Ovoz dinamikalari'],
+  },
+  {
+    key: CuratedSquareKey.NAVOI_PALACE,
+    name: 'Navoi Palace',
+    description:
+      "Tantanali tadbirlar, to'ylar va korporativ gala-kechalar uchun hashamatli saroy.",
+    address: "Navoiy ko'chasi, 30",
+    city: 'Toshkent',
+    latitude: 41.3205,
+    longitude: 69.2654,
+    capacity: 800,
+    pricePerDay: 18000000,
+    imageUrls: [
+      'https://images.unsplash.com/photo-1561489396-888724a1543d?w=1200&auto=format&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=1200&auto=format&fit=crop&q=80',
+    ],
+    ownerKey: CuratedUserKey.VENDOR_2,
+    categoryName: 'Saroy',
+    characteristicNames: [
+      'Wifi',
+      'Avtomobil turar joy',
+      'Yopiq zal',
+      'Sahna',
+      'Ovoz dinamikalari',
+    ],
+  },
+  {
+    key: CuratedSquareKey.ANDIJAN_EXPO,
+    name: 'Andijan Expo Center',
+    description:
+      "Ko'rgazmalar, yarmarkalar va ommaviy tadbirlar uchun moslashuvchan expo markazi.",
+    address: 'Bobur prospekti, 55',
+    city: 'Andijon',
+    latitude: 40.7829,
+    longitude: 72.3442,
+    capacity: 1000,
+    pricePerDay: 8000000,
+    imageUrls: [
+      'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=1200&auto=format&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=1400&auto=format&fit=crop&q=80',
+    ],
+    ownerKey: CuratedUserKey.VENDOR_2,
+    categoryName: 'Expo-markaz',
+    characteristicNames: ['Wifi', 'Avtomobil turar joy', 'Ochiq maydon'],
+  },
+];

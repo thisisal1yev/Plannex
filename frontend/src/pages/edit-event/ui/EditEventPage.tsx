@@ -18,7 +18,7 @@ function parseBannerUrls(raw?: string): string[] {
     .filter(Boolean)
 }
 
-type EditEventFormValues = Omit<UpdateEventDto, 'bannerUrl'> & {
+type EditEventFormValues = Omit<UpdateEventDto, 'bannerUrls'> & {
   bannerUrlRaw?: string
 }
 
@@ -38,7 +38,7 @@ export function EditEventPage() {
     values: event ? {
       title: event.title,
       description: event.description,
-      bannerUrlRaw: event.bannerUrl?.join(', ') ?? '',
+      bannerUrlRaw: event.bannerUrls?.join(', ') ?? '',
       startDate: event.startDate.slice(0, 16),
       endDate: event.endDate.slice(0, 16),
       eventType: event.eventType,
@@ -50,7 +50,7 @@ export function EditEventPage() {
     mutationFn: (values: EditEventFormValues) => {
       const { bannerUrlRaw, ...rest } = values
       const bannerUrl = parseBannerUrls(bannerUrlRaw)
-      const payload: UpdateEventDto = { ...rest, bannerUrl }
+      const payload: UpdateEventDto = { ...rest, bannerUrls: bannerUrl }
       return eventsApi.update(id!, payload)
     },
     onSuccess: () => {

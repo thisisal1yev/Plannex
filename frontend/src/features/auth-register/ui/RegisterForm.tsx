@@ -111,7 +111,7 @@ export function RegisterForm() {
             <div className={cn(
               'w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold border transition-all duration-300',
               step >= s
-                ? 'bg-gold border-gold text-navy'
+                ? 'bg-primary border-primary text-navy'
                 : 'bg-transparent border-border text-muted-foreground/40',
             )}>
               {s}
@@ -125,7 +125,7 @@ export function RegisterForm() {
             {s === 1 && (
               <div className={cn(
                 'flex-1 h-[1px] mx-1 transition-colors duration-300',
-                step === 2 ? 'bg-gold/40' : 'bg-border',
+                step === 2 ? 'bg-primary/40' : 'bg-border',
               )} />
             )}
           </div>
@@ -167,7 +167,7 @@ export function RegisterForm() {
             <button
               type="button"
               onClick={goNext}
-              className="w-full h-10 rounded-xl text-[13px] font-semibold bg-gold text-navy hover:bg-gold-light shadow-[0_4px_12px_rgba(76,140,167,0.2)] hover:shadow-[0_4px_16px_rgba(76,140,167,0.3)] transition-all duration-200 flex items-center justify-center gap-1.5"
+              className="w-full h-10 rounded-xl text-[13px] font-semibold bg-primary text-navy hover:bg-primary-light shadow-[0_4px_12px_rgba(76,140,167,0.2)] hover:shadow-[0_4px_16px_rgba(76,140,167,0.3)] transition-all duration-200 flex items-center justify-center gap-1.5"
             >
               {STRINGS.next}
               <ChevronRight className="size-4" />
@@ -225,8 +225,8 @@ export function RegisterForm() {
                     className={cn(
                       'relative flex flex-col gap-1.5 p-3 rounded-xl border cursor-pointer transition-all duration-200',
                       role === value
-                        ? 'border-gold/40 bg-gold/6 shadow-[0_0_0_1px_rgba(76,140,167,0.15)]'
-                        : 'border-border/60 bg-card/40 hover:border-gold/20',
+                        ? 'border-primary/40 bg-primary/6 shadow-[0_0_0_1px_rgba(76,140,167,0.15)]'
+                        : 'border-border/60 bg-card/40 hover:border-primary/20',
                     )}
                   >
                     <input
@@ -238,11 +238,11 @@ export function RegisterForm() {
                     <div className="flex items-center gap-2">
                       <div className={cn(
                         'w-5 h-5 rounded-full border flex items-center justify-center transition-all',
-                        role === value ? 'border-gold bg-gold/20' : 'border-border/60',
+                        role === value ? 'border-primary bg-primary/20' : 'border-border/60',
                       )}>
-                        {role === value && <div className="w-2 h-2 rounded-full bg-gold" />}
+                        {role === value && <div className="w-2 h-2 rounded-full bg-primary" />}
                       </div>
-                      <Icon className={cn('size-3.5', role === value ? 'text-gold' : 'text-muted-foreground/50')} />
+                      <Icon className={cn('size-3.5', role === value ? 'text-primary' : 'text-muted-foreground/50')} />
                       <span className={cn('text-[12px] font-semibold', role === value ? 'text-foreground' : 'text-foreground/60')}>
                         {label}
                       </span>
@@ -273,7 +273,7 @@ export function RegisterForm() {
 
       <p className="text-[13px] text-center text-muted-foreground">
         {STRINGS.hasAccount}{' '}
-        <Link to="/login" className="text-gold hover:text-gold-light font-medium transition-colors">
+        <Link to="/login" className="text-primary hover:text-primary-light font-medium transition-colors">
           {STRINGS.login}
         </Link>
       </p>

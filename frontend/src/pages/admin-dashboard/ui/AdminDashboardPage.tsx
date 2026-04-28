@@ -39,7 +39,7 @@ function GrowthChart({ data }: { data: { week: string; users: number }[] }) {
           <p className="text-[13px] font-semibold text-foreground">Foydalanuvchilar o'sishi</p>
           <p className="text-[11px] text-muted-foreground/60 mt-0.5 uppercase tracking-[0.06em]">Haftalik dinamika</p>
         </div>
-        <span className="text-[11px] text-gold border border-gold/20 bg-gold/5 rounded-full px-2.5 py-1 shrink-0">
+        <span className="text-[11px] text-primary border border-primary/20 bg-primary/5 rounded-full px-2.5 py-1 shrink-0">
           7 hafta
         </span>
       </div>
@@ -72,7 +72,7 @@ function RevenueChart({ data }: { data: { month: string; revenue: number }[] }) 
           <p className="text-[13px] font-semibold text-foreground">Oylik daromad</p>
           <p className="text-[11px] text-muted-foreground/60 mt-0.5 uppercase tracking-[0.06em]">Jami to'lovlar</p>
         </div>
-        <span className="text-[11px] text-gold border border-gold/20 bg-gold/5 rounded-full px-2.5 py-1 shrink-0">
+        <span className="text-[11px] text-primary border border-primary/20 bg-primary/5 rounded-full px-2.5 py-1 shrink-0">
           12 oy
         </span>
       </div>
@@ -151,7 +151,7 @@ export function AdminDashboardPage() {
           value={formatUZS(data?.totalRevenue ?? 0)}
           icon={DollarSign}
           sub="Barcha to'lovlar"
-          accent="gold"
+          accent="primary"
         />
         <StatCard
           label="Foydalanuvchilar"
@@ -198,7 +198,7 @@ export function AdminDashboardPage() {
               placeholder="Qidirish..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="h-8 pl-7 pr-3 text-[12px] bg-muted/40 border border-border rounded-lg focus:outline-none focus:border-gold/40 focus:bg-card transition-colors w-44 placeholder:text-muted-foreground/40"
+              className="h-8 pl-7 pr-3 text-[12px] bg-muted/40 border border-border rounded-lg focus:outline-none focus:border-primary/40 focus:bg-card transition-colors w-44 placeholder:text-muted-foreground/40"
             />
           </div>
         </div>
@@ -221,7 +221,7 @@ export function AdminDashboardPage() {
             <tbody>
               {filtered.map((e: AdminPendingEvent) => {
                 const isPending = publishMutation.isPending || deleteMutation.isPending
-                const banner = e.bannerUrl?.[0]
+                const banner = e.bannerUrls?.[0]
                 return (
                   <tr key={e.id} className="border-b border-border/40 last:border-0 hover:bg-muted/15 transition-colors group">
                     <td className="px-5 py-3">
@@ -229,8 +229,8 @@ export function AdminDashboardPage() {
                         {banner ? (
                           <img src={banner} alt="" className="w-8 h-8 rounded-lg object-cover shrink-0 border border-border" />
                         ) : (
-                          <div className="w-8 h-8 rounded-lg bg-gold/8 border border-gold/12 flex items-center justify-center shrink-0">
-                            <CalendarDays className="size-3.5 text-gold/60" />
+                          <div className="w-8 h-8 rounded-lg bg-primary/8 border border-primary/12 flex items-center justify-center shrink-0">
+                            <CalendarDays className="size-3.5 text-primary/60" />
                           </div>
                         )}
                         <div>

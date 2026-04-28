@@ -1,11 +1,11 @@
-import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { X, Wifi, Car } from "lucide-react";
-import { venuesApi, VenueCard } from "@entities/venue";
-import { Pagination } from "@shared/ui/Pagination";
+import { useRef, useState, useCallback } from "react";
+import { X } from "lucide-react";
+import { VenueCard } from "@entities/venue";
+import { useInfiniteVenues } from "@entities/venue/model/venue.infinite";
+import { useIntersectionObserver } from "@shared/hooks/useIntersectionObserver";
 import { CardSkeleton } from "@shared/ui/CardSkeleton";
 import { EmptyState } from "@shared/ui/EmptyState";
-import { venueKeys } from "@shared/api/queryKeys";
+import { Spinner } from "@shared/ui/Spinner";
 import { UZBEK_CITIES } from "@shared/lib/constants";
 
 const CITY_OPTIONS = [
@@ -14,51 +14,37 @@ const CITY_OPTIONS = [
 ];
 
 export function VenuesListPage() {
-  const [page, setPage] = useState(1);
-  const [city, setCity] = useState("");
+  const [city, setCity]               = useState("");
   const [minCapacity, setMinCapacity] = useState("");
-  const [maxPrice, setMaxPrice] = useState("");
-  const [hasParking, setHasParking] = useState(false);
-  const [hasWifi, setHasWifi] = useState(false);
+  const [maxPrice, setMaxPrice]       = useState("");
   const [showAdvanced, setShowAdvanced] = useState(false);
 
-  const hasAdvancedFilters =
-    !!minCapacity || !!maxPrice || hasParking || hasWifi;
+  const hasAdvancedFilters = !!minCapacity || !!maxPrice;
   const hasFilters = !!city || hasAdvancedFilters;
 
-  const { data, isLoading } = useQuery({
-    queryKey: venueKeys.list({
-      page,
-      city,
-      minCapacity,
-      maxPrice,
-      hasParking,
-      hasWifi,
-    }),
-    queryFn: () =>
-      venuesApi.list({
-        page,
-        limit: 12,
-        city: city || undefined,
-        minCapacity: minCapacity ? Number(minCapacity) : undefined,
-        maxPrice: maxPrice ? Number(maxPrice) : undefined,
-        hasParking: hasParking || undefined,
-        hasWifi: hasWifi || undefined,
-      }),
+  const {
+    data,
+    isLoading,
+    isFetchingNextPage,
+    fetchNextPage,
+    hasNextPage,
+  } = useInfiniteVenues({
+    city: city || undefined,
+    minCapacity: minCapacity ? Number(minCapacity) : undefined,
+    maxPrice: maxPrice ? Number(maxPrice) : undefined,
   });
+
+  const sentinelRef = useRef<HTMLDivElement>(null);
+  const onIntersect = useCallback(() => { fetchNextPage() }, [fetchNextPage]);
+  useIntersectionObserver(sentinelRef, onIntersect, hasNextPage && !isFetchingNextPage);
+
+  const venues = data?.pages.flatMap((p) => p.data) ?? [];
+  const total = data?.pages[0]?.meta.total;
 
   function resetFilters() {
     setCity("");
     setMinCapacity("");
     setMaxPrice("");
-    setHasParking(false);
-    setHasWifi(false);
-    setPage(1);
-  }
-
-  function handleCityChange(value: string) {
-    setCity(value);
-    setPage(1);
   }
 
   return (
@@ -66,21 +52,20 @@ export function VenuesListPage() {
       {/* ── Page header ── */}
       <div className="flex flex-col gap-1">
         <div className="flex items-end justify-between gap-4 flex-wrap">
-          <h1 className="lp-serif text-4xl md:text-5xl font-bold text-foreground leading-none">
+          <h1 className="font-serif text-4xl md:text-5xl font-bold text-foreground leading-none">
             Maydonlar
           </h1>
 
           <div className="text-right shrink-0">
-            <p className="lp-serif text-3xl font-semibold text-gold leading-none">
-              {data?.meta.total ?? "—"}
+            <p className="font-serif text-3xl font-semibold text-primary leading-none">
+              {total ?? "—"}
             </p>
-            
             <p className="text-xs text-muted-foreground mt-0.5">
               maydon topildi
             </p>
           </div>
         </div>
-        <div className="h-px bg-linear-to-r from-gold/50 via-gold/15 to-transparent mt-4" />
+        <div className="h-px bg-linear-to-r from-primary/50 via-primary/15 to-transparent mt-4" />
       </div>
 
       {/* ── City pills + advanced filter toggle ── */}
@@ -88,11 +73,11 @@ export function VenuesListPage() {
         {CITY_OPTIONS.map((c) => (
           <button
             key={c.value}
-            onClick={() => handleCityChange(c.value)}
+            onClick={() => setCity(c.value)}
             className={`shrink-0 h-8 px-4 rounded-full text-[12px] font-medium border transition-all duration-150 whitespace-nowrap ${
               city === c.value
-                ? "bg-gold/12 border-gold/30 text-gold"
-                : "bg-transparent border-border text-muted-foreground hover:border-gold/20 hover:text-foreground hover:bg-muted/30"
+                ? "bg-primary/12 border-primary/30 text-primary"
+                : "bg-transparent border-border text-muted-foreground hover:border-primary/20 hover:text-foreground hover:bg-muted/30"
             }`}
           >
             {c.label}
@@ -105,13 +90,13 @@ export function VenuesListPage() {
           onClick={() => setShowAdvanced((v) => !v)}
           className={`shrink-0 h-8 px-3 rounded-full text-[12px] font-medium border transition-all duration-150 flex items-center gap-1.5 whitespace-nowrap ${
             showAdvanced || hasAdvancedFilters
-              ? "bg-gold/12 border-gold/30 text-gold"
-              : "bg-transparent border-border text-muted-foreground hover:border-gold/20 hover:text-foreground hover:bg-muted/30"
+              ? "bg-primary/12 border-primary/30 text-primary"
+              : "bg-transparent border-border text-muted-foreground hover:border-primary/20 hover:text-foreground hover:bg-muted/30"
           }`}
         >
           Filtr
           {hasAdvancedFilters && (
-            <span className="h-1.5 w-1.5 rounded-full bg-gold" />
+            <span className="h-1.5 w-1.5 rounded-full bg-primary" />
           )}
         </button>
 
@@ -140,11 +125,8 @@ export function VenuesListPage() {
               type="number"
               placeholder="100"
               value={minCapacity}
-              onChange={(e) => {
-                setMinCapacity(e.target.value);
-                setPage(1);
-              }}
-              className="h-8 w-32 px-3 text-[13px] bg-background border border-border rounded-lg focus:outline-none focus:border-gold/40 transition-colors text-foreground"
+              onChange={(e) => setMinCapacity(e.target.value)}
+              className="h-8 w-32 px-3 text-[13px] bg-background border border-border rounded-lg focus:outline-none focus:border-primary/40 transition-colors text-foreground"
             />
           </div>
           <div className="flex flex-col gap-1.5">
@@ -155,39 +137,10 @@ export function VenuesListPage() {
               type="number"
               placeholder="5 000 000"
               value={maxPrice}
-              onChange={(e) => {
-                setMaxPrice(e.target.value);
-                setPage(1);
-              }}
-              className="h-8 w-40 px-3 text-[13px] bg-background border border-border rounded-lg focus:outline-none focus:border-gold/40 transition-colors text-foreground"
+              onChange={(e) => setMaxPrice(e.target.value)}
+              className="h-8 w-40 px-3 text-[13px] bg-background border border-border rounded-lg focus:outline-none focus:border-primary/40 transition-colors text-foreground"
             />
           </div>
-          <label className="flex items-center gap-2 text-[13px] text-muted-foreground cursor-pointer h-8 px-3 rounded-lg border border-border hover:border-gold/20 transition-colors select-none">
-            <input
-              type="checkbox"
-              checked={hasParking}
-              onChange={(e) => {
-                setHasParking(e.target.checked);
-                setPage(1);
-              }}
-              className="accent-primary"
-            />
-            <Car className="size-3.5" />
-            Parkovka
-          </label>
-          <label className="flex items-center gap-2 text-[13px] text-muted-foreground cursor-pointer h-8 px-3 rounded-lg border border-border hover:border-gold/20 transition-colors select-none">
-            <input
-              type="checkbox"
-              checked={hasWifi}
-              onChange={(e) => {
-                setHasWifi(e.target.checked);
-                setPage(1);
-              }}
-              className="accent-primary"
-            />
-            <Wifi className="size-3.5" />
-            WiFi
-          </label>
         </div>
       )}
 
@@ -198,7 +151,7 @@ export function VenuesListPage() {
             <CardSkeleton key={i} />
           ))}
         </div>
-      ) : data?.data.length === 0 ? (
+      ) : venues.length === 0 ? (
         <EmptyState
           title="Maydonlar topilmadi"
           description="Filtrlarni o'zgartirib ko'ring"
@@ -210,13 +163,19 @@ export function VenuesListPage() {
         />
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {data?.data.map((venue, i) => (
+          {venues.map((venue, i) => (
             <VenueCard key={venue.id} venue={venue} index={i} />
           ))}
         </div>
       )}
 
-      {data?.meta && <Pagination meta={data.meta} onPageChange={setPage} />}
+      {/* ── Infinite scroll sentinel ── */}
+      <div ref={sentinelRef} className="h-1" />
+      {isFetchingNextPage && (
+        <div className="flex justify-center py-4">
+          <Spinner />
+        </div>
+      )}
     </div>
   );
 }

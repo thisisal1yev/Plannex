@@ -46,28 +46,6 @@ export function CreateVenuePage() {
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-base font-semibold">Qulayliklar</CardTitle>
-          </CardHeader>
-          <CardContent className="pt-0">
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-              {[
-                { name: 'isIndoor', label: 'Yopiq' },
-                { name: 'hasWifi', label: 'WiFi' },
-                { name: 'hasParking', label: 'Parkovka' },
-                { name: 'hasSound', label: 'Ovoz uskunasi' },
-                { name: 'hasStage', label: 'Sahna' },
-              ].map((item) => (
-                <label key={item.name} className="flex items-center gap-2 cursor-pointer">
-                  <input type="checkbox" className="accent-primary" {...register(item.name as keyof CreateVenueDto)} />
-                  <span className="text-sm text-foreground">{item.label}</span>
-                </label>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-
         {mutation.isError && <p className="text-sm text-destructive">Maydon yaratishda xatolik</p>}
 
         <div className="flex gap-3">

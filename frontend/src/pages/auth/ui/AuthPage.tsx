@@ -7,6 +7,8 @@ import { authApi, usersApi } from "@entities/user";
 import { useAuthStore } from "@shared/model/auth.store";
 import type { LoginDto, RegisterDto } from "@entities/user";
 
+const GOOGLE_AUTH_URL = `${import.meta.env.VITE_API_URL ?? 'http://localhost:3000'}/auth/google`
+
 // ─── Decorative elements ──────────────────────────────────────────────────────
 
 function OrnamentStar({
@@ -129,7 +131,7 @@ const inputCls = [
   "bg-[rgba(15,25,37,0.6)] border border-white/8",
   "text-[14px] text-cream placeholder:text-cream/22",
   "transition-[border-color,box-shadow] duration-200",
-  "focus:outline-none focus:border-gold/40 focus:shadow-[0_0_0_3px_rgba(76,140,167,0.07)]",
+  "focus:outline-none focus:border-primary/40 focus:shadow-[0_0_0_3px_rgba(76,140,167,0.07)]",
 ].join(" ");
 
 // ─── Field wrapper ────────────────────────────────────────────────────────────
@@ -220,7 +222,7 @@ function SignInForm() {
 
           <button
             type="button"
-            className="text-[12px] text-gold/60 hover:text-gold transition-colors duration-150"
+            className="text-[12px] text-primary/60 hover:text-primary transition-colors duration-150"
           >
             Unutdingizmi?
           </button>
@@ -263,7 +265,7 @@ function SignInForm() {
       <button
         type="submit"
         disabled={mutation.isPending}
-        className="w-full h-11 bg-linear-to-r from-gold to-gold-dark text-navy font-semibold text-sm rounded-md -tracking-tight transition-all duration-200 hover:opacity-90 disabled:opacity-50 shadow-[0_4px_20px_rgba(76,140,167,0.25)] mt-1"
+        className="w-full h-11 bg-primary text-navy font-semibold text-sm rounded-md tracking-wide transition-all duration-200 hover:bg-primary-light disabled:opacity-50 mt-1"
       >
         {mutation.isPending ? "Kirish…" : "Kirish"}
       </button>
@@ -429,12 +431,12 @@ function CreateAccountForm() {
                 onClick={() => setValue("role", value)}
                 className={`text-left p-3 rounded-[8px] border transition-[border-color,background,box-shadow] duration-200 ${
                   active
-                    ? "border-gold/45 bg-gold/5 shadow-[inset_0_0_0_1px_rgba(76,140,167,0.12)]"
+                    ? "border-primary/45 bg-primary/5 shadow-[inset_0_0_0_1px_rgba(76,140,167,0.12)]"
                     : "border-white/8 bg-transparent hover:border-white/16 hover:bg-white/2"
                 }`}
               >
                 <p
-                  className={`text-[13px] font-semibold leading-none mb-1 ${active ? "text-gold" : "text-cream/70"}`}
+                  className={`text-[13px] font-semibold leading-none mb-1 ${active ? "text-primary" : "text-cream/70"}`}
                 >
                   {label}
                 </p>
@@ -451,7 +453,7 @@ function CreateAccountForm() {
       <button
         type="submit"
         disabled={mutation.isPending}
-        className="w-full h-11 bg-linear-to-r from-gold to-gold-dark text-navy font-semibold text-sm rounded-md -tracking-tight transition-all duration-200 hover:opacity-90 disabled:opacity-50 shadow-[0_4px_20px_rgba(76,140,167,0.25)] mt-1"
+        className="w-full h-11 bg-primary text-navy font-semibold text-sm rounded-md tracking-wide transition-all duration-200 hover:bg-primary-light disabled:opacity-50 mt-1"
       >
         {mutation.isPending ? "Yaratilmoqda…" : "Akkaunt yaratish"}
       </button>
@@ -475,7 +477,7 @@ export function AuthPage() {
       <div className="hidden lg:flex lg:w-[46%] relative flex-col justify-between p-12 overflow-hidden bg-navy-dark">
         <TilePattern />
 
-        {/* Radial gold glow */}
+        {/* Radial primary glow */}
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
@@ -486,14 +488,14 @@ export function AuthPage() {
 
         {/* Corner ornaments */}
         <div className="absolute -top-16 -right-16 pointer-events-none">
-          <OrnamentStar size={300} op={0.08} />
+          <OrnamentStar size={300} op={0.32} />
         </div>
 
         <div className="absolute -bottom-10 -left-10 pointer-events-none">
-          <OrnamentStar size={200} op={0.055} />
+          <OrnamentStar size={200} op={0.32} />
         </div>
 
-        {/* Top gold line */}
+        {/* Top primary line */}
         <div
           className="absolute top-0 left-0 right-0 h-px"
           style={{
@@ -508,7 +510,7 @@ export function AuthPage() {
             Planner
           </span>
 
-          <span className="font-bold text-xl text-gold tracking-[-0.01em]">
+          <span className="font-bold text-xl text-primary tracking-[-0.01em]">
             &nbsp;AI
           </span>
         </Link>
@@ -517,15 +519,15 @@ export function AuthPage() {
         <div className="relative z-10 flex flex-col gap-6">
           <div>
             <div
-              className="lp-a lp-d1 inline-flex items-center gap-2 mb-8 rounded-full text-[12px] text-gold-light tracking-widest uppercase border border-gold/15 bg-gold/6"
+              className="animate-[lp-up_0.75s_ease-out_forwards] opacity-0 [animation-delay:0.08s] inline-flex items-center gap-2 mb-8 rounded-full text-[12px] text-primary-light tracking-widest uppercase border border-primary/15 bg-primary/6"
               style={{ padding: "6px 18px" }}
             >
-              <span className="w-1.5 h-1.5 rounded-full bg-gold shrink-0" />
+              <span className="w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
               O'zbekistondagi №1 tadbirlar marketi
             </div>
 
             <h1
-              className="lp-serif"
+              className="font-serif"
               style={{
                 fontSize: "clamp(88px, 4.5vw, 56px)",
                 fontWeight: 700,
@@ -538,7 +540,7 @@ export function AuthPage() {
               Tadbirlarni&nbsp;
               <br className="block 2xl:hidden" />
               <em
-                className="lp-serif"
+                className="font-serif"
                 style={{ color: "#4c8ca7", fontStyle: "italic" }}
               >
                 muammosiz
@@ -562,10 +564,10 @@ export function AuthPage() {
             ].map((s) => (
               <div
                 key={s.l}
-                className="border border-gold/10 rounded-xl p-3.5 bg-gold/3"
+                className="border border-primary/10 rounded-xl p-3.5 bg-primary/3"
               >
                 <div
-                  className="lp-serif leading-none mb-1.5"
+                  className="font-serif leading-none mb-1.5"
                   style={{
                     fontSize: "26px",
                     fontWeight: 700,
@@ -597,7 +599,7 @@ export function AuthPage() {
             </div>
 
             <div>
-              <div className="text-gold text-[12px] tracking-widest">★★★★★</div>
+              <div className="text-primary text-[12px] tracking-widest">★★★★★</div>
               <p className="text-[11px] text-cream/38 mt-0.5">
                 Yetakchi agentliklar ishonadi
               </p>
@@ -624,19 +626,19 @@ export function AuthPage() {
               Planner
             </span>
 
-            <span className="font-bold text-[18px] text-gold tracking-[-0.01em]">
+            <span className="font-bold text-[18px] text-primary tracking-[-0.01em]">
               &nbsp;AI
             </span>
           </h1>
 
           {/* Heading — re-animates on tab change via key */}
-          <div key={`heading-${tab}`} className="mb-7 auth-a auth-d1">
-            <p className="text-[10px] text-gold/60 tracking-[0.14em] uppercase mb-2">
+          <div key={`heading-${tab}`} className="mb-7 animate-[auth-up_0.5s_ease-out_forwards] opacity-0 [animation-delay:0.05s]">
+            <p className="text-[10px] text-primary/60 tracking-[0.14em] uppercase mb-2">
               {tab === "signin" ? "Xush kelibsiz" : "Yangi akkaunt"}
             </p>
 
             <h2
-              className="lp-serif leading-[1.08]"
+              className="font-serif leading-[1.08]"
               style={{
                 fontSize: "clamp(28px, 5vw, 34px)",
                 fontWeight: 700,
@@ -648,7 +650,7 @@ export function AuthPage() {
           </div>
 
           {/* Tab switcher */}
-          <div className="relative flex border-b border-white/7 mb-7 auth-a auth-d1">
+          <div className="relative flex border-b border-white/7 mb-7 animate-[auth-up_0.5s_ease-out_forwards] opacity-0 [animation-delay:0.05s]">
             <button
               onClick={() => setTab("signin")}
               className={`flex-1 pb-3 text-[13px] font-medium transition-colors duration-200 ${
@@ -671,20 +673,20 @@ export function AuthPage() {
               Ro'yxatdan o'tish
             </button>
 
-            {/* Sliding gold indicator */}
+            {/* Sliding primary indicator */}
             <div
-              className="absolute bottom-0 h-[2px] bg-linear-to-r from-gold to-gold-light rounded-full transition-all duration-300 ease-in-out"
+              className="absolute bottom-0 h-[2px] bg-linear-to-r from-primary to-primary-light rounded-full transition-all duration-300 ease-in-out"
               style={{ left: tab === "signin" ? "0" : "50%", width: "50%" }}
             />
           </div>
 
           {/* Form — re-animates on tab change */}
-          <div key={`form-${tab}`} className="auth-a auth-d2">
+          <div key={`form-${tab}`} className="animate-[auth-up_0.5s_ease-out_forwards] opacity-0 [animation-delay:0.18s]">
             {tab === "signin" ? <SignInForm /> : <CreateAccountForm />}
           </div>
 
           {/* Separator */}
-          <div className="flex items-center gap-3 my-5 auth-a auth-d3">
+          <div className="flex items-center gap-3 my-5 animate-[auth-up_0.5s_ease-out_forwards] opacity-0 [animation-delay:0.3s]">
             <div className="flex-1 h-px bg-white/6" />
 
             <span className="text-[10px] text-cream/25 tracking-[0.12em] uppercase font-medium">
@@ -697,7 +699,8 @@ export function AuthPage() {
           {/* Google button */}
           <button
             type="button"
-            className="auth-a auth-d3 w-full flex items-center justify-center gap-2.5 h-11 border border-white/8 rounded-[8px] text-[13px] font-medium text-cream/65 hover:text-cream hover:border-gold hover:bg-gold/10 transition-[color,border-color,background] duration-300 group"
+            onClick={() => { window.location.href = GOOGLE_AUTH_URL }}
+            className="animate-[auth-up_0.5s_ease-out_forwards] opacity-0 [animation-delay:0.3s] w-full flex items-center justify-center gap-2.5 h-11 border border-white/8 rounded-[8px] text-[13px] font-medium text-cream/65 hover:text-cream hover:border-primary hover:bg-primary/10 transition-[color,border-color,background] duration-300 group"
           >
             <svg className="h-4 w-4 shrink-0" viewBox="0 0 24 24">
               <path
@@ -718,27 +721,27 @@ export function AuthPage() {
               />
             </svg>
 
-            <span className="group-hover:text-gold transition-colors duration-300">
+            <span className="group-hover:text-primary transition-colors duration-300">
               Google orqali davom etish
             </span>
           </button>
 
           {/* Terms */}
-          <p className="auth-a auth-d4 text-[11px] text-center text-cream/24 mt-5 leading-[1.7]">
-            Davom etish orqali{" "}
+          <p className="animate-[auth-up_0.5s_ease-out_forwards] opacity-0 [animation-delay:0.42s] text-[11px] text-center text-cream/24 mt-5 leading-[1.7]">
+            Davom etish orqali&nbsp;
             <Link
               to="/terms"
-              className="text-cream/40 hover:text-gold transition-colors underline underline-offset-2 decoration-cream/20 hover:decoration-gold/50"
+              className="text-cream/40 hover:text-primary transition-colors underline underline-offset-2 decoration-cream/20 hover:decoration-primary/50"
             >
               Foydalanish shartlari
-            </Link>{" "}
-            va{" "}
+            </Link>&nbsp;
+            va&nbsp;
             <Link
               to="/privacy"
-              className="text-cream/40 hover:text-gold transition-colors underline underline-offset-2 decoration-cream/20 hover:decoration-gold/50"
+              className="text-cream/40 hover:text-primary transition-colors underline underline-offset-2 decoration-cream/20 hover:decoration-primary/50"
             >
               Maxfiylik siyosati
-            </Link>{" "}
+            </Link>&nbsp;
             bilan rozisiz
           </p>
         </div>

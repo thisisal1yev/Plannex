@@ -63,7 +63,8 @@ model User {
   id           String    @id @default(uuid())
   email        String    @unique
   phone        String?   @unique
-  passwordHash String
+  passwordHash String?
+  googleId     String?   @unique
   firstName    String
   lastName     String
   role         Role      @default(PARTICIPANT)
@@ -99,7 +100,7 @@ model Event {
   organizer   User          @relation(fields: [organizerId], references: [id], onDelete: Restrict)
   title       String
   description String?
-  bannerUrl   String[]
+  bannerUrls  String[]
   startDate   DateTime
   endDate     DateTime
   categoryId  String
@@ -167,7 +168,7 @@ model SquareCategory {
   squares Square[]
 }
 
-model SquareCharacteristics {
+model SquareCharacteristic {
   id        String   @id @default(uuid())
   name      String   @unique
   createdAt DateTime @default(now())
@@ -191,7 +192,7 @@ model Square {
   longitude   Float?
   capacity    Int
 
-  characteristics SquareCharacteristics[]
+  characteristics SquareCharacteristic[]
 
   pricePerDay Decimal  @db.Decimal(12, 2)
   imageUrls   String[]
@@ -394,7 +395,7 @@ model Review {
   @@index([eventId, createdAt(sort: Desc)])
 }
 
-model VolunteerSkills {
+model VolunteerSkill {
   id        String   @id @default(uuid())
   name      String   @unique
   createdAt DateTime @default(now())
@@ -409,7 +410,7 @@ model Volunteer {
   eventId   String
   event     Event                  @relation(fields: [eventId], references: [id])
   skillId   String
-  skill     VolunteerSkills        @relation(fields: [skillId], references: [id])
+  skill     VolunteerSkill         @relation(fields: [skillId], references: [id])
   status    VolunteerRequestStatus @default(PENDING)
   createdAt DateTime               @default(now())
   updatedAt DateTime               @updatedAt

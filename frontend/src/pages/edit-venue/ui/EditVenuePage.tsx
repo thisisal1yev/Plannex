@@ -25,8 +25,6 @@ export function EditVenuePage() {
     values: venue ? {
       name: venue.name, description: venue.description, address: venue.address,
       city: venue.city, capacity: venue.capacity, pricePerDay: venue.pricePerDay,
-      isIndoor: venue.isIndoor, hasWifi: venue.hasWifi, hasParking: venue.hasParking,
-      hasSound: venue.hasSound, hasStage: venue.hasStage,
     } : undefined,
   })
 
@@ -56,17 +54,6 @@ export function EditVenuePage() {
             <div className="grid grid-cols-2 gap-4">
               <Input label="Sig'imi" type="number" {...register('capacity', { valueAsNumber: true })} />
               <Input label="Narx/kun (so'm)" type="number" {...register('pricePerDay', { valueAsNumber: true })} />
-            </div>
-            <div className="grid grid-cols-3 gap-3">
-              {[
-                { name: 'isIndoor', label: 'Yopiq' }, { name: 'hasWifi', label: 'WiFi' },
-                { name: 'hasParking', label: 'Parkovka' }, { name: 'hasSound', label: 'Ovoz' }, { name: 'hasStage', label: 'Sahna' },
-              ].map((item) => (
-                <label key={item.name} className="flex items-center gap-2 cursor-pointer">
-                  <input type="checkbox" className="accent-primary" {...register(item.name as keyof UpdateVenueDto)} />
-                  <span className="text-sm text-foreground">{item.label}</span>
-                </label>
-              ))}
             </div>
           </CardContent>
         </Card>

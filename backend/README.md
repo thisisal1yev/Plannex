@@ -4,7 +4,7 @@ NestJS REST API for the Event Organization Marketplace.
 
 [![NestJS](https://img.shields.io/badge/NestJS-v11-ea2845?logo=nestjs)](https://nestjs.com/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-v5.9-3178c6?logo=typescript)](https://www.typescriptlang.org/)
-[![Prisma](https://img.shields.io/badge/Prisma-v7.7-2d3748?logo=prisma)](https://www.prisma.io/)
+[![Prisma](https://img.shields.io/badge/Prisma-v7.8-2d3748?logo=prisma)](https://www.prisma.io/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-14+-4169e1?logo=postgresql)](https://www.postgresql.org/)
 
 ---
@@ -15,7 +15,7 @@ NestJS REST API for the Event Organization Marketplace.
 |------------|---------|---------|
 | NestJS | v11 | Framework |
 | TypeScript | v5.9 | Type safety |
-| Prisma | v7.7 | ORM |
+| Prisma | v7.8 | ORM |
 | PostgreSQL | 14+ | Database |
 | Passport + JWT | — | Authentication |
 | bcrypt | v6 | Password hashing |
@@ -134,6 +134,12 @@ Swagger: **http://localhost:3000/api/docs**
 
 ---
 
+## Soft Deletes
+
+`PrismaService` is extended to intercept `findMany`, `findFirst`, `findUnique`, and `count` calls and automatically filter out records where `deletedAt IS NOT NULL`. Hard deletes are used only where data must be fully removed.
+
+---
+
 ## Architecture
 
 ### Module Pattern
@@ -217,14 +223,23 @@ createEvent(@Body() dto: CreateEventDto) { ... }
 |--------|-------------|
 | **User** | Accounts with roles |
 | **Event** | Events with status, capacity, dates |
+| **EventCategory** | Reference table for event categories |
 | **Ticket / TicketTier** | QR tickets with pricing tiers |
-| **Venue** | Venues with amenities |
+| **Square** | Venues (площадки) with category, characteristics, geo, capacity |
+| **SquareCategory** | Category reference for squares |
+| **SquareCharacteristic** | Feature tags (Wi-Fi, parking, stage…) per square |
 | **Service** | Event services by category |
-| **Payment** | Click / Payme payment records |
-| **VenueBooking** | Venue reservations |
-| **VolunteerApplication** | Volunteer applications |
-| **Review** | Ratings for events, venues, services |
+| **ServiceCategory** | Category reference for services |
 | **EventService** | Services linked to events |
+| **Booking** | Square reservations |
+| **Payment** | Click / Payme payment records |
+| **Boost** | Paid promotion records for squares and services |
+| **Badge** | Quality / achievement badges |
+| **SquareBadge / ServiceBadge** | Badge assignments to squares and services |
+| **RatingStats** | Pre-aggregated rating counters (avg, count, 1–5 stars) |
+| **Review** | Ratings for events, squares, services |
+| **Volunteer** | Volunteer applications with skills |
+| **VolunteerSkill** | Skill tags for volunteers |
 
 ### Prisma Commands
 
@@ -270,16 +285,16 @@ CORS_ORIGIN=http://localhost:5173
 
 | Module | Endpoints |
 |--------|-----------|
-| **Auth** | `POST /auth/register` · `POST /auth/login` · `POST /auth/refresh` |
-| **Users** | `GET /users/profile` · `PATCH /users/profile` |
-| **Events** | `GET /events` · `POST /events` · `GET /events/:id` · `PATCH /events/:id` · `DELETE /events/:id` |
-| **Venues** | `GET /venues` · `GET /venues/:id` · `POST /venues/bookings` |
-| **Services** | `GET /services` · `GET /services/:id` · `POST /events/:id/services` |
-| **Tickets** | `GET /events/:id/tickets` · `POST /tickets/purchase` · `GET /tickets/:id/qr` |
-| **Payments** | `POST /payments/click` · `POST /payments/payme` · `GET /payments/history` |
-| **Volunteers** | `POST /events/:id/volunteers` · `GET /volunteers/applications` |
-| **Reviews** | `POST /reviews` · `GET /reviews/:entityId` · `PATCH /reviews/:id` |
-| **Analytics** | `GET /analytics/events/:id` · `GET /analytics/sales` · `GET /analytics/export` |
+| **Auth** | `POST /auth/register` · `POST /auth/login` · `POST /auth/refresh` · `POST /auth/logout` |
+| **Users** | `GET /users/me` · `PATCH /users/me` · `GET /users` (admin) · `GET /users/:id` |
+| **Events** | `GET /events` · `POST /events` · `GET /events/:id` · `PATCH /events/:id` · `PATCH /events/:id/publish` |
+| **Venues (Squares)** | `GET /venues` · `POST /venues` · `GET /venues/:id` · `PATCH /venues/:id` · `POST /venues/:id/book` · `GET /venues/:id/availability` |
+| **Services** | `GET /services` · `POST /services` · `GET /services/:id` · `PATCH /services/:id` · `POST /events/:id/services` · `DELETE /events/:id/services/:sid` |
+| **Tickets** | `POST /events/:id/tickets/purchase` · `GET /tickets/my` · `GET /tickets/:id` · `POST /tickets/validate` |
+| **Payments** | `POST /payments/click/webhook` · `POST /payments/payme/webhook` |
+| **Volunteers** | `POST /events/:id/volunteers/apply` · `GET /volunteers/my` · `PATCH /events/:id/volunteers/:appId` |
+| **Reviews** | `POST /reviews` · `GET /events/:id/reviews` · `GET /venues/:id/reviews` · `GET /squares/:id/reviews` · `GET /services/:id/reviews` |
+| **Analytics** | `GET /analytics/dashboard` · `GET /analytics/admin` · `GET /analytics/events/:id` |
 
 Full interactive docs at **http://localhost:3000/api/docs**.
 

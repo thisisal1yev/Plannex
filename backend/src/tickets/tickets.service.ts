@@ -47,6 +47,7 @@ export class TicketsService {
           userId,
           eventId,
           tierId: dto.tierId,
+          pricePaid: amount,
           qrCode,
           pricePaid: amount,
         },

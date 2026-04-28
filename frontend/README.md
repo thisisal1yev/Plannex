@@ -41,17 +41,26 @@ frontend/
     │       └── Provider.tsx
     │
     ├── pages/                       # Route-level compositions
-    ├── widgets/                     # Composite UI blocks (Header, Layouts)
+    │   ├── home/ events-list/ event-detail/ create-event/ edit-event/
+    │   ├── venues-list/ venue-detail/ create-venue/ edit-venue/
+    │   ├── services-list/ service-detail/ create-service/ edit-service/
+    │   ├── my-events/ my-tickets/ my-venues/ my-services/
+    │   ├── organizer-dashboard/ admin-dashboard/ admin-events/ admin-users/ admin-venues/
+    │   ├── ticket-detail/ event-participants/ event-services/ event-volunteers/
+    │   └── auth/ login/ register/ profile/ about/ blog/ privacy/ terms/
+    ├── widgets/                     # Composite UI blocks
+    │   └── header/ footer/ app-layout/ auth-layout/ public-layout/ user-layout/
     ├── features/                    # User interactions & forms
+    │   └── auth-by-credentials/ auth-register/ event-publish/ review-create/ ticket-purchase/ volunteer-apply/
     │
     ├── entities/                    # Business domain entities
+    │   ├── analytics/
     │   ├── event/
+    │   ├── review/
+    │   ├── service/
+    │   ├── ticket/
     │   ├── user/
     │   ├── venue/
-    │   ├── ticket/
-    │   ├── service/
-    │   ├── review/
-    │   ├── analytics/
     │   └── volunteer/
     │
     └── shared/

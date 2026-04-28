@@ -1,6 +1,5 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import {
-  IsBoolean,
   IsInt,
   IsNumber,
   IsOptional,
@@ -36,28 +35,4 @@ export class UpdateVenueDto {
   @Min(0)
   pricePerDay?: number;
 
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsBoolean()
-  isIndoor?: boolean;
-
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsBoolean()
-  hasWifi?: boolean;
-
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsBoolean()
-  hasParking?: boolean;
-
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsBoolean()
-  hasSound?: boolean;
-
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsBoolean()
-  hasStage?: boolean;
 }

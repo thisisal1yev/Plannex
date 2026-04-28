@@ -65,10 +65,10 @@ export function PurchaseTicketForm({ eventId, tiers, onSuccess }: PurchaseTicket
               onClick={() => setTierId(tier.id)}
               className={cn(
                 'group relative w-full text-left rounded-xl border px-4 py-3.5 transition-all duration-200 cursor-pointer',
-                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/40',
+                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40',
                 isSelected
-                  ? 'border-gold/40 bg-gold/6 shadow-[0_0_0_1px_rgba(76,140,167,0.15),inset_0_1px_0_rgba(76,140,167,0.08)]'
-                  : 'border-border/50 bg-card/40 hover:border-gold/20 hover:bg-card/70',
+                  ? 'border-primary/40 bg-primary/6 shadow-[0_0_0_1px_rgba(76,140,167,0.15),inset_0_1px_0_rgba(76,140,167,0.08)]'
+                  : 'border-border/50 bg-card/40 hover:border-primary/20 hover:bg-card/70',
                 isSoldOut && 'opacity-40 cursor-not-allowed hover:border-border/50 hover:bg-card/40',
               )}
             >
@@ -79,7 +79,7 @@ export function PurchaseTicketForm({ eventId, tiers, onSuccess }: PurchaseTicket
                     className={cn(
                       'flex-none w-5 h-5 rounded-full border flex items-center justify-center transition-all duration-200',
                       isSelected
-                        ? 'border-gold bg-gold/15 text-gold'
+                        ? 'border-primary bg-primary/15 text-primary'
                         : 'border-border/50 bg-transparent',
                     )}
                   >
@@ -101,7 +101,7 @@ export function PurchaseTicketForm({ eventId, tiers, onSuccess }: PurchaseTicket
                 {/* Right: price */}
                 <span className={cn(
                   'flex-none text-[13px] font-bold tracking-tight transition-colors',
-                  isSelected ? 'text-gold' : 'text-muted-foreground/50',
+                  isSelected ? 'text-primary' : 'text-muted-foreground/50',
                 )}>
                   {formatUZS(tier.price)}
                 </span>
@@ -127,9 +127,9 @@ export function PurchaseTicketForm({ eventId, tiers, onSuccess }: PurchaseTicket
               onClick={() => setProvider(id)}
               className={cn(
                 'relative h-11 rounded-xl border text-[12px] font-semibold tracking-wide transition-all duration-200 cursor-pointer',
-                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/30',
+                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30',
                 provider === id
-                  ? 'border-gold/35 bg-gold/8 text-gold shadow-[inset_0_1px_0_rgba(76,140,167,0.12)]'
+                  ? 'border-primary/35 bg-primary/8 text-primary shadow-[inset_0_1px_0_rgba(76,140,167,0.12)]'
                   : 'border-border/40 bg-card/30 text-muted-foreground/50 hover:border-border hover:text-foreground/60',
               )}
             >
@@ -138,7 +138,7 @@ export function PurchaseTicketForm({ eventId, tiers, onSuccess }: PurchaseTicket
                 {label}
               </span>
               {provider === id && (
-                <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-8 h-[2px] rounded-full bg-gold/60" />
+                <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-8 h-[2px] rounded-full bg-primary/60" />
               )}
             </button>
           ))}
@@ -173,7 +173,7 @@ export function PurchaseTicketForm({ eventId, tiers, onSuccess }: PurchaseTicket
         {selectedTier && (
           <div className="flex items-center justify-between text-[12px] px-1">
             <span className="text-muted-foreground/40 tracking-wide">Jami to'lov</span>
-            <span className="font-bold text-[15px] text-gold lp-serif tracking-tight">
+            <span className="font-bold text-[15px] text-primary font-serif tracking-tight">
               {formatUZS(selectedTier.price)}
             </span>
           </div>
@@ -184,9 +184,9 @@ export function PurchaseTicketForm({ eventId, tiers, onSuccess }: PurchaseTicket
           disabled={mutation.isPending || mutation.isSuccess}
           className={cn(
             'w-full h-11 rounded-xl text-[13px] font-semibold tracking-wide gap-2 transition-all duration-200',
-            'bg-gold hover:bg-gold-light text-navy border-0',
+            'bg-primary hover:bg-primary-light text-navy border-0',
             'shadow-[0_4px_14px_rgba(76,140,167,0.25)] hover:shadow-[0_4px_20px_rgba(76,140,167,0.35)]',
-            'disabled:bg-gold/40 disabled:text-navy/60 disabled:shadow-none',
+            'disabled:bg-primary/40 disabled:text-navy/60 disabled:shadow-none',
           )}
         >
           {mutation.isPending ? (

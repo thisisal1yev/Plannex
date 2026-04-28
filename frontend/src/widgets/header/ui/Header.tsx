@@ -80,7 +80,7 @@ function DesktopNavLink({ to, label, exact }: NavItem) {
       to={to}
       className={cn(
         'group relative flex h-full items-center px-1 text-sm font-medium whitespace-nowrap transition-colors duration-150',
-        active ? 'text-gold' : 'text-foreground/60 hover:text-foreground/90'
+        active ? 'text-primary' : 'text-foreground/60 hover:text-foreground/90'
       )}
     >
       {label}
@@ -105,11 +105,11 @@ function MobileNavLink({
       className={cn(
         'flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-[14px] font-medium transition-all',
         active
-          ? 'text-gold bg-gold/10'
+          ? 'text-primary bg-primary/10'
           : 'text-foreground/70 hover:text-foreground hover:bg-muted/40'
       )}
     >
-      <Icon className={cn('size-[15px]', active ? 'text-gold' : 'text-muted-foreground/60')} />
+      <Icon className={cn('size-[15px]', active ? 'text-primary' : 'text-muted-foreground/60')} />
       {label}
     </Link>
   )
@@ -164,14 +164,14 @@ function UserMenu({ className }: { className?: string }) {
         className={cn(
           'flex h-8 items-center gap-1.5 rounded-full border pr-2 pl-1 transition-all duration-150',
           open
-            ? 'border-gold/40 bg-gold/8 shadow-[0_0_0_3px_rgba(76,140,167,0.08)]'
-            : 'border-border hover:border-gold/30 hover:bg-muted/20'
+            ? 'border-primary/40 bg-primary/8 shadow-[0_0_0_3px_rgba(76,140,167,0.08)]'
+            : 'border-border hover:border-primary/30 hover:bg-muted/20'
         )}
       >
         {user.avatarUrl ? (
           <img src={user.avatarUrl} alt="" className="h-6 w-6 shrink-0 rounded-full object-cover" />
         ) : (
-          <div className="from-gold to-gold-dark text-navy flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-linear-to-br text-[9px] font-bold">
+          <div className="from-primary to-primary-dark text-navy flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-linear-to-br text-[9px] font-bold">
             {initials}
           </div>
         )}
@@ -217,7 +217,7 @@ function UserMenu({ className }: { className?: string }) {
                       className={cn(
                         'flex-1 rounded-md px-2 py-1.5 text-[11px] font-semibold transition-all duration-150',
                         isActive
-                          ? 'bg-gold text-navy shadow-sm'
+                          ? 'bg-primary text-navy shadow-sm'
                           : 'text-muted-foreground hover:text-foreground'
                       )}
                     >
@@ -286,13 +286,13 @@ export function Header() {
     <>
       <style dangerouslySetInnerHTML={{ __html: ANIM_CSS }} />
       <header className="border-border/60 bg-background/95 sticky top-0 z-40 w-full border-b backdrop-blur-md">
-        <div className="via-gold/50 h-0.5 bg-linear-to-r from-transparent to-transparent" />
+        <div className="via-primary/50 h-0.5 bg-linear-to-r from-transparent to-transparent" />
 
         <div className="mx-auto flex h-15 max-w-[1440px] items-center justify-between gap-4 px-4 sm:px-6">
           <Link to={'/'} className="relative z-10 flex items-center">
             <span className="text-cream text-[20px] font-bold tracking-[-0.01em]">Planner</span>
 
-            <span className="text-gold text-[20px] font-bold tracking-[-0.01em]">&nbsp;AI</span>
+            <span className="text-primary text-[20px] font-bold tracking-[-0.01em]">&nbsp;AI</span>
           </Link>
 
           <nav className="ml-auto hidden h-full gap-5 md:flex">
@@ -314,14 +314,14 @@ export function Header() {
               <>
                 <Link
                   to="/login"
-                  className="text-foreground/70 hover:text-foreground border-border hover:border-gold/30 hidden h-8 items-center rounded-lg border px-4 text-[13px] font-medium transition-colors sm:inline-flex"
+                  className="text-foreground/70 hover:text-foreground border-border hover:border-primary/30 hidden h-8 items-center rounded-md border px-4 text-[13px] font-medium transition-colors sm:inline-flex"
                 >
                   Kirish
                 </Link>
 
                 <Link
                   to="/register"
-                  className="text-navy bg-gold hover:bg-gold-light inline-flex h-8 items-center rounded-lg px-4 text-[13px] font-semibold shadow-[0_2px_10px_rgba(76,140,167,0.2)] transition-all hover:shadow-[0_2px_14px_rgba(76,140,167,0.3)]"
+                  className="text-navy bg-primary hover:bg-primary-light inline-flex h-8 items-center rounded-md px-4 text-[13px] font-semibold shadow-[0_2px_10px_rgba(76,140,167,0.2)] transition-all hover:shadow-[0_2px_14px_rgba(76,140,167,0.3)]"
                 >
                   Boshlash
                 </Link>
@@ -329,7 +329,7 @@ export function Header() {
             )}
             <button
               onClick={() => setMobileOpen((v) => !v)}
-              className="border-border hover:border-gold/30 text-muted-foreground hover:text-foreground flex h-8 w-8 items-center justify-center rounded-lg border transition-colors md:hidden"
+              className="border-border hover:border-primary/30 text-muted-foreground hover:text-foreground flex h-8 w-8 items-center justify-center rounded-lg border transition-colors md:hidden"
             >
               {mobileOpen ? <X className="size-4" /> : <Menu className="size-4" />}
             </button>
@@ -371,7 +371,7 @@ export function Header() {
                         className={cn(
                           'flex-1 rounded-md px-2 py-1.5 text-[11px] font-semibold transition-all duration-150',
                           isActive
-                            ? 'bg-gold text-navy shadow-sm'
+                            ? 'bg-primary text-navy shadow-sm'
                             : 'text-muted-foreground hover:text-foreground'
                         )}
                       >
@@ -397,7 +397,7 @@ export function Header() {
                 <Link
                   to="/register"
                   onClick={closeMobile}
-                  className="text-navy bg-gold hover:bg-gold-light mt-1 flex h-10 items-center justify-center rounded-lg text-[14px] font-semibold transition-colors"
+                  className="text-navy bg-primary hover:bg-primary-light mt-1 flex h-10 items-center justify-center rounded-lg text-[14px] font-semibold transition-colors"
                 >
                   Boshlash
                 </Link>

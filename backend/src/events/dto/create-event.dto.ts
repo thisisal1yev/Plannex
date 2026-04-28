@@ -46,7 +46,7 @@ export class CreateEventDto {
   @IsOptional()
   @IsArray()
   @IsString({ each: true })
-  bannerUrl?: string[];
+  bannerUrls?: string[];
 
   @ApiProperty({ example: '2026-06-15T18:00:00Z' })
   @IsDateString()
@@ -65,10 +65,10 @@ export class CreateEventDto {
   @Min(1)
   capacity: number;
 
-  @ApiPropertyOptional({ description: 'Venue ID to associate with the event' })
+  @ApiPropertyOptional({ description: 'Square ID to associate with the event' })
   @IsOptional()
   @IsString()
-  venueId?: string;
+  squareId?: string;
 
   @ApiPropertyOptional({ type: [CreateTicketTierDto] })
   @IsOptional()

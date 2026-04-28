@@ -7,7 +7,7 @@ A full-stack platform connecting event organizers with venues, service providers
 ![NestJS](https://img.shields.io/badge/NestJS-v11-ea2845?logo=nestjs)
 ![React](https://img.shields.io/badge/React-v19-61dafb?logo=react)
 ![TypeScript](https://img.shields.io/badge/TypeScript-v5.9-3178c6?logo=typescript)
-![Prisma](https://img.shields.io/badge/Prisma-v7.7-2d3748?logo=prisma)
+![Prisma](https://img.shields.io/badge/Prisma-v7.8-2d3748?logo=prisma)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-14+-4169e1?logo=postgresql)
 
 ---
@@ -16,14 +16,16 @@ A full-stack platform connecting event organizers with venues, service providers
 
 | Area | Capabilities |
 |------|-------------|
-| **Events** | Create, publish, edit, cancel · VIP / Standard / Free ticket tiers · Capacity tracking · Analytics |
-| **Venues** | Search by amenities (Wi-Fi, parking, stage, indoor/outdoor) · Real-time availability · Bookings |
-| **Services** | Vendor marketplace · Categories: catering, decoration, sound, photography, security |
+| **Events** | Create, publish, edit, cancel · Category-based classification · VIP / Standard / Free ticket tiers · Capacity tracking · Analytics |
+| **Venues (Squares)** | Search by category and characteristics · Real-time availability · Bookings · Boost promotions · Quality badges |
+| **Services** | Vendor marketplace · Category-based · Service badges · Boost promotions |
 | **Tickets** | QR code generation · Mobile validation · Tiered pricing · Purchase history |
 | **Payments** | Click integration · Payme integration · Payment history |
 | **Users** | Roles: Organizer, Participant, Admin, Vendor, Volunteer · JWT auth · Profile management |
-| **Reviews** | Rate events, venues, services · Verified participant reviews |
+| **Reviews** | Rate events, venues, services · Verified participant reviews · Pre-aggregated rating stats |
 | **Analytics** | Ticket sales · Revenue tracking · Excel export |
+| **Boosts** | Paid promotion for squares and services |
+| **Badges** | Quality and achievement badges for squares and services |
 
 ---
 

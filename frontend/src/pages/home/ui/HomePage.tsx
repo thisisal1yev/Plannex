@@ -26,6 +26,11 @@ const CATS = [
   { l: 'Ziyofatlar', e: '🎉', to: '/events?type=Ziyofat' },
 ]
 
+const MQ = [
+  'Konsertlar', 'Konferensiyalar', "Ko'rgazmalar", 'Treninglar',
+  'Festivallar', 'Ziyofatlar', 'Mitaplar', 'Namoyishlar',
+]
+
 const STEPS = [
   {
     n: '01',
@@ -97,17 +102,6 @@ const PLANS = [
   },
 ]
 
-const MQ = [
-  'Konsertlar',
-  'Konferensiyalar',
-  "Ko'rgazmalar",
-  'Treninglar',
-  'Festivallar',
-  'Ziyofatlar',
-  'Mitaplar',
-  'Namoyishlar',
-]
-
 // ─── Ornament SVG ─────────────────────────────────────────────────────────────
 
 function Ornament({ size = 380, op = 0.13 }: { size?: number; op?: number }) {
@@ -152,11 +146,28 @@ function Ornament({ size = 380, op = 0.13 }: { size?: number; op?: number }) {
 
 function Label({ text }: { text: string }) {
   return (
-    <p className="text-gold mb-[10px] text-[11px] font-medium tracking-[0.18em] uppercase">
+    <p className="text-primary mb-[10px] text-[11px] font-medium tracking-[0.18em] uppercase">
       {text}
     </p>
   )
 }
+
+// ─── Shared class strings ─────────────────────────────────────────────────────
+
+const btnPrimary = `inline-block cursor-pointer rounded-md font-semibold tracking-wide py-4 px-8
+  bg-primary text-white transition-colors duration-300
+  hover:bg-primary-light`
+
+const btnOutline = `inline-block cursor-pointer rounded-lg font-medium tracking-wide py-4 px-8
+  bg-transparent text-cream border border-primary
+  transition-colors duration-300 hover:border-primary hover:text-primary-light`
+
+const cardHover = `transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)]
+  hover:-translate-y-[5px] hover:shadow-[0_20px_48px_rgba(0,0,0,0.5),0_0_0_1px_rgba(76,140,167,0.25)]`
+
+const inputCls = `box-border w-full rounded-lg text-sm outline-none py-[10px] px-[14px]
+  bg-white/[0.03] border border-primary/15 text-cream
+  transition-[border-color] duration-200 focus:border-primary/50 placeholder:text-[#5a4f3e]`
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
@@ -177,49 +188,49 @@ export function HomePage() {
         {/* top line */}
         <div className="absolute top-0 right-0 left-0 h-px bg-[linear-gradient(90deg,transparent,#4c8ca7,transparent)] opacity-35" />
 
-        <div className="lp-spin pointer-events-none absolute -top-[90px] -right-[90px] z-0">
+        <div className="lp-spin pointer-events-none absolute top-[-90px] right-[-90px] z-0">
           <Ornament size={480} op={0.1} />
         </div>
 
-        <div className="lp-float pointer-events-none absolute -bottom-[70px] -left-[110px] z-0">
+        <div className="lp-float pointer-events-none absolute bottom-[-70px] left-[-110px] z-0">
           <Ornament size={300} op={0.06} />
         </div>
 
         <div className="relative z-10 mx-auto w-full max-w-5xl px-6 py-28 text-center">
           {/* Badge */}
-          <div className="lp-a lp-d1 text-gold-light border-gold/15 bg-gold/6 mb-8 inline-flex items-center gap-2 rounded-full border px-[18px] py-[6px] text-[12px] tracking-widest uppercase">
-            <span className="bg-gold h-1.5 w-1.5 shrink-0 rounded-full" />
+          <div className="text-primary-light border-primary/15 bg-primary/6 mb-8 inline-flex animate-[lp-up_0.75s_ease-out_forwards] items-center gap-2 rounded-full border px-[18px] py-[6px] text-[12px] tracking-widest uppercase opacity-0 [animation-delay:0.08s]">
+            <span className="bg-primary h-1.5 w-1.5 shrink-0 rounded-full" />
             O'zbekistondagi №1 tadbirlar marketi
           </div>
 
           {/* Headline */}
-          <h1 className="lp-serif lp-a lp-d2 text-cream mb-6 text-[clamp(52px,9vw,96px)] leading-[1.03] font-bold tracking-[-0.02em]">
-            Tadbirlarni <em className="lp-serif lp-gold-text">muommosiz</em>
+          <h1 className="font-serif text-cream mb-6 animate-[lp-up_0.75s_ease-out_forwards] opacity-0 [animation-delay:0.22s] text-[clamp(52px,9vw,96px)] leading-[1.03] font-bold tracking-[-0.02em]">
+            Tadbirlarni <em className="not-italic bg-clip-text text-transparent bg-[linear-gradient(90deg,#4c8ca7_0%,#7ab8cc_50%,#4c8ca7_100%)] bg-[size:200%_auto] animate-[lp-shimmer_3s_linear_infinite]">muommosiz</em>
             <br />
             tashkil eting
           </h1>
 
           {/* Sub */}
-          <p className="lp-a lp-d3 text-clay mx-auto mb-[44px] max-w-[520px] text-lg leading-[1.75]">
+          <p className="text-clay mx-auto mb-[44px] max-w-[520px] animate-[lp-up_0.75s_ease-out_forwards] text-lg leading-[1.75] opacity-0 [animation-delay:0.36s]">
             Maydonlar, xizmatlar, chiptalar — hammasi bir joyda. Planner AI tashkilotchilarga
             tadbirlarni tez va samarali ishga tushirishga yordam beradi.
           </p>
 
           {/* CTAs */}
-          <div className="lp-a lp-d4 mb-[68px] flex flex-col justify-center gap-3 sm:flex-row">
-            <Link to="/events" className="lp-btn-gold">
+          <div className="mb-[68px] flex animate-[lp-up_0.75s_ease-out_forwards] flex-col justify-center gap-3 opacity-0 [animation-delay:0.5s] sm:flex-row">
+            <Link to="/events" className={btnPrimary}>
               Tadbirlarni ko'rish →
             </Link>
-            <Link to="/register" className="lp-btn-outline">
+            <Link to="/register" className={btnOutline}>
               Tadbir yaratish
             </Link>
           </div>
 
           {/* Stats */}
-          <div className="lp-a lp-d5 mx-auto grid max-w-[580px] grid-cols-2 gap-3 sm:grid-cols-4">
+          <div className="mx-auto grid max-w-[580px] animate-[lp-up_0.75s_ease-out_forwards] grid-cols-2 gap-3 opacity-0 [animation-delay:0.64s] sm:grid-cols-4">
             {STATS.map((s) => (
-              <div key={s.l} className="bg-gold/4 border-gold/15 rounded-xl border px-3 py-[18px]">
-                <div className="lp-serif text-gold-light text-[30px] leading-none font-bold">
+              <div key={s.l} className="bg-primary/4 border-primary/15 rounded-xl border px-3 py-[18px]">
+                <div className="font-serif text-primary-light text-[30px] leading-none font-bold">
                   {s.v}
                 </div>
                 <div className="text-clay mt-[5px] text-[12px] tracking-[0.04em]">{s.l}</div>
@@ -233,7 +244,7 @@ export function HomePage() {
       </section>
 
       {/* ════════════════════════════════ MARQUEE ════════════════════════════ */}
-      <div className="border-gold/15 bg-gold/2.5 overflow-hidden border-y py-[13px]">
+      <div className="border-primary/15 bg-primary/2.5 overflow-hidden border-y py-[13px]">
         <div className="lp-mq">
           {[...MQ, ...MQ, ...MQ, ...MQ].map((item, i) => (
             <span
@@ -241,7 +252,7 @@ export function HomePage() {
               className="text-clay mr-[44px] flex items-center gap-[44px] text-[12px] tracking-[0.14em] whitespace-nowrap uppercase"
             >
               {item}
-              <span className="text-gold text-[7px]">◆</span>
+              <span className="text-primary text-[7px]">◆</span>
             </span>
           ))}
         </div>
@@ -253,13 +264,13 @@ export function HomePage() {
           <div className="mb-12 flex flex-wrap items-end justify-between gap-4">
             <div>
               <Label text="Kategoriyalar" />
-              <h2 className="lp-serif text-cream text-[clamp(32px,5vw,46px)] leading-[1.1] font-bold">
+              <h2 className="font-serif text-cream text-[clamp(32px,5vw,46px)] leading-[1.1] font-bold">
                 Tadbir turini tanlang
               </h2>
             </div>
             <Link
               to="/events"
-              className="text-gold text-sm no-underline transition-opacity hover:opacity-70"
+              className="text-primary text-sm no-underline transition-opacity hover:opacity-70"
             >
               Barcha tadbirlar →
             </Link>
@@ -269,7 +280,7 @@ export function HomePage() {
               <Link
                 key={c.l}
                 to={c.to}
-                className="lp-cat border-gold/15 flex flex-col items-center gap-[10px] rounded-xl border bg-white/[0.018] px-[10px] py-[22px] no-underline"
+                className="border-primary/15 hover:bg-primary/10 hover:border-primary/45 flex flex-col items-center gap-[10px] rounded-xl border bg-white/[0.018] px-[10px] py-[22px] no-underline transition-all duration-200 hover:-translate-y-[3px]"
               >
                 <span className="text-[26px]">{c.e}</span>
                 <span className="text-cream text-center text-[12px] leading-[1.3] font-medium">
@@ -287,12 +298,12 @@ export function HomePage() {
           <div className="mb-12 flex flex-wrap items-end justify-between gap-4">
             <div>
               <Label text="Tadbirlar" />
-              <h2 className="lp-serif text-cream text-[clamp(32px,5vw,46px)] leading-[1.1] font-bold">
+              <h2 className="font-serif text-cream text-[clamp(32px,5vw,46px)] leading-[1.1] font-bold">
                 Yaqinlashayotgan tadbirlar
               </h2>
               <p className="text-clay mt-2 text-[15px]">O'zbekistonning dolzarb tadbirlari</p>
             </div>
-            <Link to="/events" className="text-gold text-sm no-underline">
+            <Link to="/events" className="text-primary text-sm no-underline">
               Barcha tadbirlar →
             </Link>
           </div>
@@ -316,11 +327,11 @@ export function HomePage() {
       </section>
 
       {/* ════════════════════════════════ HOW IT WORKS ══════════════════════ */}
-      <section id="how-it-works" className="bg-navy-3 border-gold/15 border-y px-6 py-[88px]">
+      <section id="how-it-works" className="bg-navy-3 border-primary/15 border-y px-6 py-[88px]">
         <div className="mx-auto max-w-[1100px]">
           <div className="mb-[72px] text-center">
             <Label text="Jarayon" />
-            <h2 className="lp-serif text-cream text-[clamp(32px,5vw,48px)] font-bold">
+            <h2 className="font-serif text-cream text-[clamp(32px,5vw,48px)] font-bold">
               Bu qanday ishlaydi
             </h2>
             <p className="text-clay mx-auto mt-3 max-w-[380px] text-[15px] leading-relaxed">
@@ -330,17 +341,17 @@ export function HomePage() {
           <div className="grid grid-cols-1 gap-10 md:grid-cols-3">
             {STEPS.map((s, i) => (
               <div key={s.n} className="relative">
-                <div className="lp-serif mb-3 text-[88px] leading-none font-bold text-transparent select-none [-webkit-text-stroke:1px_rgba(76,140,167,0.18)]">
+                <div className="font-serif mb-3 text-[88px] leading-none font-bold text-transparent select-none [-webkit-text-stroke:1px_rgba(76,140,167,0.18)]">
                   {s.n}
                 </div>
 
                 {i < 2 && (
-                  <div className="absolute top-8 -right-7 z-10 hidden text-[22px] text-[rgba(76,140,167,0.15)] md:block">
+                  <div className="absolute top-8 right-[-28px] z-10 hidden text-[22px] text-[rgba(76,140,167,0.15)] md:block">
                     →
                   </div>
                 )}
 
-                <div className="bg-gold mb-4 h-0.5 w-9 opacity-55" />
+                <div className="bg-primary mb-4 h-0.5 w-9 opacity-55" />
 
                 <h3 className="text-cream mb-[10px] text-[19px] font-semibold">{s.t}</h3>
 
@@ -357,15 +368,12 @@ export function HomePage() {
           <div className="mb-12 flex flex-wrap items-end justify-between gap-4">
             <div>
               <Label text="Maydonlar" />
-
-              <h2 className="lp-serif text-cream text-[clamp(32px,5vw,46px)] leading-[1.1] font-bold">
+              <h2 className="font-serif text-cream text-[clamp(32px,5vw,46px)] leading-[1.1] font-bold">
                 Mashhur maydonlar
               </h2>
-
               <p className="text-clay mt-2 text-[15px]">Tadbirlaringiz uchun eng yaxshi joylar</p>
             </div>
-
-            <Link to="/venues" className="text-gold text-sm no-underline">
+            <Link to="/venues" className="text-primary text-sm no-underline">
               Barcha maydonlar →
             </Link>
           </div>
@@ -392,7 +400,7 @@ export function HomePage() {
         <div className="mx-auto max-w-[1100px]">
           <div className="mb-16 text-center">
             <Label text="Imkoniyatlar" />
-            <h2 className="lp-serif text-cream text-[clamp(32px,5vw,48px)] font-bold">
+            <h2 className="font-serif text-cream text-[clamp(32px,5vw,48px)] font-bold">
               Tashkilotchi uchun hamma narsa
             </h2>
             <p className="text-clay mt-3 text-[15px]">
@@ -403,9 +411,9 @@ export function HomePage() {
             {FEATS.map((f) => (
               <div
                 key={f.t}
-                className="lp-card bg-gold/2.5 border-gold/15 rounded-2xl border px-[22px] py-7"
+                className={cn(cardHover, 'bg-primary/2.5 border-primary/15 rounded-2xl border px-[22px] py-7')}
               >
-                <div className="bg-gold/6 border-gold/15 mb-[18px] inline-flex h-[52px] w-[52px] items-center justify-center rounded-xl border text-[26px]">
+                <div className="bg-primary/6 border-primary/15 mb-[18px] inline-flex h-[52px] w-[52px] items-center justify-center rounded-xl border text-[26px]">
                   {f.e}
                 </div>
                 <h3 className="text-cream mb-2 text-[16px] font-semibold">{f.t}</h3>
@@ -417,13 +425,11 @@ export function HomePage() {
       </section>
 
       {/* ════════════════════════════════ PRICING ═══════════════════════════ */}
-      <section id="pricing" className="bg-navy-3 border-gold/15 border-t px-6 py-[88px]">
+      <section id="pricing" className="bg-navy-3 border-primary/15 border-t px-6 py-[88px]">
         <div className="mx-auto max-w-[960px]">
           <div className="mb-16 text-center">
             <Label text="Narxlar" />
-
-            <h2 className="lp-serif text-cream text-[clamp(32px,5vw,48px)] font-bold">Tariflar</h2>
-
+            <h2 className="font-serif text-cream text-[clamp(32px,5vw,48px)] font-bold">Tariflar</h2>
             <p className="text-clay mt-3 text-[15px]">
               Bepul boshlang va o'sishingiz bilan kengaytiring
             </p>
@@ -434,10 +440,11 @@ export function HomePage() {
               <div
                 key={p.n}
                 className={cn(
-                  'lp-card relative flex flex-col rounded-2xl px-6 py-8',
+                  cardHover,
+                  'relative flex flex-col rounded-2xl px-6 py-8',
                   p.hot
-                    ? 'border-gold border bg-[linear-gradient(160deg,rgba(76,140,167,0.12),rgba(76,140,167,0.04))]'
-                    : 'border-gold/15 border bg-[rgba(255,255,255,0.018)]'
+                    ? 'border-primary border bg-[linear-gradient(160deg,rgba(76,140,167,0.12),rgba(76,140,167,0.04))]'
+                    : 'border-primary/15 border bg-[rgba(255,255,255,0.018)]'
                 )}
               >
                 {p.hot && (
@@ -448,10 +455,9 @@ export function HomePage() {
 
                 <p className="text-clay mb-[10px] text-[11px] tracking-[0.12em] uppercase">{p.n}</p>
                 <div className="mb-1 flex items-baseline gap-1">
-                  <span className={cn('lp-serif text-primary text-[38px] leading-none font-bold')}>
+                  <span className="font-serif text-primary text-[38px] leading-none font-bold">
                     {p.p}
                   </span>
-
                   {p.per && <span className="text-clay text-[13px]">{p.per}</span>}
                 </div>
 
@@ -460,7 +466,7 @@ export function HomePage() {
                 <ul className="m-0 mb-7 flex flex-1 list-none flex-col gap-[10px] p-0">
                   {p.fs.map((f) => (
                     <li key={f} className="text-cream flex items-start gap-[10px] text-sm">
-                      <span className="text-gold mt-[2px] shrink-0 text-[12px] font-bold">✓</span>
+                      <span className="text-primary mt-[2px] shrink-0 text-[12px] font-bold">✓</span>
                       {f}
                     </li>
                   ))}
@@ -472,7 +478,7 @@ export function HomePage() {
                     'block rounded-lg p-3 text-center text-sm font-semibold tracking-wide no-underline transition-opacity hover:opacity-80',
                     p.hot
                       ? 'bg-primary border-0 text-[#0C1520]'
-                      : 'border-gold/15 text-cream border bg-transparent'
+                      : 'border-primary/15 text-cream border bg-transparent'
                   )}
                 >
                   {p.cta}
@@ -488,7 +494,7 @@ export function HomePage() {
         <div className="mx-auto max-w-[1000px]">
           <div className="mb-14 text-center">
             <Label text="Aloqa" />
-            <h2 className="lp-serif text-cream text-[clamp(32px,5vw,48px)] font-bold">
+            <h2 className="font-serif text-cream text-[clamp(32px,5vw,48px)] font-bold">
               Biz bilan bog'laning
             </h2>
             <p className="text-clay mt-3 text-[15px]">
@@ -496,25 +502,20 @@ export function HomePage() {
             </p>
           </div>
           <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-            {/* Info cards */}
             <div className="flex flex-col gap-[14px]">
               {[
-                {
-                  ic: '📍',
-                  t: 'Manzil',
-                  v: "Toshkent, Amir Temur ko'chasi, 107B",
-                },
+                { ic: '📍', t: 'Manzil', v: "Toshkent, Amir Temur ko'chasi, 107B" },
                 { ic: '📞', t: 'Telefon', v: '+998 71 200 00 00' },
                 { ic: '✉️', t: 'Email', v: 'hello@plannerai.uz' },
                 { ic: '🕐', t: 'Ish vaqti', v: 'Du–Ju, 9:00–18:00' },
               ].map((x) => (
                 <div
                   key={x.t}
-                  className="bg-gold/2.5 border-gold/15 flex items-start gap-4 rounded-xl border px-5 py-4"
+                  className="bg-primary/2.5 border-primary/15 flex items-start gap-4 rounded-xl border px-5 py-4"
                 >
                   <span className="shrink-0 text-[22px]">{x.ic}</span>
                   <div>
-                    <p className="text-gold-light mb-[3px] text-[12px] font-semibold tracking-[0.06em] uppercase">
+                    <p className="text-primary-light mb-[3px] text-[12px] font-semibold tracking-[0.06em] uppercase">
                       {x.t}
                     </p>
                     <p className="text-clay text-sm">{x.v}</p>
@@ -522,39 +523,38 @@ export function HomePage() {
                 </div>
               ))}
             </div>
-            {/* Form */}
-            <form className="bg-gold/2.5 border-gold/15 flex flex-col gap-4 rounded-2xl border px-6 py-7">
+            <form className="bg-primary/2.5 border-primary/15 flex flex-col gap-4 rounded-2xl border px-6 py-7">
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-gold mb-[7px] block text-[11px] tracking-widest uppercase">
+                  <label className="text-primary mb-[7px] block text-[11px] tracking-widest uppercase">
                     Ism
                   </label>
-                  <input className="lp-input" type="text" placeholder="Ismingiz" />
+                  <input className={inputCls} type="text" placeholder="Ismingiz" />
                 </div>
                 <div>
-                  <label className="text-gold mb-[7px] block text-[11px] tracking-widest uppercase">
+                  <label className="text-primary mb-[7px] block text-[11px] tracking-widest uppercase">
                     Email
                   </label>
-                  <input className="lp-input" type="email" placeholder="email@example.com" />
+                  <input className={inputCls} type="email" placeholder="email@example.com" />
                 </div>
               </div>
               <div>
-                <label className="text-gold mb-[7px] block text-[11px] tracking-widest uppercase">
+                <label className="text-primary mb-[7px] block text-[11px] tracking-widest uppercase">
                   Mavzu
                 </label>
-                <input className="lp-input" type="text" placeholder="Qanday yordam bera olamiz?" />
+                <input className={inputCls} type="text" placeholder="Qanday yordam bera olamiz?" />
               </div>
               <div>
-                <label className="text-gold mb-[7px] block text-[11px] tracking-widest uppercase">
+                <label className="text-primary mb-[7px] block text-[11px] tracking-widest uppercase">
                   Xabar
                 </label>
                 <textarea
-                  className="lp-input resize-none"
+                  className={cn(inputCls, 'resize-none')}
                   rows={4}
                   placeholder="Savolingizni tasvirlab bering..."
                 />
               </div>
-              <button type="submit" className="lp-btn-gold w-full text-center">
+              <button type="submit" className={cn(btnPrimary, 'w-full text-center')}>
                 Xabar yuborish
               </button>
             </form>
@@ -565,19 +565,21 @@ export function HomePage() {
       {/* ════════════════════════════════ CTA ═══════════════════════════════ */}
       <section className="bg-navy px-6 py-20">
         <div className="mx-auto max-w-[1100px]">
-          <div className="lp-noise border-gold/[0.28] relative overflow-hidden rounded-3xl border bg-[radial-gradient(ellipse_80%_80%_at_50%_50%,rgba(76,140,167,0.07),transparent_70%)] px-[clamp(24px,5vw,80px)] py-[clamp(48px,8vw,88px)] text-center">
-            <div className="pointer-events-none absolute -top-[30px] -right-[30px] opacity-[0.06]">
+          <div className="lp-noise border-primary/[0.28] relative overflow-hidden rounded-3xl border bg-[radial-gradient(ellipse_80%_80%_at_50%_50%,rgba(76,140,167,0.07),transparent_70%)] px-[clamp(24px,5vw,80px)] py-[clamp(48px,8vw,88px)] text-center">
+            <div className="pointer-events-none absolute top-[-30px] right-[-30px]">
               <Ornament size={200} op={1} />
             </div>
-            <div className="pointer-events-none absolute -bottom-[30px] -left-[30px] opacity-[0.05]">
+
+            <div className="pointer-events-none absolute bottom-[-30px] left-[-30px]">
               <Ornament size={160} op={1} />
             </div>
 
             <div className="relative z-10">
               <Label text="Hoziroq boshlang" />
 
-              <h2 className="lp-serif text-cream mb-4 text-[clamp(34px,6vw,62px)] leading-[1.08] font-bold">
-                Tadbir boshlashga <em className="lp-serif lp-gold-text">tayyormisiz?</em>
+              <h2 className="font-serif text-cream mb-4 text-[clamp(34px,6vw,62px)] leading-[1.08] font-bold">
+                Tadbir boshlashga{' '}
+                <em className="not-italic bg-clip-text text-transparent bg-[linear-gradient(90deg,#4c8ca7_0%,#7ab8cc_50%,#4c8ca7_100%)] bg-[size:200%_auto] animate-[lp-shimmer_3s_linear_infinite]">tayyormisiz?</em>
               </h2>
 
               <p className="text-clay mx-auto mb-11 max-w-[480px] text-[17px] leading-[1.75]">
@@ -586,11 +588,11 @@ export function HomePage() {
               </p>
 
               <div className="flex flex-col justify-center gap-3 sm:flex-row">
-                <Link to="/register" className="lp-btn-gold">
+                <Link to="/register" className={btnPrimary}>
                   Bepul boshlash →
                 </Link>
 
-                <Link to="/events" className="lp-btn-outline">
+                <Link to="/events" className={btnOutline}>
                   Tadbirlarni ko'rish
                 </Link>
               </div>

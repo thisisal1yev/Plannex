@@ -80,8 +80,8 @@ const SOCIALS = [
 
 export function Footer() {
   return (
-    <footer className="bg-navy-dark border-t border-t-gold/13">
-      <div className="h-px bg-linear-to-r from-transparent via-gold/35 to-transparent" />
+    <footer className="bg-navy-dark border-t border-t-primary/13">
+      <div className="h-px bg-linear-to-r from-transparent via-primary/35 to-transparent" />
 
       <div className="max-w-7xl mx-auto px-6 pt-14 pb-9">
         {/* Top grid */}
@@ -92,7 +92,7 @@ export function Footer() {
               <span className="font-bold text-[17px] text-cream tracking-[-0.01em]">
                 Planner
               </span>
-              <span className="font-bold text-[17px] text-gold tracking-[-0.01em]">
+              <span className="font-bold text-[17px] text-primary tracking-[-0.01em]">
                 {" "}
                 AI
               </span>
@@ -112,7 +112,7 @@ export function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={label}
-                  className="flex items-center justify-center size-8 border rounded-[8px] text-cream/45 no-underline transition-[color,border-color,background] duration-200 hover:text-gold hover:border-gold/45 hover:bg-gold/6"
+                  className="flex items-center justify-center size-8 border rounded-[8px] text-cream/45 no-underline transition-[color,border-color,background] duration-200 hover:text-primary hover:border-primary/45 hover:bg-primary/6"
                 >
                   {icon}
                 </a>
@@ -123,7 +123,7 @@ export function Footer() {
           {/* Link columns */}
           {COLS.map(({ title, links }) => (
             <div key={title} className="flex flex-col gap-3.5">
-              <p className="text-xs font-semibold text-gold tracking-widest uppercase">
+              <p className="text-xs font-semibold text-primary tracking-widest uppercase">
                 {title}
               </p>
 
@@ -132,7 +132,7 @@ export function Footer() {
                   <li key={label}>
                     <Link
                       to={to}
-                      className="text-xs text-cream/42 no-underline leading-none transition-colors duration-200 hover:text-gold"
+                      className="text-xs text-cream/42 no-underline leading-none transition-colors duration-200 hover:text-primary"
                     >
                       {label}
                     </Link>
@@ -144,7 +144,7 @@ export function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div className="border-t border-t-gold/10 pt-6 flex items-center justify-between flex-wrap gap-3">
+        <div className="border-t border-t-primary/10 pt-6 flex items-center justify-between flex-wrap gap-3">
           <p className="text-xs text-cream/28 tracking-[0.02em]">
             © {new Date().getFullYear()} Planner AI. Barcha huquqlar
             himoyalangan.
@@ -158,7 +158,7 @@ export function Footer() {
               <Link
                 key={to}
                 to={to}
-                className="text-xs text-cream/42 no-underline leading-none transition-colors duration-200 hover:text-gold"
+                className="text-xs text-cream/42 no-underline leading-none transition-colors duration-200 hover:text-primary"
               >
                 {label}
               </Link>

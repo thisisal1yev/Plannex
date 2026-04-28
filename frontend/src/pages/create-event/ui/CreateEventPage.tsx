@@ -18,7 +18,7 @@ function parseBannerUrls(raw?: string): string[] {
     .filter(Boolean)
 }
 
-type CreateEventFormValues = Omit<CreateEventDto, 'bannerUrl' | 'ticketTiers'> & {
+type CreateEventFormValues = Omit<CreateEventDto, 'bannerUrls' | 'ticketTiers'> & {
   bannerUrlRaw?: string
 }
 
@@ -36,7 +36,7 @@ export function CreateEventPage() {
     mutationFn: (values: CreateEventFormValues) => {
       const bannerUrl = parseBannerUrls(values.bannerUrlRaw)
       const { bannerUrlRaw, ...rest } = values
-      return eventsApi.create({ ...rest, bannerUrl, ticketTiers: tiers })
+      return eventsApi.create({ ...rest, bannerUrls: bannerUrl, ticketTiers: tiers })
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: eventKeys.myList() })

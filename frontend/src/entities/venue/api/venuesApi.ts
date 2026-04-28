@@ -12,11 +12,6 @@ export interface CreateVenueDto {
   longitude?: number
   capacity: number
   pricePerDay: number
-  isIndoor?: boolean
-  hasWifi?: boolean
-  hasParking?: boolean
-  hasSound?: boolean
-  hasStage?: boolean
   imageUrls?: string[]
 }
 
@@ -28,9 +23,6 @@ export interface QueryVenuesDto {
   city?: string
   minCapacity?: number
   maxPrice?: number
-  isIndoor?: boolean
-  hasParking?: boolean
-  hasWifi?: boolean
 }
 
 export const venuesApi = {

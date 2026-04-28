@@ -7,6 +7,7 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { Role } from '../../generated/prisma/enums';
 import { comparePassword, hashPassword } from '../common/utils/hash.util';
+import { GoogleProfile } from '../common/strategies/google.strategy';
 import { PrismaService } from '../prisma/prisma.service';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
@@ -61,10 +62,11 @@ export class AuthService {
 
     if (!user) throw new UnauthorizedException('Invalid credentials');
 
-    const passwordMatch = await comparePassword(
-      dto.password,
-      user.passwordHash,
-    );
+    if (!user.passwordHash) {
+      throw new UnauthorizedException('This account uses Google Sign-In');
+    }
+
+    const passwordMatch = await comparePassword(dto.password, user.passwordHash);
     if (!passwordMatch) throw new UnauthorizedException('Invalid credentials');
 
     const tokens = await this.generateTokens(user.id, user.email, user.role);
@@ -110,6 +112,46 @@ export class AuthService {
       where: { id: userId },
       data: { refreshToken: null },
     });
+  }
+
+  async findOrCreateGoogleUser(profile: GoogleProfile): Promise<TokenPair> {
+    let user = await this.prisma.user.findUnique({
+      where: { googleId: profile.googleId },
+    });
+
+    if (!user) {
+      const byEmail = await this.prisma.user.findUnique({
+        where: { email: profile.email },
+      });
+
+      if (byEmail) {
+        user = await this.prisma.user.update({
+          where: { id: byEmail.id },
+          data: {
+            googleId: profile.googleId,
+            avatarUrl: byEmail.avatarUrl ?? profile.avatarUrl,
+            isVerified: true,
+          },
+        });
+      } else {
+        user = await this.prisma.user.create({
+          data: {
+            email: profile.email,
+            googleId: profile.googleId,
+            firstName: profile.firstName,
+            lastName: profile.lastName,
+            avatarUrl: profile.avatarUrl,
+            passwordHash: null,
+            isVerified: true,
+            role: Role.PARTICIPANT,
+          },
+        });
+      }
+    }
+
+    const tokens = await this.generateTokens(user.id, user.email, user.role);
+    await this.saveRefreshToken(user.id, tokens.refreshToken);
+    return tokens;
   }
 
   private async generateTokens(

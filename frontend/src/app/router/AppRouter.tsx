@@ -18,6 +18,7 @@ import { TermsPage } from '@pages/terms'
 
 // Auth pages
 import { AuthPage } from '@pages/auth'
+import { OAuthCallbackPage } from '@pages/auth-callback'
 
 // Browsing
 import { EventsListPage } from '@pages/events-list'
@@ -36,7 +37,7 @@ import { TicketDetailPage } from '@pages/ticket-detail'
 
 // Organizer
 import { OrganizerDashboardPage } from '@pages/organizer-dashboard'
-import { MyEventsPage } from '@pages/my-events'
+import { MyEventsPage, MyEventDetailPage } from '@pages/my-events'
 import { CreateEventPage } from '@pages/create-event'
 import { EditEventPage } from '@pages/edit-event'
 import { EventParticipantsPage } from '@pages/event-participants'
@@ -75,6 +76,9 @@ export function AppRouter() {
       <Route path="/login"    element={<GuestOnly><AuthPage /></GuestOnly>} />
       <Route path="/register" element={<GuestOnly><AuthPage /></GuestOnly>} />
 
+      {/* OAuth callback — no auth required, no layout wrapper */}
+      <Route path="/auth/callback" element={<OAuthCallbackPage />} />
+
       {/* ── Admin — sidebar dashboard layout ── */}
       <Route element={<RequireAuth><AppLayout /></RequireAuth>}>
         <Route path="/admin/dashboard" element={<RequireRole role="ADMIN"><AdminDashboardPage /></RequireRole>} />
@@ -104,6 +108,7 @@ export function AppRouter() {
         <Route path="/dashboard"                     element={<RequireAuth><RequireRole role="ORGANIZER"><OrganizerDashboardPage /></RequireRole></RequireAuth>} />
         <Route path="/my-events"                     element={<RequireAuth><RequireRole role="ORGANIZER"><MyEventsPage /></RequireRole></RequireAuth>} />
         <Route path="/my-events/create"              element={<RequireAuth><RequireRole role="ORGANIZER"><CreateEventPage /></RequireRole></RequireAuth>} />
+        <Route path="/my-events/:id"                 element={<RequireAuth><RequireRole role="ORGANIZER"><MyEventDetailPage /></RequireRole></RequireAuth>} />
         <Route path="/my-events/:id/edit"            element={<RequireAuth><RequireRole role="ORGANIZER"><EditEventPage /></RequireRole></RequireAuth>} />
         <Route path="/my-events/:id/participants"    element={<RequireAuth><RequireRole role="ORGANIZER"><EventParticipantsPage /></RequireRole></RequireAuth>} />
         <Route path="/my-events/:id/volunteers"      element={<RequireAuth><RequireRole role="ORGANIZER"><EventVolunteersPage /></RequireRole></RequireAuth>} />

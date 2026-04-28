@@ -6,6 +6,7 @@ import { RolesGuard } from '../common/guards/roles.guard';
 import { Roles } from '../common/decorators/roles.decorator';
 import { AnalyticsService } from './analytics.service';
 
+
 @ApiTags('Analytics')
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
@@ -22,12 +23,16 @@ export class AnalyticsController {
   }
 
   @Get('dashboard')
+  @UseGuards(RolesGuard)
+  @Roles('ORGANIZER')
   @ApiOperation({ summary: 'Organizer dashboard statistics' })
   getDashboard(@CurrentUser('id') userId: string) {
     return this.analyticsService.getDashboardStats(userId);
   }
 
   @Get('events/:eventId')
+  @UseGuards(RolesGuard)
+  @Roles('ORGANIZER')
   @ApiOperation({
     summary: 'Detailed statistics for a specific event (organizer only)',
   })

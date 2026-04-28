@@ -25,7 +25,7 @@ export class UpdateEventDto {
   @IsOptional()
   @IsArray()
   @IsString({ each: true })
-  bannerUrl?: string[];
+  bannerUrls?: string[];
 
   @ApiPropertyOptional()
   @IsOptional()
@@ -51,5 +51,5 @@ export class UpdateEventDto {
   @ApiPropertyOptional()
   @IsOptional()
   @IsString()
-  venueId?: string;
+  squareId?: string;
 }

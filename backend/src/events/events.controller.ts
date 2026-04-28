@@ -47,6 +47,17 @@ export class EventsController {
     return this.eventsService.findMany(query);
   }
 
+  @Get('my')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: "List current organizer's own events" })
+  getMyEvents(
+    @CurrentUser('id') userId: string,
+    @Query() query: QueryEventsDto,
+  ) {
+    return this.eventsService.findMany({ ...query, organizerId: userId });
+  }
+
   @Get(':id')
   @Public()
   @ApiOperation({ summary: 'Get event details' })

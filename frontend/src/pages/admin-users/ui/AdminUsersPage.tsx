@@ -64,7 +64,7 @@ export function AdminUsersPage() {
           placeholder="Ism yoki email bo'yicha qidirish..."
           value={search}
           onChange={(e) => { setSearch(e.target.value); setPage(1) }}
-          className="w-full h-9 pl-8 pr-3 text-[13px] bg-card border border-border rounded-lg focus:outline-none focus:border-gold/40 transition-colors placeholder:text-muted-foreground/40"
+          className="w-full h-9 pl-8 pr-3 text-[13px] bg-card border border-border rounded-lg focus:outline-none focus:border-primary/40 transition-colors placeholder:text-muted-foreground/40"
         />
       </div>
 
@@ -99,7 +99,7 @@ export function AdminUsersPage() {
                         <div className="flex items-center gap-2.5">
                           <Avatar className="h-8 w-8 rounded-lg shrink-0">
                             <AvatarImage src={u.avatarUrl} alt={u.firstName} className="rounded-lg object-cover" />
-                            <AvatarFallback className="rounded-lg text-[10px] font-bold bg-gold/10 text-gold border border-gold/15">
+                            <AvatarFallback className="rounded-lg text-[10px] font-bold bg-primary/10 text-primary border border-primary/15">
                               {getInitials(u)}
                             </AvatarFallback>
                           </Avatar>

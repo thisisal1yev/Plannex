@@ -49,13 +49,13 @@ const STRINGS = {
 
 function RecentEventRow({ event }: { event: Event }) {
   const total = event.ticketTiers?.reduce((s, t) => s + t.quantity, 0) ?? 0
-  const sold = event.ticketTiers?.reduce((s, t) => s + (t.sold ?? 0), 0) ?? 0
+  const sold = event.ticketTiers?.reduce((s, t) => s + (t._count?.tickets ?? 0), 0) ?? 0
   const pct = total > 0 ? Math.round((sold / total) * 100) : 0
-  const banner = event.bannerUrl?.[0]
+  const banner = event.bannerUrls?.[0]
 
   return (
     <Link
-      to={`/my-events/${event.id}/participants`}
+      to={`/my-events/${event.id}/`}
       className="hover:bg-muted/20 group flex items-center gap-3 rounded-lg px-3 py-2.5 transition-colors"
     >
       {banner ? (
@@ -65,8 +65,8 @@ function RecentEventRow({ event }: { event: Event }) {
           className="border-border h-9 w-9 shrink-0 rounded-lg border object-cover"
         />
       ) : (
-        <div className="bg-gold/8 border-gold/15 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border">
-          <CalendarDays className="text-gold/50 size-4" />
+        <div className="bg-primary/8 border-primary/15 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border">
+          <CalendarDays className="text-primary/50 size-4" />
         </div>
       )}
 
@@ -115,7 +115,7 @@ function CustomTooltip({
   return (
     <div className="border-border bg-card rounded-lg border px-3 py-2 shadow-lg">
       <p className="text-muted-foreground/60 mb-1 text-[11px]">{label}</p>
-      <p className="text-gold text-[13px] font-bold">{formatUZS(payload[0].value)}</p>
+      <p className="text-primary text-[13px] font-bold">{payload[0].value} chipta</p>
     </div>
   )
 }
@@ -127,8 +127,8 @@ export function OrganizerDashboardPage() {
   })
 
   const { data: eventsData, isLoading: eventsLoading } = useQuery({
-    queryKey: eventKeys.list({ limit: 6, my: true }),
-    queryFn: () => eventsApi.list({ limit: 6 }),
+    queryKey: eventKeys.myListDashboard(),
+    queryFn: () => eventsApi.myList({ limit: 6 }),
   })
 
   if (statsLoading) return <Spinner />
@@ -137,10 +137,13 @@ export function OrganizerDashboardPage() {
   const net = (stats?.totalRevenue ?? 0) - (stats?.totalCommission ?? 0)
 
   const chartData = recentEvents
-    .map((e) => ({
-      name: e.title.slice(0, 14) + (e.title.length > 14 ? '…' : ''),
-      chipta: 0,
-    }))
+    .map((e) => {
+      const sold = e.ticketTiers?.reduce((s, t) => s + (t._count?.tickets ?? 0), 0) ?? 0
+      return {
+        name: e.title.slice(0, 14) + (e.title.length > 14 ? '…' : ''),
+        chipta: sold,
+      }
+    })
     .reverse()
 
   return (
@@ -155,7 +158,7 @@ export function OrganizerDashboardPage() {
         </div>
         <Link
           to="/my-events/create"
-          className="bg-gold text-navy hover:bg-gold-light inline-flex h-9 items-center gap-1.5 rounded-xl border-0 px-4 text-[13px] font-semibold shadow-[0_4px_12px_rgba(76,140,167,0.25)] transition-all duration-200 hover:shadow-[0_4px_16px_rgba(76,140,167,0.35)]"
+          className="bg-primary text-navy hover:bg-primary-light inline-flex h-9 items-center gap-1.5 rounded-xl border-0 px-4 text-[13px] font-semibold shadow-[0_4px_12px_rgba(76,140,167,0.25)] transition-all duration-200 hover:shadow-[0_4px_16px_rgba(76,140,167,0.35)]"
         >
           <Plus className="size-3.5" />
           {STRINGS.create}
@@ -168,14 +171,16 @@ export function OrganizerDashboardPage() {
           label={STRINGS.totalEvents}
           value={stats?.totalEvents ?? 0}
           icon={CalendarDays}
-          accent="gold"
+          accent="primary"
         />
+
         <StatCard
           label={STRINGS.published}
           value={stats?.publishedEvents ?? 0}
           icon={CheckCircle2}
           accent="emerald"
         />
+
         <StatCard
           label={STRINGS.upcoming}
           value={stats?.upcomingEvents ?? 0}
@@ -193,13 +198,15 @@ export function OrganizerDashboardPage() {
           icon={Ticket}
           accent="amber"
         />
+
         <StatCard
           label={STRINGS.revenue}
           value={formatUZS(stats?.totalRevenue ?? 0)}
           icon={TrendingUp}
-          accent="gold"
+          accent="primary"
           sub={`${STRINGS.netRevenue}: ${formatUZS(net)}`}
         />
+
         <StatCard
           label={STRINGS.commission}
           value={formatUZS(stats?.totalCommission ?? 0)}
@@ -214,11 +221,13 @@ export function OrganizerDashboardPage() {
         {/* Chart */}
         <div className="bg-card border-border rounded-xl border p-5">
           <div className="mb-4 flex items-center gap-2">
-            <BadgeDollarSign className="text-gold/70 size-4" />
+            <BadgeDollarSign className="text-primary/70 size-4" />
+
             <p className="text-foreground text-[13px] font-semibold">
               Chipta sotuvi (so'nggi tadbirlar)
             </p>
           </div>
+
           {chartData.length > 0 ? (
             <ResponsiveContainer width="100%" height={160}>
               <AreaChart data={chartData} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
@@ -228,23 +237,28 @@ export function OrganizerDashboardPage() {
                     <stop offset="95%" stopColor="#4c8ca7" stopOpacity={0} />
                   </linearGradient>
                 </defs>
+
                 <CartesianGrid
                   strokeDasharray="3 3"
                   stroke="rgba(255,255,255,0.04)"
                   vertical={false}
                 />
+
                 <XAxis
                   dataKey="name"
                   tick={{ fontSize: 10, fill: 'rgba(255,255,255,0.3)' }}
                   axisLine={false}
                   tickLine={false}
                 />
+
                 <YAxis
                   tick={{ fontSize: 10, fill: 'rgba(255,255,255,0.3)' }}
                   axisLine={false}
                   tickLine={false}
                 />
+
                 <Tooltip content={<CustomTooltip />} />
+
                 <Area
                   type="monotone"
                   dataKey="chipta"
@@ -267,17 +281,19 @@ export function OrganizerDashboardPage() {
         <div className="bg-card border-border rounded-xl border p-5">
           <div className="mb-3 flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Zap className="text-gold/70 size-4" />
+              <Zap className="text-primary/70 size-4" />
               <p className="text-foreground text-[13px] font-semibold">{STRINGS.recentEvents}</p>
             </div>
+
             <Link
               to="/my-events"
-              className="text-gold/70 hover:text-gold flex items-center gap-1 text-[11px] transition-colors"
+              className="text-primary/70 hover:text-primary flex items-center gap-1 text-[11px] transition-colors"
             >
               <ListChecks className="size-3" />
               {STRINGS.allEvents}
             </Link>
           </div>
+
           {eventsLoading ? (
             <div className="flex justify-center py-8">
               <Spinner />
@@ -292,9 +308,10 @@ export function OrganizerDashboardPage() {
             <div className="flex flex-col items-center gap-3 py-8">
               <CalendarDays className="text-muted-foreground/20 size-8" />
               <p className="text-muted-foreground/40 text-[13px]">{STRINGS.noEvents}</p>
+
               <Link
                 to="/my-events/create"
-                className="text-gold/70 hover:text-gold text-xs transition-colors"
+                className="text-primary/70 hover:text-primary text-xs transition-colors"
               >
                 Birinchi tadbiringizni yarating →
               </Link>

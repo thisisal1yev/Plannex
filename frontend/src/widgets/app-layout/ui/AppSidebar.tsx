@@ -123,21 +123,21 @@ function NavLink({
       <SidebarMenuButton
         asChild
         isActive={active}
-        className="group/item relative rounded-lg h-9 transition-all duration-150 hover:bg-gold/6 data-[active=true]:bg-gold/10 data-[active=true]:text-gold data-[active=true]:font-medium"
+        className="group/item relative rounded-lg h-9 transition-all duration-150 hover:bg-primary/6 data-[active=true]:bg-primary/10 data-[active=true]:text-primary data-[active=true]:font-medium"
       >
         <Link to={to} className="flex items-center gap-2.5 px-2.5">
           {active && (
-            <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 bg-gold rounded-r-full shadow-[0_0_6px_rgba(76,140,167,0.6)]" />
+            <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 bg-primary rounded-r-full shadow-[0_0_6px_rgba(76,140,167,0.6)]" />
           )}
           <Icon
             className={`size-[15px] shrink-0 transition-colors ${
               active
-                ? "text-gold"
+                ? "text-primary"
                 : "text-muted-foreground group-hover/item:text-foreground"
             }`}
           />
           <span
-            className={`text-[13px] transition-colors ${active ? "text-gold" : "text-foreground/80"}`}
+            className={`text-[13px] transition-colors ${active ? "text-primary" : "text-foreground/80"}`}
           >
             {label}
           </span>
@@ -168,16 +168,16 @@ export function AppSidebar() {
   const isAdmin = user?.role === "ADMIN";
 
   return (
-    <Sidebar className="border-r border-gold/8">
+    <Sidebar className="border-r border-primary/8">
       {/* ── Header ── */}
-      <SidebarHeader className="px-4 py-[14px] border-b border-gold/8">
+      <SidebarHeader className="px-4 py-[14px] border-b border-primary/8">
         <Link to="/events" className="flex items-center gap-2.5 group">
-          <div className="relative w-7 h-7 rounded-lg bg-gold/10 border border-gold/20 flex items-center justify-center shrink-0 group-hover:bg-gold/15 transition-colors">
-            <ShieldCheck className="size-3.5 text-gold" />
+          <div className="relative w-7 h-7 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0 group-hover:bg-primary/15 transition-colors">
+            <ShieldCheck className="size-3.5 text-primary" />
           </div>
           <span className="font-bold text-[15px] tracking-tight">
             <span className="text-foreground">Planner</span>
-            <span className="text-gold">&nbsp;AI</span>
+            <span className="text-primary">&nbsp;AI</span>
           </span>
         </Link>
       </SidebarHeader>
@@ -186,8 +186,8 @@ export function AppSidebar() {
         {/* ── Common ── */}
         <SidebarGroup className="p-0">
           <SidebarGroupLabel className="text-[10px] tracking-[0.14em] uppercase px-2.5 mb-1 h-auto py-1 flex items-center gap-1.5">
-            <span className="flex h-1.5 w-1.5 rounded-full bg-gold animate-pulse" />
-            <span className="text-gold/80">Ummiy</span>
+            <span className="flex h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
+            <span className="text-primary/80">Ummiy</span>
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu className="gap-0.5">
@@ -204,8 +204,8 @@ export function AppSidebar() {
             <SidebarGroupLabel className="text-[10px] tracking-[0.14em] uppercase px-2.5 mb-1 h-auto py-1 flex items-center gap-1.5">
               {isAdmin ? (
                 <>
-                  <span className="flex h-1.5 w-1.5 rounded-full bg-gold animate-pulse" />
-                  <span className="text-gold/80">Admin panel</span>
+                  <span className="flex h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
+                  <span className="text-primary/80">Admin panel</span>
                 </>
               ) : (
                 <span className="text-muted-foreground/50">
@@ -225,14 +225,14 @@ export function AppSidebar() {
       </SidebarContent>
 
       {/* ── Footer ── */}
-      <SidebarFooter className="border-t border-gold/8 px-2 py-3">
+      <SidebarFooter className="border-t border-primary/8 px-2 py-3">
         <SidebarMenu>
           <SidebarMenuItem>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <SidebarMenuButton
                   size="lg"
-                  className="rounded-lg h-auto py-2 px-2.5 hover:bg-gold/5 data-[state=open]:bg-gold/8 transition-colors"
+                  className="rounded-lg h-auto py-2 px-2.5 hover:bg-primary/5 data-[state=open]:bg-primary/8 transition-colors"
                 >
                   <Avatar className="h-7 w-7 rounded-md shrink-0">
                     <AvatarImage
@@ -240,7 +240,7 @@ export function AppSidebar() {
                       alt={displayName}
                       className="rounded-md object-cover"
                     />
-                    <AvatarFallback className="rounded-md text-[10px] font-bold bg-gold/10 text-gold border border-gold/20">
+                    <AvatarFallback className="rounded-md text-[10px] font-bold bg-primary/10 text-primary border border-primary/20">
                       {initials}
                     </AvatarFallback>
                   </Avatar>
@@ -270,7 +270,7 @@ export function AppSidebar() {
                         alt={displayName}
                         className="rounded-lg object-cover"
                       />
-                      <AvatarFallback className="rounded-lg text-[11px] font-bold bg-gold/10 text-gold">
+                      <AvatarFallback className="rounded-lg text-[11px] font-bold bg-primary/10 text-primary">
                         {initials}
                       </AvatarFallback>
                     </Avatar>
