@@ -1,16 +1,12 @@
 import { useRef, useCallback } from 'react'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { Link } from 'react-router'
-import { eventsApi, MyEventCard } from '@entities/event'
+import { MyEventCard } from '@entities/event'
 import { useInfiniteMyEvents } from '@entities/event/model/event.infinite'
 import { useIntersectionObserver } from '@shared/hooks/useIntersectionObserver'
 import { Spinner } from '@shared/ui/Spinner'
 import { Button } from '@shared/ui/Button'
-import { eventKeys } from '@shared/api/queryKeys'
 
 export function MyEventsPage() {
-  const queryClient = useQueryClient()
-
   const {
     data,
     isLoading,
@@ -22,11 +18,6 @@ export function MyEventsPage() {
   const sentinelRef = useRef<HTMLDivElement>(null)
   const onIntersect = useCallback(() => { fetchNextPage() }, [fetchNextPage])
   useIntersectionObserver(sentinelRef, onIntersect, hasNextPage && !isFetchingNextPage)
-
-  const deleteMutation = useMutation({
-    mutationFn: (id: string) => eventsApi.delete(id),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: eventKeys.myList() }),
-  })
 
   const events = data?.pages.flatMap((p) => p.data) ?? []
 
@@ -54,10 +45,6 @@ export function MyEventsPage() {
             key={event.id}
             event={event}
             index={index}
-            onDelete={(id) => {
-              if (confirm('Tadbirni bekor qilasizmi?')) deleteMutation.mutate(id)
-            }}
-            isDeleting={deleteMutation.isPending}
           />
         ))}
       </div>

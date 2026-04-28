@@ -55,7 +55,7 @@ function RecentEventRow({ event }: { event: Event }) {
 
   return (
     <Link
-      to={`/my-events/${event.id}/participants`}
+      to={`/my-events/${event.id}/`}
       className="hover:bg-muted/20 group flex items-center gap-3 rounded-lg px-3 py-2.5 transition-colors"
     >
       {banner ? (
@@ -115,7 +115,7 @@ function CustomTooltip({
   return (
     <div className="border-border bg-card rounded-lg border px-3 py-2 shadow-lg">
       <p className="text-muted-foreground/60 mb-1 text-[11px]">{label}</p>
-      <p className="text-primary text-[13px] font-bold">{formatUZS(payload[0].value)}</p>
+      <p className="text-primary text-[13px] font-bold">{payload[0].value} chipta</p>
     </div>
   )
 }
@@ -127,7 +127,7 @@ export function OrganizerDashboardPage() {
   })
 
   const { data: eventsData, isLoading: eventsLoading } = useQuery({
-    queryKey: eventKeys.myList(),
+    queryKey: eventKeys.myListDashboard(),
     queryFn: () => eventsApi.myList({ limit: 6 }),
   })
 
@@ -173,12 +173,14 @@ export function OrganizerDashboardPage() {
           icon={CalendarDays}
           accent="primary"
         />
+
         <StatCard
           label={STRINGS.published}
           value={stats?.publishedEvents ?? 0}
           icon={CheckCircle2}
           accent="emerald"
         />
+
         <StatCard
           label={STRINGS.upcoming}
           value={stats?.upcomingEvents ?? 0}
@@ -196,6 +198,7 @@ export function OrganizerDashboardPage() {
           icon={Ticket}
           accent="amber"
         />
+
         <StatCard
           label={STRINGS.revenue}
           value={formatUZS(stats?.totalRevenue ?? 0)}
@@ -203,6 +206,7 @@ export function OrganizerDashboardPage() {
           accent="primary"
           sub={`${STRINGS.netRevenue}: ${formatUZS(net)}`}
         />
+
         <StatCard
           label={STRINGS.commission}
           value={formatUZS(stats?.totalCommission ?? 0)}
@@ -218,10 +222,12 @@ export function OrganizerDashboardPage() {
         <div className="bg-card border-border rounded-xl border p-5">
           <div className="mb-4 flex items-center gap-2">
             <BadgeDollarSign className="text-primary/70 size-4" />
+
             <p className="text-foreground text-[13px] font-semibold">
               Chipta sotuvi (so'nggi tadbirlar)
             </p>
           </div>
+
           {chartData.length > 0 ? (
             <ResponsiveContainer width="100%" height={160}>
               <AreaChart data={chartData} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
@@ -231,23 +237,28 @@ export function OrganizerDashboardPage() {
                     <stop offset="95%" stopColor="#4c8ca7" stopOpacity={0} />
                   </linearGradient>
                 </defs>
+
                 <CartesianGrid
                   strokeDasharray="3 3"
                   stroke="rgba(255,255,255,0.04)"
                   vertical={false}
                 />
+
                 <XAxis
                   dataKey="name"
                   tick={{ fontSize: 10, fill: 'rgba(255,255,255,0.3)' }}
                   axisLine={false}
                   tickLine={false}
                 />
+
                 <YAxis
                   tick={{ fontSize: 10, fill: 'rgba(255,255,255,0.3)' }}
                   axisLine={false}
                   tickLine={false}
                 />
+
                 <Tooltip content={<CustomTooltip />} />
+
                 <Area
                   type="monotone"
                   dataKey="chipta"
@@ -273,6 +284,7 @@ export function OrganizerDashboardPage() {
               <Zap className="text-primary/70 size-4" />
               <p className="text-foreground text-[13px] font-semibold">{STRINGS.recentEvents}</p>
             </div>
+
             <Link
               to="/my-events"
               className="text-primary/70 hover:text-primary flex items-center gap-1 text-[11px] transition-colors"
@@ -281,6 +293,7 @@ export function OrganizerDashboardPage() {
               {STRINGS.allEvents}
             </Link>
           </div>
+
           {eventsLoading ? (
             <div className="flex justify-center py-8">
               <Spinner />
@@ -295,6 +308,7 @@ export function OrganizerDashboardPage() {
             <div className="flex flex-col items-center gap-3 py-8">
               <CalendarDays className="text-muted-foreground/20 size-8" />
               <p className="text-muted-foreground/40 text-[13px]">{STRINGS.noEvents}</p>
+
               <Link
                 to="/my-events/create"
                 className="text-primary/70 hover:text-primary text-xs transition-colors"

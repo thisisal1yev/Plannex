@@ -150,9 +150,9 @@ export function EventParticipantsPage() {
     if (!search) return true
     const q = search.toLowerCase()
     return (
-      u.firstName.toLowerCase().includes(q) ||
-      u.lastName.toLowerCase().includes(q) ||
-      u.email.toLowerCase().includes(q)
+      u.firstName?.toLowerCase().includes(q) ||
+      u.lastName?.toLowerCase().includes(q) ||
+      u.email?.toLowerCase().includes(q)
     )
   })
 
@@ -233,8 +233,10 @@ export function EventParticipantsPage() {
                 <tr key={u.id} className="border-b border-border/30 last:border-0 hover:bg-muted/10 transition-colors">
                   <td className="px-5 py-3">
                     <div className="flex items-center gap-2.5">
-                      <div className="w-7 h-7 rounded-full bg-primary/10 border border-primary/15 flex items-center justify-center shrink-0 text-[11px] font-bold text-primary/80">
-                        {u.firstName[0]?.toUpperCase()}{u.lastName[0]?.toUpperCase()}
+                      <div className="w-7 h-7 rounded-full bg-primary/10 border border-primary/15 flex items-center justify-center shrink-0 text-[11px] font-bold text-primary/80 overflow-hidden">
+                        {u.avatarUrl
+                          ? <img src={u.avatarUrl} alt={`${u.firstName} ${u.lastName}`} className="w-full h-full object-cover" />
+                          : <>{u.firstName?.[0]?.toUpperCase()}{u.lastName?.[0]?.toUpperCase()}</>}
                       </div>
                       <div>
                         <p className="text-[13px] font-medium text-foreground leading-none">{u.firstName} {u.lastName}</p>

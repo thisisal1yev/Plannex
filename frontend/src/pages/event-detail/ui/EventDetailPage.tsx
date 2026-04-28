@@ -90,7 +90,7 @@ export function EventDetailPage() {
         </div>
 
         <div className="text-center">
-          <p className="font-serif text-foreground/60 text-[18px]">Tadbir topilmadi</p>
+          <p className="text-foreground/60 font-serif text-[18px]">Tadbir topilmadi</p>
           <p className="text-muted-foreground/40 mt-1 text-[12px]">
             Bunday tadbir mavjud emas yoki o'chirilgan
           </p>
@@ -111,9 +111,7 @@ export function EventDetailPage() {
   const reviewList = reviews?.data ?? []
   const reviewCount = reviewList.length
   const avgRating =
-    reviewCount > 0
-      ? reviewList.reduce((sum, r) => sum + r.rating, 0) / reviewCount
-      : null
+    reviewCount > 0 ? reviewList.reduce((sum, r) => sum + r.rating, 0) / reviewCount : null
 
   return (
     <div className="flex flex-col pb-16">
@@ -165,12 +163,12 @@ export function EventDetailPage() {
             {event.eventType}
           </span>
 
-          <h1 className="font-serif mb-3 max-w-2xl text-4xl leading-tight font-bold text-white drop-shadow-lg md:text-5xl">
+          <h1 className="mb-3 max-w-2xl font-serif text-4xl leading-tight font-bold text-white drop-shadow-lg md:text-5xl">
             {event.title}
           </h1>
           <div className="flex flex-wrap items-center gap-4 text-sm text-white/80">
             <div className="flex items-center gap-1.5">
-              <StarRating rating={avgRating ?? 0}/>
+              <StarRating rating={avgRating ?? 0} />
 
               <span className="text-primary-light font-medium">{avgRating?.toFixed(1)}</span>
             </div>
@@ -369,7 +367,9 @@ export function EventDetailPage() {
                       {avgRating.toFixed(1)}
                     </span>
 
-                    <span className="text-muted-foreground/35 text-[11px]">— {reviewCount} ta sharh</span>
+                    <span className="text-muted-foreground/35 text-[11px]">
+                      — {reviewCount} ta sharh
+                    </span>
                   </div>
                 ) : (
                   <p className="text-muted-foreground/30 mt-1.5 text-[11px]">Hali sharh yo'q</p>
@@ -455,7 +455,7 @@ export function EventDetailPage() {
                         Event Ticket
                       </p>
 
-                      <p className="font-serif text-foreground/90 text-[18px] font-bold">
+                      <p className="text-foreground/90 font-serif text-[18px] font-bold">
                         Chipta sotib olish
                       </p>
                     </div>
