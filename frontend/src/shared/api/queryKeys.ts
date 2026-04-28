@@ -3,6 +3,7 @@ export const eventKeys = {
   list: (params: object) => ['events', params] as const,
   detail: (id: string) => ['event', id] as const,
   myList: () => ['my-events'] as const,
+  myListDashboard: () => ['my-events', 'dashboard'] as const,
   reviews: (id: string) => ['event-reviews', id] as const,
   services: (id: string) => ['event-services', id] as const,
   participants: (id: string) => ['event-participants', id] as const,
@@ -35,6 +36,11 @@ export const userKeys = {
 export const ticketKeys = {
   myList: () => ['my-tickets'] as const,
   detail: (id: string) => ['ticket', id] as const,
+}
+
+export const categoryKeys = {
+  eventCategories:   () => ['event-categories'] as const,
+  serviceCategories: () => ['service-categories'] as const,
 }
 
 export const analyticsKeys = {
