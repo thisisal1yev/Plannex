@@ -1,15 +1,7 @@
 import { useState } from 'react'
 import { useParams, Link } from 'react-router'
 import { useQuery } from '@tanstack/react-query'
-import {
-  ArrowLeft,
-  MapPin,
-  Star,
-  Home,
-  ChevronRight,
-  ChevronLeft,
-  Users,
-} from 'lucide-react'
+import { ArrowLeft, MapPin, Star, Home, ChevronRight, ChevronLeft, Users } from 'lucide-react'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Autoplay, Navigation } from 'swiper/modules'
 import type { Swiper as SwiperInstance } from 'swiper'
@@ -105,7 +97,7 @@ export function VenueDetailPage() {
         <div className="bg-card border-border/60 flex h-16 w-16 items-center justify-center rounded-2xl border">
           <Home className="text-muted-foreground/20 size-7" />
         </div>
-        
+
         <div className="text-center">
           <p className="text-foreground text-[15px] font-semibold">Maydon topilmadi</p>
           <p className="text-muted-foreground/50 mt-1 text-[13px]">
@@ -174,7 +166,7 @@ export function VenueDetailPage() {
           <span className="text-primary-light/90 border-primary/20 mb-3 inline-flex items-center rounded-full border bg-black/45 px-3 py-1.5 text-xs font-medium tracking-[0.18em] uppercase backdrop-blur-sm">
             {venue.category?.name}
           </span>
-          <h1 className="font-serif mb-3 max-w-2xl text-4xl leading-tight font-bold text-white drop-shadow-lg md:text-5xl">
+          <h1 className="mb-3 max-w-2xl font-serif text-4xl leading-tight font-bold text-white drop-shadow-lg md:text-5xl">
             {venue.name}
           </h1>
           <div className="flex flex-wrap items-center gap-4 text-sm text-white/80">
@@ -235,11 +227,13 @@ export function VenueDetailPage() {
             <div className="border-border/50 bg-card/35 relative overflow-hidden rounded-xl border">
               <div className="from-primary/60 via-primary/25 absolute top-0 bottom-0 left-0 w-[2px] bg-linear-to-b to-transparent" />
               <div className="flex items-center gap-4 p-5 pl-7">
-                <div className="bg-primary/8 border-primary/12 h-10 w-10 shrink-0 flex items-center justify-center rounded-xl border">
+                <div className="bg-primary/8 border-primary/12 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border">
                   <Users className="text-primary/55 size-4" />
                 </div>
                 <div>
-                  <p className="text-muted-foreground/35 text-[10px] tracking-[0.18em] uppercase">Egasi</p>
+                  <p className="text-muted-foreground/35 text-[10px] tracking-[0.18em] uppercase">
+                    Egasi
+                  </p>
                   <p className="text-foreground/85 text-[14px] font-semibold">
                     {venue.owner.firstName} {venue.owner.lastName}
                   </p>
@@ -267,7 +261,7 @@ export function VenueDetailPage() {
                 {venue.characteristics!.map((c) => (
                   <div
                     key={c.id}
-                    className="border-white/7 bg-white/3 rounded-xl px-3 py-2 text-[12px] text-primary/60"
+                    className="text-primary/60 rounded-xl border-white/7 bg-white/3 px-3 py-2 text-[12px]"
                   >
                     {c.name}
                   </div>
@@ -365,7 +359,7 @@ export function VenueDetailPage() {
 
         {/* ── Right column: booking card ── */}
         <div className="lg:col-span-5">
-          <div className="bg-card top-20 overflow-hidden rounded-2xl">
+          <div className="bg-card overflow-hidden rounded-2xl lg:sticky lg:top-20">
             <div className="from-primary-dark via-primary to-primary-light h-[3px] bg-linear-to-r" />
             {/* Gold top accent */}
 

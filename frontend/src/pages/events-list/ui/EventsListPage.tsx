@@ -1,24 +1,35 @@
 import { useRef, useState, useCallback } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { CalendarRange, X } from "lucide-react";
-import { EventCard, EVENT_TYPES } from "@entities/event";
+import { EventCard } from "@entities/event";
 import { useInfiniteEvents } from "@entities/event/model/event.infinite";
 import { useIntersectionObserver } from "@shared/hooks/useIntersectionObserver";
 import { CardSkeleton } from "@shared/ui/CardSkeleton";
 import { EmptyState } from "@shared/ui/EmptyState";
 import { Spinner } from "@shared/ui/Spinner";
+import { categoriesApi } from "@shared/api/categoriesApi";
+import { categoryKeys } from "@shared/api/queryKeys";
 
-const TYPE_FILTERS = [
-  { value: "", label: "Barchasi" },
-  ...EVENT_TYPES.map((t) => ({ value: t, label: t })),
-];
+const chipCls = (active: boolean) =>
+  `px-5 py-2 rounded-full text-sm font-medium transition-all duration-200 cursor-pointer border whitespace-nowrap ${
+    active
+      ? "bg-primary text-navy border-primary shadow-[0_0_18px_rgba(76,140,167,0.3)]"
+      : "bg-transparent border-border text-muted-foreground hover:border-primary/40 hover:text-foreground"
+  }`
 
 export function EventsListPage() {
-  const [eventType, setEventType] = useState("");
+  const [categoryId, setCategoryId] = useState("");
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
   const [showDates, setShowDates] = useState(false);
 
-  const hasFilters = !!eventType || !!dateFrom || !!dateTo;
+  const { data: categories, isLoading: categoriesLoading } = useQuery({
+    queryKey: categoryKeys.eventCategories(),
+    queryFn: categoriesApi.listEventCategories,
+    staleTime: Infinity,
+  });
+
+  const hasFilters = !!categoryId || !!dateFrom || !!dateTo;
 
   const {
     data,
@@ -28,7 +39,7 @@ export function EventsListPage() {
     hasNextPage,
   } = useInfiniteEvents({
     status: "PUBLISHED",
-    eventType: eventType || undefined,
+    categoryId: categoryId || undefined,
     dateFrom: dateFrom || undefined,
     dateTo: dateTo || undefined,
   });
@@ -41,13 +52,9 @@ export function EventsListPage() {
   const total = data?.pages[0]?.meta.total;
 
   function resetFilters() {
-    setEventType("");
+    setCategoryId("");
     setDateFrom("");
     setDateTo("");
-  }
-
-  function handleTypeChange(value: string) {
-    setEventType(value);
   }
 
   return (
@@ -58,62 +65,50 @@ export function EventsListPage() {
           <h1 className="font-serif text-4xl md:text-5xl font-bold text-foreground leading-none">
             Tadbirlar
           </h1>
-
           <div className="text-right shrink-0">
             <p className="font-serif text-3xl font-semibold text-primary leading-none">
               {total ?? "—"}
             </p>
-            <p className="text-xs text-muted-foreground mt-0.5">
-              tadbir topildi
-            </p>
+            <p className="text-xs text-muted-foreground mt-0.5">tadbir topildi</p>
           </div>
         </div>
-
         <div className="h-px bg-linear-to-r from-primary/50 via-primary/15 to-transparent mt-4" />
       </div>
 
-      {/* ── Type pills + date toggle ── */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-1 -mx-0.5 px-0.5 scrollbar-none">
-        {TYPE_FILTERS.map((t) => (
-          <button
-            key={t.value}
-            onClick={() => handleTypeChange(t.value)}
-            className={`shrink-0 h-8 px-4 rounded-full text-[12px] font-medium border transition-all duration-150 whitespace-nowrap ${
-              eventType === t.value
-                ? "bg-primary/12 border-primary/30 text-primary"
-                : "bg-transparent border-border text-muted-foreground hover:border-primary/20 hover:text-foreground hover:bg-muted/30"
-            }`}
-          >
-            {t.label}
-          </button>
-        ))}
+      {/* ── Category pills + date toggle ── */}
+      <div className="flex gap-2 flex-wrap items-center">
+        {/* "Barchasi" chip */}
+        <button onClick={() => setCategoryId("")} className={chipCls(categoryId === "")}>
+          Barchasi
+        </button>
 
-        <div className="w-px h-4 bg-border shrink-0" />
+        {/* Category chips — skeleton while loading */}
+        {categoriesLoading
+          ? Array.from({ length: 5 }).map((_, i) => (
+              <div key={i} className="h-9 w-24 rounded-full bg-muted/30 animate-pulse" />
+            ))
+          : categories?.map((c) => (
+              <button
+                key={c.id}
+                onClick={() => setCategoryId(c.id)}
+                className={chipCls(categoryId === c.id)}
+              >
+                {c.name}
+              </button>
+            ))}
 
         <button
           onClick={() => setShowDates((v) => !v)}
-          className={`shrink-0 h-8 px-3 rounded-full text-[12px] font-medium border transition-all duration-150 flex items-center gap-1.5 whitespace-nowrap ${
-            showDates || dateFrom || dateTo
-              ? "bg-primary/12 border-primary/30 text-primary"
-              : "bg-transparent border-border text-muted-foreground hover:border-primary/20 hover:text-foreground hover:bg-muted/30"
+          className={`ml-auto px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 cursor-pointer border flex items-center gap-1.5 ${
+            showDates || !!dateFrom || !!dateTo
+              ? "border-primary/50 text-primary bg-primary/5"
+              : "border-border text-muted-foreground hover:border-primary/30 hover:text-foreground"
           }`}
         >
-          <CalendarRange className="size-3" />
+          <CalendarRange className="h-3.5 w-3.5" />
           Sana
+          {(dateFrom || dateTo) && <span className="h-1.5 w-1.5 rounded-full bg-primary" />}
         </button>
-
-        {hasFilters && (
-          <>
-            <div className="w-px h-4 bg-border shrink-0" />
-            <button
-              onClick={resetFilters}
-              className="shrink-0 h-8 px-3 rounded-full text-[12px] font-medium border border-border/60 text-muted-foreground/60 hover:text-destructive hover:border-destructive/40 transition-colors flex items-center gap-1"
-            >
-              <X className="size-3" />
-              Tozalash
-            </button>
-          </>
-        )}
       </div>
 
       {/* ── Date filters (collapsible) ── */}
@@ -164,11 +159,7 @@ export function EventsListPage() {
         <EmptyState
           title="Tadbirlar topilmadi"
           description="Filtrlarni o'zgartirib ko'ring"
-          action={
-            hasFilters
-              ? { label: "Filtrlarni tozalash", onClick: resetFilters }
-              : undefined
-          }
+          action={hasFilters ? { label: "Filtrlarni tozalash", onClick: resetFilters } : undefined}
         />
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">

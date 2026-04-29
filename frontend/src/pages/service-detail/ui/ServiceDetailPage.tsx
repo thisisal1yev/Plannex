@@ -1,14 +1,7 @@
 import { useState } from 'react'
 import { useParams, Link } from 'react-router'
 import { useQuery } from '@tanstack/react-query'
-import {
-  ArrowLeft,
-  MapPin,
-  Star,
-  Users,
-  ChevronLeft,
-  ChevronRight,
-} from 'lucide-react'
+import { ArrowLeft, MapPin, Star, Users, ChevronLeft, ChevronRight } from 'lucide-react'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Autoplay, Navigation } from 'swiper/modules'
 import type { Swiper as SwiperInstance } from 'swiper'
@@ -155,7 +148,7 @@ export function ServiceDetailPage() {
           <span className="text-primary-light/90 border-primary/20 mb-3 inline-flex items-center rounded-full border bg-black/45 px-3 py-1.5 text-xs font-medium tracking-[0.18em] uppercase backdrop-blur-sm">
             {service.category?.name ?? '—'}
           </span>
-          <h1 className="font-serif mb-3 max-w-2xl text-4xl leading-tight font-bold text-white drop-shadow-lg md:text-5xl">
+          <h1 className="mb-3 max-w-2xl font-serif text-4xl leading-tight font-bold text-white drop-shadow-lg md:text-5xl">
             {service.name}
           </h1>
           <div className="flex flex-wrap items-center gap-4 text-sm text-white/80">
@@ -316,7 +309,7 @@ export function ServiceDetailPage() {
 
         {/* Right column: booking card */}
         <div className="lg:col-span-5">
-          <div className="bg-card top-20 overflow-hidden rounded-2xl">
+          <div className="bg-card overflow-hidden rounded-2xl lg:sticky lg:top-20">
             <div className="from-primary-dark via-primary to-primary-light h-[3px] bg-linear-to-r" />
 
             <CardHeader className="pt-5 pb-5">
