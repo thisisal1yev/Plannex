@@ -41,18 +41,27 @@ export function ImageDropZone({
   onUploadingChangeRef.current = onUploadingChange
 
   const blobsRef = useRef<string[]>([])
+  const entriesRef = useRef<ImageEntry[]>(
+    (initialUrls ?? []).map((url) => ({
+      id: `init-${url}`,
+      previewUrl: url,
+      uploadedUrl: url,
+      uploading: false,
+    })),
+  )
 
-  useEffect(() => {
-    return () => {
-      blobsRef.current.forEach(URL.revokeObjectURL)
-    }
-  }, [])
-
-  useEffect(() => {
-    const urls = entries.filter(e => e.uploadedUrl && !e.error).map(e => e.uploadedUrl!)
+  function applyEntries(updater: (prev: ImageEntry[]) => ImageEntry[]) {
+    const next = updater(entriesRef.current)
+    entriesRef.current = next
+    setEntries(next)
+    const urls = next.filter((e) => e.uploadedUrl && !e.error).map((e) => e.uploadedUrl!)
     onChangeRef.current(urls)
-    onUploadingChangeRef.current?.(entries.some(e => e.uploading))
-  }, [entries])
+    onUploadingChangeRef.current?.(next.some((e) => e.uploading))
+  }
+
+  useEffect(() => () => {
+    blobsRef.current.forEach(URL.revokeObjectURL)
+  }, [])
 
   async function processFiles(files: FileList | File[]) {
     const imageFiles = Array.from(files)
@@ -70,7 +79,7 @@ export function ImageDropZone({
       }
     })
 
-    setEntries(prev => [...prev, ...newEntries])
+    applyEntries(prev => [...prev, ...newEntries])
 
     for (let i = 0; i < imageFiles.length; i++) {
       const file = imageFiles[i]
@@ -78,12 +87,12 @@ export function ImageDropZone({
       try {
         if (file.size > 32 * 1024 * 1024) throw new Error('Fayl 32 MB dan oshmasligi kerak')
         const { url } = await uploadToImgbb(file)
-        setEntries(prev =>
+        applyEntries(prev =>
           prev.map(e => (e.id === id ? { ...e, uploadedUrl: url, uploading: false } : e)),
         )
       } catch (err) {
         const message = err instanceof Error ? err.message : 'Xatolik yuz berdi'
-        setEntries(prev =>
+        applyEntries(prev =>
           prev.map(e => (e.id === id ? { ...e, uploading: false, error: message } : e)),
         )
       }
@@ -91,7 +100,7 @@ export function ImageDropZone({
   }
 
   function removeEntry(id: string) {
-    setEntries(prev => prev.filter(e => e.id !== id))
+    applyEntries(prev => prev.filter(e => e.id !== id))
   }
 
   const canAddMore = entries.length < maxImages
