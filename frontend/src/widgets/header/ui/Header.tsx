@@ -104,7 +104,6 @@ function UserMenu({ className }: { className?: string }) {
   const { user, setUser, logout } = useAuthStore()
   const { theme, toggle } = useThemeStore()
   const navigate = useNavigate()
-  const { pathname } = useLocation()
 
   const logoutMutation = useMutation({
     mutationFn: authApi.logout,
