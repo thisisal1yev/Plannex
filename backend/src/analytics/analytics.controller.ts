@@ -30,6 +30,14 @@ export class AnalyticsController {
     return this.analyticsService.getDashboardStats(userId);
   }
 
+  @Get('vendor')
+  @UseGuards(RolesGuard)
+  @Roles('VENDOR')
+  @ApiOperation({ summary: 'Vendor dashboard statistics' })
+  getVendorDashboard(@CurrentUser('id') userId: string) {
+    return this.analyticsService.getVendorDashboardStats(userId);
+  }
+
   @Get('events/:eventId')
   @UseGuards(RolesGuard)
   @Roles('ORGANIZER')

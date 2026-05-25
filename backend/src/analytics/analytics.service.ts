@@ -3,11 +3,13 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { EventStatus, PaymentStatus } from '../../generated/prisma/enums';
+import { Prisma } from '../../generated/prisma/client';
+import { EventStatus, PaymentStatus, PaymentType } from '../../generated/prisma/enums';
 import { PrismaService } from '../prisma/prisma.service';
 import { DashboardStats } from './types/dashboard-stats.type';
 import { EventStats } from './types/event-stats.type';
 import { AdminStats } from './types/admin-stats.type';
+import { VendorDashboardStats } from './types';
 
 @Injectable()
 export class AnalyticsService {
@@ -154,6 +156,172 @@ export class AnalyticsService {
       platformCommission: totalCommission,
       attendanceRate: totalTickets > 0 ? soldTickets / totalTickets : 0,
       tierBreakdown,
+    };
+  }
+
+  /**
+   * Returns vendor dashboard statistics
+   */
+  async getVendorDashboardStats(userId: string): Promise<VendorDashboardStats> {
+    const now = new Date();
+
+    const months: { label: string; start: Date; end: Date }[] = [];
+    for (let i = 3; i >= 0; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      const start = new Date(d.getFullYear(), d.getMonth(), 1);
+      const end = new Date(d.getFullYear(), d.getMonth() + 1, 0, 23, 59, 59);
+      months.push({
+        label: d.toLocaleString('en-US', { month: 'short' }),
+        start,
+        end,
+      });
+    }
+
+    const [totalVenues, totalServices, pendingBookingsCount] =
+      await this.prisma.$transaction([
+        this.prisma.venue.count({ where: { ownerId: userId } }),
+        this.prisma.service.count({ where: { vendorId: userId } }),
+        this.prisma.booking.count({
+          where: {
+            status: 'PENDING',
+            OR: [
+              { venue: { ownerId: userId } },
+              { eventService: { service: { vendorId: userId } } },
+            ],
+          },
+        }),
+      ]);
+
+    const [venueRevenueAgg, serviceRevenueAgg] = await this.prisma.$transaction([
+      this.prisma.payment.aggregate({
+        where: {
+          type: PaymentType.VENUE,
+          status: PaymentStatus.PAID,
+          booking: { venue: { ownerId: userId } },
+        },
+        _sum: { amount: true },
+      }),
+      this.prisma.payment.aggregate({
+        where: {
+          type: PaymentType.SERVICE,
+          status: PaymentStatus.PAID,
+          booking: { eventService: { service: { vendorId: userId } } },
+        },
+        _sum: { amount: true },
+      }),
+    ]);
+
+    const totalRevenue =
+      Number(venueRevenueAgg._sum.amount ?? 0) +
+      Number(serviceRevenueAgg._sum.amount ?? 0);
+
+    const venueRatingStats = await this.prisma.ratingStats.findMany({
+      where: { venue: { ownerId: userId } },
+      select: { avg: true, count: true },
+    });
+    const serviceRatingStats = await this.prisma.ratingStats.findMany({
+      where: { service: { vendorId: userId } },
+      select: { avg: true, count: true },
+    });
+    const allRatingStats = [...venueRatingStats, ...serviceRatingStats];
+    const totalCount = allRatingStats.reduce((s, r) => s + r.count, 0);
+    const avgRating =
+      totalCount > 0
+        ? allRatingStats.reduce((s, r) => s + r.avg * r.count, 0) / totalCount
+        : 0;
+
+    const monthlyRevenue = await Promise.all(
+      months.map(async ({ label, start, end }) => {
+        const [vAgg, sAgg] = await Promise.all([
+          this.prisma.payment.aggregate({
+            where: {
+              type: PaymentType.VENUE,
+              status: PaymentStatus.PAID,
+              createdAt: { gte: start, lte: end },
+              booking: { venue: { ownerId: userId } },
+            },
+            _sum: { amount: true },
+          }),
+          this.prisma.payment.aggregate({
+            where: {
+              type: PaymentType.SERVICE,
+              status: PaymentStatus.PAID,
+              createdAt: { gte: start, lte: end },
+              booking: { eventService: { service: { vendorId: userId } } },
+            },
+            _sum: { amount: true },
+          }),
+        ]);
+        return {
+          month: label,
+          revenue: Number(vAgg._sum.amount ?? 0) + Number(sAgg._sum.amount ?? 0),
+        };
+      }),
+    );
+
+    const mapBooking = (b: {
+      id: string;
+      venueId: string | null;
+      totalCost: Prisma.Decimal;
+      startDate: Date | null;
+      endDate: Date | null;
+      venue: { name: string } | null;
+      eventService: { service: { name: string } } | null;
+    }) => ({
+      id: b.id,
+      type: (b.venueId ? 'VENUE' : 'SERVICE') as 'VENUE' | 'SERVICE',
+      itemName: b.venueId ? (b.venue?.name ?? '') : (b.eventService?.service.name ?? ''),
+      totalCost: Number(b.totalCost),
+      startDate: b.startDate ? b.startDate.toISOString() : null,
+      endDate: b.endDate ? b.endDate.toISOString() : null,
+    });
+
+    const bookingSelect = {
+      id: true,
+      venueId: true,
+      totalCost: true,
+      startDate: true,
+      endDate: true,
+      venue: { select: { name: true } },
+      eventService: { select: { service: { select: { name: true } } } },
+    } as const;
+
+    const [rawPending, rawConfirmed] = await Promise.all([
+      this.prisma.booking.findMany({
+        where: {
+          status: 'PENDING',
+          OR: [
+            { venue: { ownerId: userId } },
+            { eventService: { service: { vendorId: userId } } },
+          ],
+        },
+        orderBy: { createdAt: 'desc' },
+        take: 5,
+        select: bookingSelect,
+      }),
+      this.prisma.booking.findMany({
+        where: {
+          status: 'CONFIRMED',
+          OR: [
+            { venue: { ownerId: userId } },
+            { eventService: { service: { vendorId: userId } } },
+          ],
+        },
+        orderBy: { createdAt: 'desc' },
+        take: 5,
+        select: bookingSelect,
+      }),
+    ]);
+
+    return {
+      totalVenues,
+      totalServices,
+      totalRevenue,
+      avgRating,
+      pendingBookingsCount,
+      monthlyRevenue,
+      recentPendingBookings: rawPending.map(mapBooking),
+      recentConfirmedBookings: rawConfirmed.map(mapBooking),
     };
   }
 
