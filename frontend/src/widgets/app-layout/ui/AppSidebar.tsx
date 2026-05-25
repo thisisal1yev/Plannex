@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import type { ElementType } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router'
 import { useMutation } from '@tanstack/react-query'
@@ -59,15 +60,12 @@ const roleLinks: Record<string, Array<{ to: string; label: string; icon: Element
     { to: '/my-events', label: 'Mening tadbirlarim', icon: ListChecks },
   ],
   VENDOR: [
+    { to: '/dashboard', label: 'Boshqaruv paneli', icon: LayoutDashboard },
     { to: '/my-venues', label: 'Mening maydonlarim', icon: MapPin },
     { to: '/my-services', label: 'Mening xizmatlarim', icon: Settings2 },
   ],
   ADMIN: [
-    {
-      to: '/admin/dashboard',
-      label: 'Boshqaruv paneli',
-      icon: LayoutDashboard,
-    },
+    { to: '/dashboard', label: 'Boshqaruv paneli', icon: LayoutDashboard },
     { to: '/admin/users', label: 'Foydalanuvchilar', icon: Users },
     { to: '/admin/events', label: 'Tadbirlar', icon: CalendarRange },
     { to: '/admin/venues', label: 'Maydonlar', icon: Landmark },
@@ -90,7 +88,7 @@ function getInitials(firstName?: string, lastName?: string, email?: string): str
   return '?'
 }
 
-function NavLink({
+const NavLink = memo(function NavLink({
   to,
   label,
   icon: Icon,
@@ -131,11 +129,13 @@ function NavLink({
       </SidebarMenuButton>
     </SidebarMenuItem>
   )
-}
+})
 
 export function AppSidebar() {
-  const { user, logout } = useAuthStore()
-  const { theme, toggle } = useThemeStore()
+  const user = useAuthStore((s) => s.user)
+  const logout = useAuthStore((s) => s.logout)
+  const theme = useThemeStore((s) => s.theme)
+  const toggle = useThemeStore((s) => s.toggle)
   const navigate = useNavigate()
 
   const logoutMutation = useMutation({
@@ -152,7 +152,7 @@ export function AppSidebar() {
   const isAdmin = user?.role === 'ADMIN'
 
   return (
-    <Sidebar className="border-primary/8 border-r">
+    <Sidebar className="border-primary/8 z-50 border-r">
       {/* ── Header ── */}
       <SidebarHeader className="border-primary/8 border-b px-4 py-3.5">
         <Link to="/events" className="group flex items-center gap-2.5">

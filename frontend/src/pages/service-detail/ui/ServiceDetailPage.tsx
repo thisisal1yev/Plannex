@@ -269,7 +269,7 @@ export function ServiceDetailPage() {
                 )}
 
                 {reviews.data.map((review) => (
-                  <SwiperSlide key={review.id} className="!w-full">
+                  <SwiperSlide key={review.id} className="w-full!">
                     <ReviewCard review={review} />
                   </SwiperSlide>
                 ))}
@@ -281,7 +281,7 @@ export function ServiceDetailPage() {
         {/* Right column: booking card */}
         <div className="lg:col-span-5">
           <div className="bg-card overflow-hidden rounded-2xl lg:sticky lg:top-20">
-            <div className="from-primary-dark via-primary to-primary-light h-[3px] bg-linear-to-r" />
+            <div className="from-primary-dark via-primary to-primary-light h-0.75 bg-linear-to-r" />
 
             <CardHeader className="pt-5 pb-5">
               <div className="text-primary text-[34px] leading-none font-bold tracking-tight">

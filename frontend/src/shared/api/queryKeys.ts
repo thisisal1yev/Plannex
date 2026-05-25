@@ -48,6 +48,7 @@ export const categoryKeys = {
 export const analyticsKeys = {
   dashboard: () => ['dashboard'] as const,
   adminDashboard: () => ['admin-dashboard'] as const,
+  vendorDashboard: () => ['vendor-dashboard'] as const,
 }
 
 export const cityKeys = {

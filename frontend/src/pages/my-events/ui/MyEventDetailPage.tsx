@@ -98,7 +98,7 @@ export function MyEventDetailPage() {
   ]
 
   return (
-    <div className="flex flex-col pb-16">
+    <div className="grid grid-cols-1 pb-16">
       {/* ── Cinematic hero ── */}
       <div className="relative h-[58vh] max-h-140 min-h-95 w-full overflow-hidden rounded-2xl">
         {event.bannerUrls && event.bannerUrls.length > 0 ? (
@@ -137,7 +137,7 @@ export function MyEventDetailPage() {
         {/* Status badge */}
         <div className="absolute top-5 right-5 z-20">
           <div
-            className="inline-flex items-center gap-[5px] rounded-full border px-2.5 py-1 text-[10px] font-medium backdrop-blur-sm"
+            className="inline-flex items-center gap-1.25 rounded-full border px-2.5 py-1 text-[10px] font-medium backdrop-blur-sm"
             style={{
               color: statusColor,
               borderColor: `${statusColor}44`,
@@ -145,7 +145,7 @@ export function MyEventDetailPage() {
             }}
           >
             <span
-              className="inline-block h-[5px] w-[5px] shrink-0 rounded-full"
+              className="inline-block h-1.25 w-1.25 shrink-0 rounded-full"
               style={{ background: statusColor }}
             />
             {statusLabel}

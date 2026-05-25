@@ -3,19 +3,15 @@ import { SidebarProvider, SidebarInset, SidebarTrigger } from '@/shared/ui/primi
 import { AppSidebar } from './AppSidebar'
 
 const PAGE_TITLES: Record<string, string> = {
-  '/admin/dashboard': 'Boshqaruv paneli',
+  '/dashboard': 'Boshqaruv paneli',
   '/admin/users': 'Foydalanuvchilar',
   '/admin/events': 'Tadbirlar',
   '/admin/venues': 'Maydonlar',
-  '/dashboard': 'Boshqaruv paneli',
   '/my-events': 'Mening tadbirlarim',
   '/my-venues': 'Mening maydonlarim',
   '/my-services': 'Mening xizmatlarim',
   '/tickets': 'Mening chiptalаrim',
   '/profile': 'Profil',
-  '/events': 'Tadbirlar',
-  '/venues': 'Maydonlar',
-  '/services': 'Xizmatlar',
 }
 
 export function AppLayout() {
@@ -31,7 +27,7 @@ export function AppLayout() {
       <AppSidebar />
 
       <SidebarInset>
-        <header className="border-border/60 bg-background/95 sticky top-0 z-10 flex h-12 shrink-0 items-center gap-3 border-b px-4 backdrop-blur-sm">
+        <header className="border-border/60 bg-background/95 sticky top-0 z-40 flex h-12 shrink-0 items-center gap-3 border-b px-4 backdrop-blur-sm">
           <SidebarTrigger className="text-muted-foreground hover:text-foreground -ml-1 transition-colors" />
           {title && (
             <>

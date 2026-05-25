@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef, useCallback } from 'react'
 import { useParams, Link } from 'react-router'
 import { useQuery } from '@tanstack/react-query'
 import {
@@ -11,8 +11,7 @@ import {
   Heart,
   ChevronLeft,
 } from 'lucide-react'
-import { SwiperSlide } from 'swiper/react'
-import { Swiper } from 'swiper/react'
+import { Swiper, SwiperSlide } from 'swiper/react'
 import { Autoplay, Navigation } from 'swiper/modules'
 import type { Swiper as SwiperInstance } from 'swiper'
 
@@ -36,8 +35,9 @@ export function EventDetailPage() {
   const user = useAuthStore((s) => s.user)
   const [volunteerModal, setVolunteerModal] = useState(false)
   const [reviewModal, setReviewModal] = useState(false)
-  const [swiper, setSwiper] = useState<SwiperInstance | null>(null)
+  const swiperRef = useRef<SwiperInstance | null>(null)
   const [imgIndex, setImgIndex] = useState(0)
+  const onSwiperInit = useCallback((s: SwiperInstance) => { swiperRef.current = s }, [])
 
   const { data: event, isLoading } = useQuery({
     queryKey: eventKeys.detail(id!),
@@ -94,9 +94,7 @@ export function EventDetailPage() {
             autoplay={{ delay: 2500, disableOnInteraction: false }}
             loop
             className="h-full w-full"
-            onSwiper={(s) => {
-              setSwiper(s)
-            }}
+            onSwiper={onSwiperInit}
             onSlideChange={(s) => setImgIndex(s.realIndex)}
           >
             {event.bannerUrls.map((url, idx) => (
@@ -165,7 +163,7 @@ export function EventDetailPage() {
               <button
                 key={i}
                 onClick={() => {
-                  swiper?.slideTo(i)
+                  swiperRef.current?.slideTo(i)
                   setImgIndex(i)
                 }}
                 className={`h-12 w-16 cursor-pointer overflow-hidden rounded-lg border-2 transition-all duration-200 ${

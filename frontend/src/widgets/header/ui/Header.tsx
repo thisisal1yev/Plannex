@@ -40,20 +40,9 @@ const BROWSE_LINKS: NavItem[] = [
 ]
 
 const ROLE_LINKS: Record<string, NavItem[]> = {
-  PARTICIPANT: [{ to: '/tickets', label: 'Chiptalarim', icon: Ticket }],
-  ORGANIZER: [
-    {
-      to: '/dashboard',
-      label: 'Boshqaruv',
-      icon: LayoutDashboard,
-      exact: true,
-    },
-    { to: '/my-events', label: 'Tadbirlarim', icon: ListChecks },
-  ],
-  VENDOR: [
-    { to: '/my-venues', label: 'Maydonlarim', icon: MapPin },
-    { to: '/my-services', label: 'Xizmatlarim', icon: Settings2 },
-  ],
+  PARTICIPANT: [],
+  ORGANIZER: [],
+  VENDOR: [],
   VOLUNTEER: [],
 }
 
@@ -133,14 +122,8 @@ function UserMenu({ className }: { className?: string }) {
   const switchRoleMutation = useMutation({
     mutationFn: (role: Role) => usersApi.switchRole(role),
     onSuccess: (updatedUser) => {
-      const newRoleLinks = ROLE_LINKS[updatedUser.role] ?? []
-      const currentPageAllowed = newRoleLinks.some(
-        (l) => pathname === l.to || pathname.startsWith(l.to + '/')
-      )
-      if (!currentPageAllowed) {
-        navigate(newRoleLinks.length > 0 ? newRoleLinks[0].to : '/events')
-      }
       setUser(updatedUser)
+      navigate('/dashboard')
     },
   })
 

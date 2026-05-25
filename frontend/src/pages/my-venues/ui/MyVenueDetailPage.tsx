@@ -72,7 +72,7 @@ export function MyVenueDetailPage() {
   const reviewCount = venue.ratingStats?.count ?? 0
 
   return (
-    <div className="flex flex-col pb-16">
+    <div className="grid grid-cols-1 pb-16">
       {/* ── Cinematic hero ── */}
       <div className="relative h-[58vh] max-h-140 min-h-95 w-full overflow-hidden rounded-2xl">
         {venue.imageUrls && venue.imageUrls.length > 0 ? (

@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { Link } from 'react-router'
 import {
@@ -31,6 +32,11 @@ import { analyticsKeys, eventKeys } from '@shared/api/queryKeys'
 import { formatUZS, formatDateShort } from '@shared/lib/dateUtils'
 import { cn } from '@shared/lib/utils'
 
+const chartMargin = { top: 4, right: 4, left: -20, bottom: 0 } as const
+const axisTick = { fontSize: 10, fill: 'rgba(255,255,255,0.3)' } as const
+const chartDot = { r: 3, fill: '#4c8ca7', strokeWidth: 0 } as const
+const chartActiveDot = { r: 5, fill: '#4c8ca7', strokeWidth: 0 } as const
+
 const STRINGS = {
   title: 'Boshqaruv paneli',
   create: 'Tadbir yaratish',
@@ -47,7 +53,7 @@ const STRINGS = {
   myEvents: 'Mening tadbirlarim',
 }
 
-function RecentEventRow({ event }: { event: Event }) {
+const RecentEventRow = memo(function RecentEventRow({ event }: { event: Event }) {
   const total = event.ticketTiers?.reduce((s, t) => s + t.quantity, 0) ?? 0
   const sold = event.ticketTiers?.reduce((s, t) => s + (t._count?.tickets ?? 0), 0) ?? 0
   const pct = total > 0 ? Math.round((sold / total) * 100) : 0
@@ -100,9 +106,9 @@ function RecentEventRow({ event }: { event: Event }) {
       </Badge>
     </Link>
   )
-}
+})
 
-function CustomTooltip({
+const CustomTooltip = memo(function CustomTooltip({
   active,
   payload,
   label,
@@ -118,7 +124,7 @@ function CustomTooltip({
       <p className="text-primary text-[13px] font-bold">{payload[0].value} chipta</p>
     </div>
   )
-}
+})
 
 export function OrganizerDashboardPage() {
   const { data: stats, isLoading: statsLoading } = useQuery({
@@ -230,7 +236,7 @@ export function OrganizerDashboardPage() {
 
           {chartData.length > 0 ? (
             <ResponsiveContainer width="100%" height={160}>
-              <AreaChart data={chartData} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
+              <AreaChart data={chartData} margin={chartMargin}>
                 <defs>
                   <linearGradient id="goldGrad" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#4c8ca7" stopOpacity={0.25} />
@@ -246,13 +252,13 @@ export function OrganizerDashboardPage() {
 
                 <XAxis
                   dataKey="name"
-                  tick={{ fontSize: 10, fill: 'rgba(255,255,255,0.3)' }}
+                  tick={axisTick}
                   axisLine={false}
                   tickLine={false}
                 />
 
                 <YAxis
-                  tick={{ fontSize: 10, fill: 'rgba(255,255,255,0.3)' }}
+                  tick={axisTick}
                   axisLine={false}
                   tickLine={false}
                 />
@@ -265,8 +271,8 @@ export function OrganizerDashboardPage() {
                   stroke="#4c8ca7"
                   strokeWidth={2}
                   fill="url(#goldGrad)"
-                  dot={{ r: 3, fill: '#4c8ca7', strokeWidth: 0 }}
-                  activeDot={{ r: 5, fill: '#4c8ca7', strokeWidth: 0 }}
+                  dot={chartDot}
+                  activeDot={chartActiveDot}
                 />
               </AreaChart>
             </ResponsiveContainer>

@@ -47,3 +47,23 @@ export interface EventStats {
   attendanceRate: number
   tierBreakdown: TierStats[]
 }
+
+export interface VendorBookingItem {
+  id: string
+  type: 'VENUE' | 'SERVICE'
+  itemName: string
+  totalCost: number
+  startDate: string | null
+  endDate: string | null
+}
+
+export interface VendorDashboardStats {
+  totalVenues: number
+  totalServices: number
+  totalRevenue: number
+  avgRating: number
+  pendingBookingsCount: number
+  monthlyRevenue: { month: string; revenue: number }[]
+  recentPendingBookings: VendorBookingItem[]
+  recentConfirmedBookings: VendorBookingItem[]
+}

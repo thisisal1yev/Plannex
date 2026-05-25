@@ -19,6 +19,7 @@ import { CheckAvailabilityDto } from './dto/check-availability.dto';
 import { CreateVenueDto } from './dto/create-venue.dto';
 import { QueryVenuesDto } from './dto/query-venues.dto';
 import { UpdateVenueDto } from './dto/update-venue.dto';
+import { BookingStatus } from '../../generated/prisma/enums';
 import { VenuesService } from './venues.service';
 
 @ApiTags('Venues')
@@ -95,6 +96,19 @@ export class VenuesController {
     @Body() dto: BookVenueDto,
   ) {
     return this.venuesService.book(userId, id, dto);
+  }
+
+  @Patch('bookings/:id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('VENDOR')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Confirm or cancel a booking (vendor)' })
+  updateBookingStatus(
+    @CurrentUser('id') userId: string,
+    @Param('id') bookingId: string,
+    @Body() dto: { status: BookingStatus },
+  ) {
+    return this.venuesService.updateBookingStatus(userId, bookingId, dto.status);
   }
 
   @Get(':id/availability')

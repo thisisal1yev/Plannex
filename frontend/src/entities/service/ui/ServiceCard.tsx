@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import { Link } from 'react-router'
 import { ArrowRight, MapPin, Star } from 'lucide-react'
 import { formatUZS } from '@shared/lib/dateUtils'
@@ -10,7 +11,15 @@ interface ServiceCardProps {
   className?: string
 }
 
-export function ServiceCard({ service, className, index = 0 }: ServiceCardProps) {
+const shimmerStyle = {
+  background: 'linear-gradient(90deg, transparent 0%, #4c8ca7 40%, #7ab8cc 60%, transparent 100%)',
+} as const
+
+const overlayStyle = {
+  background: 'linear-gradient(to top, rgba(8,15,25,0.92) 0%, rgba(8,15,25,0.4) 45%, transparent 75%)',
+} as const
+
+export const ServiceCard = memo(function ServiceCard({ service, className, index = 0 }: ServiceCardProps) {
   return (
     <Link
       to={`/services/${service.id}`}
@@ -23,10 +32,7 @@ export function ServiceCard({ service, className, index = 0 }: ServiceCardProps)
       {/* Animated primary shimmer rule */}
       <div
         className="pointer-events-none absolute right-0 bottom-0 left-0 z-10 h-0.5 origin-center scale-x-0 transition-transform duration-500 ease-out group-hover:scale-x-100"
-        style={{
-          background:
-            'linear-gradient(90deg, transparent 0%, #4c8ca7 40%, #7ab8cc 60%, transparent 100%)',
-        }}
+        style={shimmerStyle}
       />
 
       {/* ── Image ── */}
@@ -35,6 +41,7 @@ export function ServiceCard({ service, className, index = 0 }: ServiceCardProps)
           <img
             src={service.imageUrls[0]}
             alt={service.name}
+            loading="lazy"
             className="h-full w-full object-cover transition-transform duration-700 ease-in-out group-hover:scale-[1.07]"
           />
         ) : (
@@ -45,13 +52,7 @@ export function ServiceCard({ service, className, index = 0 }: ServiceCardProps)
         )}
 
         {/* Gradient */}
-        <div
-          className="pointer-events-none absolute inset-0"
-          style={{
-            background:
-              'linear-gradient(to top, rgba(8,15,25,0.92) 0%, rgba(8,15,25,0.4) 45%, transparent 75%)',
-          }}
-        />
+        <div className="pointer-events-none absolute inset-0" style={overlayStyle} />
 
         {/* Top badges */}
         <div className="absolute top-3 flex w-full items-center justify-between px-4">
@@ -111,4 +112,4 @@ export function ServiceCard({ service, className, index = 0 }: ServiceCardProps)
       </div>
     </Link>
   )
-}
+})
