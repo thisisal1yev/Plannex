@@ -20,5 +20,6 @@ export function RequireRole({ role, children }: Props & { role: Role | Role[] })
 
 export function GuestOnly({ children }: Props) {
   const isAuth = !!useAuthStore((s) => s.accessToken)
-  return isAuth ? <Navigate to="/events" replace /> : <>{children}</>
+  if (!isAuth) return <>{children}</>
+  return <Navigate to="/dashboard" replace />
 }
