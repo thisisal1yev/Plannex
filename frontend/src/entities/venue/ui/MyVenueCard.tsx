@@ -1,3 +1,4 @@
+import { memo, useMemo } from 'react'
 import { Link } from 'react-router'
 import { ArrowRight, Building2, MapPin, Star } from 'lucide-react'
 import { formatUZS } from '@shared/lib/dateUtils'
@@ -10,8 +11,21 @@ interface MyVenueCardProps {
   className?: string
 }
 
-export function MyVenueCard({ venue, className, index = 0 }: MyVenueCardProps) {
-  const amenities = (venue.characteristics ?? []).map((c) => ({ key: c.id, label: c.name }))
+const shimmerStyle = {
+  background: 'linear-gradient(90deg, transparent 0%, #4c8ca7 40%, #7ab8cc 60%, transparent 100%)',
+} as const
+
+const overlayStyle = {
+  background: 'linear-gradient(to top, rgba(8,15,25,0.92) 0%, rgba(8,15,25,0.45) 45%, transparent 75%)',
+} as const
+
+const tabularNumsStyle = { fontVariantNumeric: 'tabular-nums' } as const
+
+export const MyVenueCard = memo(function MyVenueCard({ venue, className, index = 0 }: MyVenueCardProps) {
+  const amenities = useMemo(
+    () => (venue.characteristics ?? []).map((c) => ({ key: c.id, label: c.name })),
+    [venue.characteristics],
+  )
 
   return (
     <Link
@@ -25,10 +39,7 @@ export function MyVenueCard({ venue, className, index = 0 }: MyVenueCardProps) {
       {/* Animated primary shimmer rule */}
       <div
         className="pointer-events-none absolute right-0 bottom-0 left-0 z-10 h-0.5 origin-center scale-x-0 transition-transform duration-500 ease-out group-hover:scale-x-100"
-        style={{
-          background:
-            'linear-gradient(90deg, transparent 0%, #4c8ca7 40%, #7ab8cc 60%, transparent 100%)',
-        }}
+        style={shimmerStyle}
       />
 
       {/* Image */}
@@ -37,6 +48,7 @@ export function MyVenueCard({ venue, className, index = 0 }: MyVenueCardProps) {
           <img
             src={venue.imageUrls[0]}
             alt={venue.name}
+            loading="lazy"
             className="h-full w-full object-cover transition-transform duration-700 ease-in-out group-hover:scale-[1.07]"
           />
         ) : (
@@ -46,20 +58,14 @@ export function MyVenueCard({ venue, className, index = 0 }: MyVenueCardProps) {
         )}
 
         {/* Gradient */}
-        <div
-          className="pointer-events-none absolute inset-0"
-          style={{
-            background:
-              'linear-gradient(to top, rgba(8,15,25,0.92) 0%, rgba(8,15,25,0.4) 45%, transparent 75%)',
-          }}
-        />
+        <div className="pointer-events-none absolute inset-0" style={overlayStyle} />
 
         {/* Top badges */}
         <div className="absolute top-3 flex w-full items-center justify-between px-4">
           <div className="flex items-baseline gap-1 rounded-lg border border-white/10 bg-[rgba(8,15,25,0.55)] px-2.5 py-1.5 backdrop-blur-sm">
             <span
               className="text-cream/90 text-lg leading-none font-bold"
-              style={{ fontVariantNumeric: 'tabular-nums' }}
+              style={tabularNumsStyle}
             >
               {venue.capacity.toLocaleString()}
             </span>
@@ -138,4 +144,4 @@ export function MyVenueCard({ venue, className, index = 0 }: MyVenueCardProps) {
       </div>
     </Link>
   )
-}
+})

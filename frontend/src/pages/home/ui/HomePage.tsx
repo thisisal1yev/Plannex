@@ -1,10 +1,9 @@
+import { memo } from 'react'
 import { useQuery, useMutation } from '@tanstack/react-query'
 import { useForm } from 'react-hook-form'
 import { Link } from 'react-router'
-import { eventsApi } from '@entities/event'
-import { venuesApi } from '@entities/venue'
-import { EventCard } from '@entities/event'
-import { VenueCard } from '@entities/venue'
+import { eventsApi, EventCard } from '@entities/event'
+import { venuesApi, VenueCard } from '@entities/venue'
 import { Spinner } from '@shared/ui/Spinner'
 import { eventKeys, venueKeys } from '@shared/api/queryKeys'
 import { cn } from '@shared/lib/utils'
@@ -64,6 +63,8 @@ const MQ = [
   'Mitaplar',
   'Namoyishlar',
 ]
+
+const MQ_EXPANDED = [...MQ, ...MQ, ...MQ, ...MQ]
 
 const STEPS = [
   {
@@ -136,9 +137,16 @@ const PLANS = [
   },
 ]
 
+const CONTACT_INFO = [
+  { ic: '📍', t: 'Manzil', v: "Farg'ona viloyati, Farg'ona ko'chasi 86 uy, Startup Markaz" },
+  { ic: '📞', t: 'Telefon', v: '+998 94 991 96 69' },
+  { ic: '✉️', t: 'Email', v: 'naymanbayevjavohir400@gmail.com' },
+  { ic: '🕐', t: 'Ish vaqti', v: 'Du–Ju, 9:00–18:00' },
+] as const
+
 // ─── Ornament SVG ─────────────────────────────────────────────────────────────
 
-function Ornament({ size = 380, op = 0.13 }: { size?: number; op?: number }) {
+const Ornament = memo(function Ornament({ size = 380, op = 0.13 }: { size?: number; op?: number }) {
   return (
     <svg
       className="text-primary"
@@ -174,17 +182,17 @@ function Ornament({ size = 380, op = 0.13 }: { size?: number; op?: number }) {
       <line x1="203" y1="37" x2="37" y2="203" stroke="#4c8ca7" strokeWidth="0.3" opacity="0.25" />
     </svg>
   )
-}
+})
 
 // ─── Section label ─────────────────────────────────────────────────────────────
 
-function Label({ text }: { text: string }) {
+const Label = memo(function Label({ text }: { text: string }) {
   return (
     <p className="text-primary mb-2.5 text-[11px] font-medium tracking-[0.18em] uppercase">
       {text}
     </p>
   )
-}
+})
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
@@ -273,7 +281,7 @@ export function HomePage() {
       {/* ════════════════════════════════ MARQUEE ════════════════════════════ */}
       <div className="border-primary/15 bg-primary/2.5 overflow-hidden border-y py-3.25">
         <div className="lp-mq">
-          {[...MQ, ...MQ, ...MQ, ...MQ].map((item, i) => (
+          {MQ_EXPANDED.map((item, i) => (
             <span
               key={i}
               className="text-slate mr-11 flex items-center gap-11 text-xs tracking-[0.14em] whitespace-nowrap uppercase"
@@ -549,16 +557,7 @@ export function HomePage() {
           </div>
           <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
             <div className="flex flex-col gap-3.5">
-              {[
-                {
-                  ic: '📍',
-                  t: 'Manzil',
-                  v: "Farg'ona viloyati, Farg'ona ko'chasi 86 uy, Startup Markaz",
-                },
-                { ic: '📞', t: 'Telefon', v: '+998 94 991 96 69' },
-                { ic: '✉️', t: 'Email', v: 'naymanbayevjavohir400@gmail.com' },
-                { ic: '🕐', t: 'Ish vaqti', v: 'Du–Ju, 9:00–18:00' },
-              ].map((x) => (
+              {CONTACT_INFO.map((x) => (
                 <div
                   key={x.t}
                   className="bg-primary/2.5 border-primary/15 flex items-start gap-4 rounded-xl border px-5 py-4"

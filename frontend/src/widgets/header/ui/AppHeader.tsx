@@ -62,7 +62,7 @@ function UserMenu() {
       </button>
 
       {open && (
-        <div className="hdr-menu border-primary/18 absolute right-0 z-50 mt-2.5 w-57 overflow-hidden rounded-xl border bg-white dark:bg-[rgba(15,25,37,0.97)] shadow-[0_16px_48px_rgba(0,0,0,0.12)] dark:shadow-[0_16px_48px_rgba(0,0,0,0.5)]">
+        <div className="hdr-menu border-primary/18 absolute right-0 z-50 mt-2.5 w-57 overflow-hidden rounded-xl border bg-white shadow-[0_16px_48px_rgba(0,0,0,0.12)] dark:bg-[rgba(15,25,37,0.97)] dark:shadow-[0_16px_48px_rgba(0,0,0,0.5)]">
           <div className="border-b-primary/12 flex items-center gap-3 border-b px-4 py-3.5">
             {user.avatarUrl ? (
               <img
@@ -76,11 +76,11 @@ function UserMenu() {
               </div>
             )}
             <div className="min-w-0">
-              <p className="text-gray-900 dark:text-cream overflow-hidden text-sm font-semibold text-ellipsis whitespace-nowrap">
+              <p className="dark:text-cream overflow-hidden text-sm font-semibold text-ellipsis whitespace-nowrap text-gray-900">
                 {user.firstName} {user.lastName}
               </p>
 
-              <p className="text-gray-500 dark:text-cream/45 overflow-hidden text-xs text-ellipsis whitespace-nowrap">
+              <p className="dark:text-cream/45 overflow-hidden text-xs text-ellipsis whitespace-nowrap text-gray-500">
                 {user.email}
               </p>
             </div>
@@ -95,10 +95,10 @@ function UserMenu() {
                 key={to}
                 to={to}
                 onClick={() => setOpen(false)}
-                className="text-gray-600 hover:text-primary hover:bg-primary/7 dark:text-cream/70 dark:hover:text-primary-light flex items-center gap-2.5 px-4 py-[9px] text-sm transition-[color,background] duration-150"
+                className="hover:text-primary hover:bg-primary/7 dark:text-cream/70 dark:hover:text-primary-light flex items-center gap-2.5 px-4 py-2.25 text-sm text-gray-600 transition-[color,background] duration-150"
               >
-                <Icon className="h-[15px] w-[15px] shrink-0 opacity-50" strokeWidth={1.5} />
-                
+                <Icon className="h-3.75 w-3.75 shrink-0 opacity-50" strokeWidth={1.5} />
+
                 <span>{label}</span>
               </Link>
             ))}
@@ -107,9 +107,9 @@ function UserMenu() {
           <div className="border-t-primary/12 border-t py-1.5">
             <button
               onClick={handleLogout}
-              className="flex w-full cursor-pointer items-center gap-2.5 border-none bg-transparent px-4 py-[9px] text-sm text-red-400/80 transition-[color,background] duration-150 hover:bg-red-500/7 hover:text-red-500"
+              className="flex w-full cursor-pointer items-center gap-2.5 border-none bg-transparent px-4 py-2.25 text-sm text-red-400/80 transition-[color,background] duration-150 hover:bg-red-500/7 hover:text-red-500"
             >
-              <LogOut className="h-[15px] w-[15px] shrink-0 opacity-70" strokeWidth={1.5} />
+              <LogOut className="h-3.75 w-3.75 shrink-0 opacity-70" strokeWidth={1.5} />
 
               <span>Chiqish</span>
             </button>
@@ -125,10 +125,12 @@ export function AppHeader() {
 
   return (
     <>
-      <header className="bg-white/95 dark:bg-navy-header sticky top-0 z-40 w-full border-b border-gray-200 dark:border-white/8 backdrop-blur-md">
+      <header className="dark:bg-navy-header sticky top-0 z-40 w-full border-b border-gray-200 bg-white/95 backdrop-blur-md dark:border-white/8">
         <div className="mx-auto flex h-15 max-w-7xl items-center justify-between gap-8 px-6">
           <Link to={'/'} className="relative z-10 flex items-center">
-            <span className="text-gray-900 dark:text-cream text-xl font-bold tracking-[-0.01em]">Planner</span>
+            <span className="dark:text-cream text-xl font-bold tracking-[-0.01em] text-gray-900">
+              Planner
+            </span>
 
             <span className="text-primary text-xl font-bold tracking-[-0.01em]">&nbsp;AI</span>
           </Link>
@@ -139,7 +141,7 @@ export function AppHeader() {
                 <a
                   key={href}
                   href={href}
-                  className="group text-gray-700 hover:text-primary dark:text-cream dark:hover:text-primary-light relative pb-0.5 text-sm transition-colors duration-200"
+                  className="group hover:text-primary dark:text-cream dark:hover:text-primary-light relative pb-0.5 text-sm text-gray-700 transition-colors duration-200"
                 >
                   {label}
                   <span className="bg-primary-light absolute -bottom-0.5 left-0 h-px w-0 transition-[width] duration-250 ease-in-out group-hover:w-full" />
@@ -154,7 +156,7 @@ export function AppHeader() {
                 <>
                   <Link
                     to="/login"
-                    className="text-gray-700 hover:text-primary dark:text-cream dark:hover:text-primary-light rounded-xl border border-gray-200 dark:border-cream/20 hover:border-primary/55 px-4 py-2 text-sm font-medium transition-colors duration-300"
+                    className="hover:text-primary dark:text-cream dark:hover:text-primary-light dark:border-cream/20 hover:border-primary/55 rounded-xl border border-gray-200 px-4 py-2 text-sm font-medium text-gray-700 transition-colors duration-300"
                   >
                     Kirish
                   </Link>

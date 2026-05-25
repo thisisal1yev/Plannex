@@ -130,11 +130,8 @@ function SignInForm() {
       setUser(user)
       return user
     },
-    onSuccess: (user) => {
-      if (user.role === 'ORGANIZER') navigate('/dashboard')
-      else if (user.role === 'ADMIN') navigate('/admin/users')
-      else if (user.role === 'VENDOR') navigate('/my-venues')
-      else navigate('/')
+    onSuccess: () => {
+      navigate('/dashboard')
     },
     onError: () => setError('password', { message: "Noto'g'ri email yoki parol" }),
   })
@@ -237,9 +234,8 @@ function CreateAccountForm() {
       setUser(user)
       return user
     },
-    onSuccess: (user) => {
-      if (user.role === 'ORGANIZER') navigate('/dashboard')
-      else navigate('/')
+    onSuccess: () => {
+      navigate('/dashboard')
     },
     onError: () => setError('email', { message: 'Email allaqachon ishlatilmoqda' }),
   })

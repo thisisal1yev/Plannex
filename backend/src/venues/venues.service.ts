@@ -159,6 +159,30 @@ export class VenuesService {
     });
   }
 
+  async updateBookingStatus(userId: string, bookingId: string, status: BookingStatus): Promise<any> {
+    const booking = await this.prisma.booking.findUnique({
+      where: { id: bookingId },
+      include: {
+        venue: { select: { ownerId: true } },
+        eventService: { select: { service: { select: { vendorId: true } } } },
+      },
+    });
+
+    if (!booking) throw new NotFoundException('Booking not found');
+
+    const isVenueOwner = booking.venue?.ownerId === userId;
+    const isServiceVendor = booking.eventService?.service.vendorId === userId;
+
+    if (!isVenueOwner && !isServiceVendor) {
+      throw new ForbiddenException('Only the venue owner or service vendor can update this booking');
+    }
+
+    return this.prisma.booking.update({
+      where: { id: bookingId },
+      data: { status },
+    });
+  }
+
   /**
    * Checks if venue is available for given dates
    */

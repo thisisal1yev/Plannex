@@ -12,6 +12,10 @@ import { formatUZS } from '@shared/lib/dateUtils'
 import { DetailPageSkeleton } from '@shared/ui/DetailPageSkeleton'
 import { StarRating } from '@/shared/ui/StarRating'
 
+const emptyHeroStyle = {
+  background: 'linear-gradient(135deg, rgba(8,15,25,0.98) 0%, rgba(8,15,25,0.95) 100%)',
+} as const
+
 export function MyServiceDetailPage() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
@@ -61,7 +65,7 @@ export function MyServiceDetailPage() {
   const reviewCount = service.ratingStats?.count ?? 0
 
   return (
-    <div className="flex flex-col pb-16">
+    <div className="grid grid-cols-1 pb-16">
       {/* ── Cinematic hero ── */}
       <div className="relative h-[58vh] max-h-140 min-h-95 w-full overflow-hidden rounded-2xl">
         {service.imageUrls && service.imageUrls.length > 0 ? (
@@ -82,9 +86,7 @@ export function MyServiceDetailPage() {
         ) : (
           <div
             className="absolute inset-0 z-0 flex items-center justify-center"
-            style={{
-              background: `linear-gradient(135deg, rgba(8,15,25,0.98) 0%, rgba(8,15,25,0.95) 100%)`,
-            }}
+            style={emptyHeroStyle}
           >
             <span className="text-[140px] leading-none opacity-10 select-none">◆</span>
           </div>

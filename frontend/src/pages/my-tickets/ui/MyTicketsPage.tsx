@@ -1,12 +1,9 @@
 import { useQuery } from '@tanstack/react-query'
-import { Link } from 'react-router'
-import { ChevronRight, TicketX } from 'lucide-react'
-import { ticketsApi } from '@entities/ticket'
-import { Badge } from '@shared/ui/Badge'
+import { TicketX } from 'lucide-react'
+import { ticketsApi, TicketCard } from '@entities/ticket'
 import { EmptyState } from '@shared/ui/EmptyState'
 import { Spinner } from '@shared/ui/Spinner'
 import { ticketKeys } from '@shared/api/queryKeys'
-import { formatUZS } from '@shared/lib/dateUtils'
 
 export function MyTicketsPage() {
   const { data: tickets, isLoading } = useQuery({
@@ -29,27 +26,9 @@ export function MyTicketsPage() {
         />
       )}
 
-      <div className="flex flex-col gap-3">
-        {tickets?.map((ticket) => (
-          <Link
-            key={ticket.id}
-            to={`/tickets/${ticket.id}`}
-            className="bg-card rounded-xl border border-border p-4 flex items-center justify-between hover:shadow-sm transition-shadow"
-          >
-            <div>
-              <p className="font-semibold text-foreground">{ticket.event?.title ?? 'Tadbir'}</p>
-              <p className="text-sm text-muted-foreground">{ticket.tier?.name} • {formatUZS(ticket.tier?.price ?? 0)}</p>
-              <p className="text-xs text-muted-foreground mt-1">
-                {ticket.event?.startDate && new Date(ticket.event.startDate).toLocaleDateString('uz-UZ')}
-              </p>
-            </div>
-            <div className="flex items-center gap-2">
-              <Badge color={ticket.isUsed ? 'gray' : 'green'}>
-                {ticket.isUsed ? 'Ishlatilgan' : 'Amal qiladi'}
-              </Badge>
-              <ChevronRight className="h-4 w-4 text-muted-foreground" />
-            </div>
-          </Link>
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {tickets?.map((ticket, i) => (
+          <TicketCard key={ticket.id} ticket={ticket} index={i} />
         ))}
       </div>
     </div>

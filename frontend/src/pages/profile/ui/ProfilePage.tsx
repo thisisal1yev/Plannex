@@ -1,4 +1,4 @@
-import { useState, useRef, useMemo } from 'react'
+import { memo, useState, useRef, useMemo } from 'react'
 import { Link } from 'react-router'
 import { useForm } from 'react-hook-form'
 import { useQuery, useQueries, useMutation, useQueryClient } from '@tanstack/react-query'
@@ -56,7 +56,7 @@ const ROLE_COLORS: Record<string, string> = {
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
-function Avatar({
+const Avatar = memo(function Avatar({
   firstName,
   lastName,
   avatarUrl,
@@ -69,7 +69,7 @@ function Avatar({
     return <img src={avatarUrl} alt={firstName} className="h-full w-full object-cover" />
   const initials = `${firstName?.[0] ?? ''}${lastName?.[0] ?? ''}`.toUpperCase()
   return <span className="text-primary text-4xl font-bold select-none">{initials}</span>
-}
+})
 
 function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString('uz-UZ', {
@@ -91,7 +91,7 @@ function formatRelativeDate(iso: string) {
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
 
-function SectionHeader({
+const SectionHeader = memo(function SectionHeader({
   icon,
   title,
   count,
@@ -139,11 +139,11 @@ function SectionHeader({
       </div>
     </div>
   )
-}
+})
 
 type ReviewWithCtx = Review & { entityName: string; entityType: 'event' | 'service' | 'venue' }
 
-function ProfileReviewCard({ review }: { review: ReviewWithCtx }) {
+const ProfileReviewCard = memo(function ProfileReviewCard({ review }: { review: ReviewWithCtx }) {
   const initials = review.author ? `${review.author.firstName[0]}${review.author.lastName[0]}` : '?'
   const fullName = review.author ? `${review.author.firstName} ${review.author.lastName}` : 'Anonim'
 
@@ -193,7 +193,7 @@ function ProfileReviewCard({ review }: { review: ReviewWithCtx }) {
       )}
     </div>
   )
-}
+})
 
 // ─── Main component ───────────────────────────────────────────────────────────
 
