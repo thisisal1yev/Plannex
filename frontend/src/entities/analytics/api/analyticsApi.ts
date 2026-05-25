@@ -1,5 +1,5 @@
 import { apiClient } from '@shared/api/client'
-import type { AdminStats, DashboardStats, EventStats } from '../model/types'
+import type { AdminStats, DashboardStats, EventStats, VendorDashboardStats } from '../model/types'
 
 export const analyticsApi = {
   dashboard: async (): Promise<DashboardStats> => {
@@ -12,6 +12,10 @@ export const analyticsApi = {
   },
   adminDashboard: async (): Promise<AdminStats> => {
     const { data } = await apiClient.get('/analytics/admin')
+    return data.data
+  },
+  vendorDashboard: async (): Promise<VendorDashboardStats> => {
+    const { data } = await apiClient.get('/analytics/vendor')
     return data.data
   },
 }
